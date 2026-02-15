@@ -1158,6 +1158,311 @@ body {
     left: -40px;
 }
 
+/* COURSES */
+.ft-explore {
+    padding: 80px 20px;
+    background: linear-gradient(135deg, #E8F4F8 0%, #F5F5F5 50%, #FEFEFE 100%);
+    position: relative;
+}
+
+.ft-explore__container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.ft-explore__header {
+    margin-bottom: 50px;
+}
+
+.ft-explore__title {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+.ft-explore__subtitle {
+    font-size: 15px;
+    color: var(--text-gray);
+}
+
+/* Category */
+.ft-explore__category {
+    margin-bottom: 60px;
+}
+
+.ft-explore__category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.ft-explore__category-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.ft-explore__category-title svg {
+    color: var(--primary-teal);
+}
+
+.ft-explore__see-all {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary-teal);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: gap 0.3s ease;
+}
+
+.ft-explore__see-all:hover {
+    gap: 12px;
+}
+
+/* Horizontal Scroll Container */
+.ft-explore__scroll-container {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: 20px 0 40px 0;
+    scroll-behavior: smooth;
+}
+
+.ft-explore__scroll-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.ft-explore__scroll-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+}
+
+.ft-explore__scroll-container::-webkit-scrollbar-thumb {
+    background: var(--primary-teal);
+    border-radius: 10px;
+}
+
+.ft-explore__scroll-container::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-teal-dark);
+}
+
+/* Pill Wrapper with rotation */
+.ft-explore__pill-wrapper {
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(20px);
+    border-radius: 60px;
+    padding: 10px;
+    transform: rotate(-8deg);
+    transition: transform 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.ft-explore__pill-wrapper:hover {
+    transform: rotate(0deg) translateY(-10px);
+}
+
+/* Pills */
+.ft-explore__pill {
+    width: 90px;
+    height: 250px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 15px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.ft-explore__pill-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.ft-explore__pill--orange {
+    background: linear-gradient(180deg, #FF8A3D 0%, #FF6B1A 100%);
+}
+
+.ft-explore__pill--coral {
+    background: linear-gradient(180deg, #FF7E7E 0%, #FF5757 100%);
+}
+
+.ft-explore__pill--brown {
+    background: linear-gradient(180deg, #C49B6C 0%, #A67C52 100%);
+}
+
+.ft-explore__pill--yellow {
+    background: linear-gradient(180deg, #FFD93D 0%, #FFC107 100%);
+}
+
+.ft-explore__pill--purple {
+    background: linear-gradient(180deg, #C490E4 0%, #A569BD 100%);
+}
+
+.ft-explore__pill--blue {
+    background: linear-gradient(180deg, #6DB9F7 0%, #3498DB 100%);
+}
+
+.ft-explore__pill--green {
+    background: linear-gradient(180deg, #82D8A8 0%, #5FBEAA 100%);
+}
+
+.ft-explore__pill--teal {
+    background: linear-gradient(180deg, #66D9D9 0%, var(--primary-teal) 100%);
+}
+
+/* Card */
+.ft-explore__card {
+    flex-shrink: 0;
+    width: 380px;
+    background-color: var(--white);
+    border-radius: 24px;
+    border: 2px solid rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ft-explore__card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+}
+
+.ft-explore__card--bordered {
+    border: 3px solid #E94B7F;
+}
+
+.ft-explore__card-image {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+}
+
+.ft-explore__card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ft-explore__card-image--gradient {
+    background: linear-gradient(180deg, #1A3A52 0%, #2D5F7F 50%, #E8A598 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ft-explore__gradient-content {
+    text-align: center;
+    color: var(--white);
+    padding: 20px;
+}
+
+.ft-explore__gradient-subtitle {
+    font-size: 12px;
+    margin-bottom: 8px;
+    opacity: 0.9;
+}
+
+.ft-explore__gradient-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.ft-explore__gradient-text {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+.ft-explore__card-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background-color: var(--white);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--primary-teal);
+    letter-spacing: 0.5px;
+}
+
+.ft-explore__card-content {
+    padding: 24px;
+}
+
+.ft-explore__card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.ft-explore__card-desc {
+    font-size: 13px;
+    color: var(--text-gray);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.ft-explore__card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ft-explore__card-rating {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ft-explore__stars {
+    display: flex;
+    gap: 4px;
+}
+
+.ft-explore__price {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.ft-explore__card-button {
+    padding: 12px 28px;
+    background-color: transparent;
+    color: var(--primary-teal);
+    border: 2px solid var(--primary-teal);
+    border-radius: 25px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+}
+
+.ft-explore__card-button:hover {
+    background-color: var(--primary-teal);
+    color: var(--white);
+    transform: scale(1.05);
+}
+
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1024px) {
@@ -1292,6 +1597,31 @@ body {
 
     .ft-what-is__avatar-grid {
         max-width: 100%;
+    }
+
+     .ft-explore {
+        padding: 60px 15px;
+    }
+
+    .ft-explore__title {
+        font-size: 28px;
+    }
+
+    .ft-explore__card {
+        width: 320px;
+    }
+
+    .ft-explore__pill {
+        width: 80px;
+        height: 220px;
+    }
+
+    .ft-explore__scroll-container {
+        gap: 15px;
+    }
+
+    .ft-explore__pill-wrapper {
+        padding: 8px;
     }
 }
 
