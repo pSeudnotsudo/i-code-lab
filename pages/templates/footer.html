@@ -1,0 +1,250 @@
+<footer class="ft-footer">
+    <div class="ft-footer__container">
+        <!-- Logo and Tagline -->
+        <div class="ft-footer__brand">
+            <div class="ft-footer__logo">
+                <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="15" y="15" width="30" height="30" rx="5" stroke="white" stroke-width="2" transform="rotate(45 30 30)"/>
+                    <circle cx="30" cy="30" r="5" fill="white"/>
+                </svg>
+                <span class="ft-footer__logo-text">ICODE</span>
+            </div>
+            <div class="ft-footer__tagline">
+                <p>Virtual Class</p>
+                <p>for Zoom</p>
+            </div>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="ft-footer__newsletter">
+            <h3 class="ft-footer__newsletter-title">Subscribe to get our Newsletter</h3>
+            <form class="ft-footer__newsletter-form">
+                <input 
+                    type="email" 
+                    placeholder="Your Email" 
+                    class="ft-footer__input"
+                    required
+                >
+                <button type="submit" class="ft-footer__button">Subscribe</button>
+            </form>
+        </div>
+
+        <!-- Footer Links -->
+        <div class="ft-footer__links">
+            <a href="#" class="ft-footer__link">Careers</a>
+            <span class="ft-footer__divider">|</span>
+            <a href="#" class="ft-footer__link">Privacy Policy</a>
+            <span class="ft-footer__divider">|</span>
+            <a href="#" class="ft-footer__link">Terms & Conditions</a>
+        </div>
+
+        <!-- Copyright -->
+       <div class="ft-footer__copyright">
+            <p>© {% now "Y" %} RebaTech.</p>
+        </div>
+
+    </div>
+</footer>
+
+<style>
+.ft-footer {
+    background-color: #2F3649;
+    padding: 60px 20px 40px;
+    color: var(--white);
+}
+
+.ft-footer__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+/* Brand Section */
+.ft-footer__brand {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.ft-footer__logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ft-footer__logo-text {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 2px;
+}
+
+.ft-footer__tagline {
+    text-align: left;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.5;
+    border-left: 2px solid rgba(255, 255, 255, 0.3);
+    padding-left: 20px;
+}
+
+.ft-footer__tagline p {
+    margin: 0;
+}
+
+/* Newsletter Section */
+.ft-footer__newsletter {
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+}
+
+.ft-footer__newsletter-title {
+    font-size: 18px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 20px;
+}
+
+.ft-footer__newsletter-form {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+}
+
+.ft-footer__input {
+    flex: 1;
+    max-width: 400px;
+    padding: 14px 24px;
+    background-color: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    color: var(--white);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.ft-footer__input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.ft-footer__input:focus {
+    border-color: var(--primary-teal);
+}
+
+.ft-footer__button {
+    padding: 14px 32px;
+    background-color: var(--primary-teal);
+    color: var(--white);
+    border: none;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    white-space: nowrap;
+}
+
+.ft-footer__button:hover {
+    background-color: var(--primary-teal-dark);
+    transform: translateY(-2px);
+}
+
+/* Footer Links */
+.ft-footer__links {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.ft-footer__link {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.ft-footer__link:hover {
+    color: var(--primary-teal);
+}
+
+.ft-footer__divider {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 14px;
+}
+
+/* Copyright */
+.ft-footer__copyright {
+    text-align: center;
+}
+
+.ft-footer__copyright p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+    margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ft-footer {
+        padding: 40px 20px 30px;
+    }
+
+    .ft-footer__brand {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .ft-footer__tagline {
+        border-left: none;
+        border-top: 2px solid rgba(255, 255, 255, 0.3);
+        padding-left: 0;
+        padding-top: 15px;
+        text-align: center;
+    }
+
+    .ft-footer__newsletter-form {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .ft-footer__input {
+        max-width: 100%;
+    }
+
+    .ft-footer__button {
+        width: 100%;
+    }
+
+    .ft-footer__links {
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ft-footer__logo-text {
+        font-size: 28px;
+    }
+
+    .ft-footer__newsletter-title {
+        font-size: 16px;
+    }
+
+    .ft-footer__links {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .ft-footer__divider {
+        display: none;
+    }
+}
+</style>
