@@ -473,7 +473,7 @@ body {
 /* ===== SUCCESS SECTION ===== */
 .success-section {
     background: var(--white);
-    padding: 6rem 2rem;
+    padding: 0 6rem 2rem ;
 }
 
 .success-container {
