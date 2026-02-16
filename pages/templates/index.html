@@ -1,0 +1,642 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Home | i-Code
+{% endblock %}
+
+{% block content %}
+  <!-- Hero Section -->
+  
+  <section class="hero">
+    <div class="hero-container">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="highlight">Studying</span> at I-code is now<br />
+          much easier
+        </h1>
+        <p class="hero-subtitle">
+          I-Code is an interesting platform that will teach<br />
+          you in more an interactive way
+        </p>
+        <div class="hero-buttons">
+          <a href="/join" class="btn-primary">Join for free</a>
+          <button class="btn-play">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M8 5v14l11-7L8 5z" fill="currentColor" />
+            </svg>Watch how it works
+          </button>
+        </div>
+      </div>
+
+      <div class="hero-image">
+        <img src="https://tinyurl.com/3jura2y5" alt="Student" class="student-img" />
+
+        <!-- Floating Cards -->
+        <div class="floating-card card-students">
+          <div class="card-icon calendar-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="6" width="18" height="15" rx="2" stroke="white" stroke-width="2" />
+              <path d="M3 10h18M8 3v4M16 3v4" stroke="white" stroke-width="2" />
+            </svg>
+          </div>
+          <div class="card-content">
+            <div class="card-number">250k</div>
+            <div class="card-label">Assisted Student</div>
+          </div>
+        </div>
+
+        <div class="floating-card card-congrats">
+          <div class="card-icon email-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="white" stroke-width="2" />
+              <path d="M22 6l-10 7L2 6" stroke="white" stroke-width="2" />
+            </svg>
+          </div>
+          <div class="card-content">
+            <div class="card-title">Congratulations</div>
+            <div class="card-subtitle">Your admission completed</div>
+          </div>
+        </div>
+
+        <div class="floating-card card-class">
+          <div class="user-avatar">
+            <img src="{% static 'images/img.jpg' %}" alt="Userb" />
+          </div>
+          <div class="card-content">
+            <div class="card-title">User Experience Class</div>
+            <div class="card-time">Today at 12:00 PM</div>
+            <button class="btn-join-now">Join Now</button>
+          </div>
+        </div>
+
+        <div class="decorative-icon icon-analytics">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="12" width="4" height="9" fill="white" />
+            <rect x="10" y="6" width="4" height="15" fill="white" />
+            <rect x="17" y="9" width="4" height="12" fill="white" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wave Background -->
+    <div class="wave-background">
+      <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path fill="#ffffff" d="M0,96L48,112C96,128,192,160,288,165.3C384,171,480,149,576,133.3C672,117,768,107,864,122.7C960,139,1056,181,1152,181.3C1248,181,1344,139,1392,117.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Success Section -->
+  <section class="success-section">
+    <div class="success-container">
+      <h2 class="section-title">Our Success</h2>
+      <p class="section-description">
+        Ornare id fames interdum porttitor nulla turpis etiam. Diam vitae sollicitudin at nec<br />
+        nam et pharetra gravida. Adipiscing a quis ultrices eu ornare tristique vel nisl orci.
+      </p>
+
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number">15K+</div>
+          <div class="stat-label">Students</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">75%</div>
+          <div class="stat-label">Total success</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">35</div>
+          <div class="stat-label">Main questions</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">26</div>
+          <div class="stat-label">Chief experts</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">16</div>
+          <div class="stat-label">Years of experience</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cloud Software Section -->
+  <section class="cloud-section">
+    <div class="cloud-container">
+      <h2 class="section-title">All-In-One <span class="highlight-cloud">Cloud Software.</span></h2>
+      <p class="section-description">
+        I-CODE is one powerful online software suite that combines all the tools<br />
+        needed to run a successful school or office.
+      </p>
+    </div>
+  </section>
+
+  {% comment %} Features {% endcomment %}
+  <section class="ft-success">
+    <div class="ft-success__container">
+        
+
+        
+       
+
+        {% comment %} <div class="ft-success__software">
+            <h3 class="ft-success__software-title">
+                All-in-One <span class="ft-success__software-highlight">Cloud Software.</span>
+            </h3>
+            <p class="ft-success__software-desc">
+                I-CODE is one powerful online software suite that combines all the tools 
+                needed to run a successful school or office.
+            </p>
+        </div> {% endcomment %}
+
+        <div class="ft-success__features">
+            <div class="ft-success__feature">
+                <div class="ft-success__feature-icon ft-success__feature-icon--blue">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 11H15M9 15H15M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L18.7071 8.70711C18.8946 8.89464 19 9.149 19 9.41421V19C19 20.1046 18.1046 21 17 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h4 class="ft-success__feature-title">Online Billing,<br>Invoicing, & Contracts</h4>
+                <p class="ft-success__feature-desc">
+                    Simple and secure control of your organization's financial and legal 
+                    transactions. Send customized invoices and contracts
+                </p>
+            </div>
+
+            <div class="ft-success__feature">
+                <div class="ft-success__feature-icon ft-success__feature-icon--teal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 7V3M16 7V3M7 11H17M5 21H19C20.1046 21 21 20.1046 21 19V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V19C3 20.1046 3.89543 21 5 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h4 class="ft-success__feature-title">Easy Scheduling &<br>Attendance Tracking</h4>
+                <p class="ft-success__feature-desc">
+                    Schedule and reserve classrooms at one campus or multiple campuses. 
+                    Keep detailed records of student attendance
+                </p>
+            </div>
+
+            <div class="ft-success__feature">
+                <div class="ft-success__feature-icon ft-success__feature-icon--cyan">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17 20H22V18C22 16.3431 20.6569 15 19 15C18.0444 15 17.1931 15.4468 16.6438 16.1429M17 20H7M17 20V18C17 17.3438 16.8736 16.717 16.6438 16.1429M7 20H2V18C2 16.3431 3.34315 15 5 15C5.95561 15 6.80686 15.4468 7.35625 16.1429M7 20V18C7 17.3438 7.12642 16.717 7.35625 16.1429M7.35625 16.1429C8.0935 14.301 9.89482 13 12 13C14.1052 13 15.9065 14.301 16.6438 16.1429M15 7C15 8.65685 13.6569 10 12 10C10.3431 10 9 8.65685 9 7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7ZM21 10C21 11.1046 20.1046 12 19 12C17.8954 12 17 11.1046 17 10C17 8.89543 17.8954 8 19 8C20.1046 8 21 8.89543 21 10ZM7 10C7 11.1046 6.10457 12 5 12C3.89543 12 3 11.1046 3 10C3 8.89543 3.89543 8 5 8C6.10457 8 7 8.89543 7 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h4 class="ft-success__feature-title">Customer Tracking</h4>
+                <p class="ft-success__feature-desc">
+                    Automate and track emails to individuals or groups. Skilline's built-in 
+                    system helps organize your organization
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ft-what-is">
+    <div class="ft-what-is__container">
+        <!-- Header -->
+        <div class="ft-what-is__header">
+            <h2 class="ft-what-is__title">What is <span class="ft-what-is__title-highlight">ICODE?</span></h2>
+            <p class="ft-what-is__subtitle">
+                ICODE is a platform that allows educators to create online classes whereby they can 
+                store the course materials online; manage assignments, quizzes and exams; monitor 
+                due dates; grade results and provide students with feedback all in one place.
+            </p>
+        </div>
+
+        <!-- For Instructors/Students Cards -->
+        <div class="ft-what-is__cards">
+            <div class="ft-what-is__card">
+                <div class="ft-what-is__card-overlay">
+                    <h3 class="ft-what-is__card-title">FOR INSTRUCTORS</h3>
+                    <button class="ft-what-is__card-button">Start a class today</button>
+                </div>
+            </div>
+            <div class="ft-what-is__card ft-what-is__card--students">
+                <div class="ft-what-is__card-overlay">
+                    <h3 class="ft-what-is__card-title">FOR STUDENTS</h3>
+                    <button class="ft-what-is__card-button ft-what-is__card-button--teal">Enter access code</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Physical Classroom Section -->
+        <div class="ft-what-is__physical">
+            <div class="ft-what-is__physical-content">
+                <div class="ft-what-is__physical-badge">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="10" cy="10" r="10" fill="currentColor"/>
+                    </svg>
+                </div>
+                <h3 class="ft-what-is__physical-title">
+                    Everything you can do in a physical classroom, 
+                    <span class="ft-what-is__physical-highlight">you can do with ICODE</span>
+                </h3>
+                <p class="ft-what-is__physical-desc">
+                    ICODE's school management software helps traditional and online schools manage 
+                    scheduling, attendance, payments and virtual classrooms all in one secure cloud-based system.
+                </p>
+                <a href="#" class="ft-what-is__physical-link">Learn more</a>
+            </div>
+            <div class="ft-what-is__physical-image">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop" alt="Students in classroom">
+                <div class="ft-what-is__physical-decoration ft-what-is__physical-decoration--1"></div>
+                <div class="ft-what-is__physical-decoration ft-what-is__physical-decoration--2"></div>
+            </div>
+        </div>
+
+        <!-- Our Features Section -->
+        <div class="ft-what-is__features-section">
+            <h2 class="ft-what-is__features-title">
+                Our <span class="ft-what-is__features-highlight">Features</span>
+            </h2>
+            <p class="ft-what-is__features-subtitle">
+                This very extraordinary feature, can make learning activities more efficient
+            </p>
+
+            <!-- User Interface Feature -->
+            <div class="ft-what-is__feature-block">
+                <div class="ft-what-is__feature-visual">
+                    <div class="ft-what-is__avatars">
+                        <div class="ft-what-is__avatar-grid">
+                            <div class="ft-what-is__avatar-item">
+                                <img src="https://i.pravatar.cc/150?img=1" alt="Student 1">
+                            </div>
+                            <div class="ft-what-is__avatar-item">
+                                <img src="https://i.pravatar.cc/150?img=5" alt="Student 2">
+                            </div>
+                            <div class="ft-what-is__avatar-item">
+                                <img src="https://i.pravatar.cc/150?img=3" alt="Student 3">
+                            </div>
+                            <div class="ft-what-is__avatar-item">
+                                <img src="https://i.pravatar.cc/150?img=8" alt="Student 4">
+                            </div>
+                            <div class="ft-what-is__avatar-item">
+                                <img src="https://i.pravatar.cc/150?img=9" alt="Student 5">
+                            </div>
+                        </div>
+                        <div class="ft-what-is__status-badges">
+                            <span class="ft-what-is__badge ft-what-is__badge--present">Present</span>
+                            <span class="ft-what-is__badge ft-what-is__badge--call">+ Call</span>
+                            <span class="ft-what-is__badge ft-what-is__badge--message">Message</span>
+                        </div>
+                    </div>
+                    <div class="ft-what-is__decoration-blob ft-what-is__decoration-blob--1"></div>
+                    <div class="ft-what-is__decoration-blob ft-what-is__decoration-blob--2"></div>
+                    <div class="ft-what-is__decoration-circle ft-what-is__decoration-circle--1"></div>
+                </div>
+
+                <div class="ft-what-is__feature-content">
+                    <h3 class="ft-what-is__feature-title">
+                        A <span class="ft-what-is__feature-title-highlight">user interface</span> designed for the classroom
+                    </h3>
+                    <div class="ft-what-is__feature-list">
+                        <div class="ft-what-is__feature-item">
+                            <div class="ft-what-is__feature-icon">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="20" height="20" rx="4" fill="currentColor"/>
+                                </svg>
+                            </div>
+                            <p class="ft-what-is__feature-text">
+                                Teachers don't get lost in the grid view and have a dedicated Podium space.
+                            </p>
+                        </div>
+                        <div class="ft-what-is__feature-item">
+                            <div class="ft-what-is__feature-icon">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="20" height="20" rx="4" fill="currentColor"/>
+                                </svg>
+                            </div>
+                            <p class="ft-what-is__feature-text">
+                                TA's and presenters can be moved to the front of the class.
+                            </p>
+                        </div>
+                        <div class="ft-what-is__feature-item">
+                            <div class="ft-what-is__feature-icon">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="20" height="20" rx="4" fill="currentColor"/>
+                                </svg>
+                            </div>
+                            <p class="ft-what-is__feature-text">
+                                Teachers can easily see all students and class data at one time.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tools For Teachers Section -->
+            <div class="ft-what-is__feature-block ft-what-is__feature-block--reverse">
+                <div class="ft-what-is__feature-content">
+                    <h3 class="ft-what-is__feature-title">
+                        <span class="ft-what-is__feature-title-highlight">Tools</span> For Teachers And Learners
+                    </h3>
+                    <p class="ft-what-is__feature-desc">
+                        Class has a dynamic set of teaching tools built to be deployed and used during class. 
+                        Teachers can handout assignments in real-time for students to complete and submit.
+                    </p>
+                </div>
+
+                <div class="ft-what-is__feature-visual">
+                    <div class="ft-what-is__teacher-image">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop" alt="Teacher with tablet">
+                        <div class="ft-what-is__decoration-circle ft-what-is__decoration-circle--2"></div>
+                        <div class="ft-what-is__decoration-circle ft-what-is__decoration-circle--3"></div>
+                        <div class="ft-what-is__decoration-dot ft-what-is__decoration-dot--1"></div>
+                        <div class="ft-what-is__decoration-dot ft-what-is__decoration-dot--2"></div>
+                        <div class="ft-what-is__decoration-icon ft-what-is__decoration-icon--1">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="24" height="24" rx="8" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <div class="ft-what-is__decoration-icon ft-what-is__decoration-icon--2">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="24" height="24" rx="8" fill="currentColor"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{% comment %} COURSES {% endcomment %}
+<section class="ft-explore">
+    <div class="ft-explore__container">
+        <div class="ft-explore__header">
+            <h2 class="ft-explore__title">Explore Course</h2>
+            <p class="ft-explore__subtitle">Ut sed eros finibus, placerat orci id, dapibus.</p>
+        </div>
+
+        <!-- Course Category 1 -->
+        <div class="ft-explore__category">
+            <div class="ft-explore__category-header">
+                <div class="ft-explore__category-title">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 2L2 7L10 12L18 7L10 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L10 17L18 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Lorem Ipsum</span>
+                </div>
+                <a href="#" class="ft-explore__see-all">
+                    SEE ALL
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            </div>
+
+            <div class="ft-explore__scroll-container">
+                <div class="ft-explore__pill-wrapper">
+                    <div class="ft-explore__pill ft-explore__pill--orange">
+                        <span class="ft-explore__pill-text">UI/UX Design</span>
+                    </div>
+                </div>
+                <div class="ft-explore__pill-wrapper">
+                    <div class="ft-explore__pill ft-explore__pill--coral">
+                        <span class="ft-explore__pill-text">Quantum Physics</span>
+                    </div>
+                </div>
+                <div class="ft-explore__pill-wrapper">
+                    <div class="ft-explore__pill ft-explore__pill--brown">
+                        <span class="ft-explore__pill-text">Quisque Orci</span>
+                    </div>
+                </div>
+                <div class="ft-explore__pill-wrapper">
+                    <div class="ft-explore__pill ft-explore__pill--yellow">
+                        <span class="ft-explore__pill-text">Cras Convallis</span>
+                    </div>
+                </div>
+                <div class="ft-explore__pill-wrapper">
+                    <div class="ft-explore__pill ft-explore__pill--purple">
+                        <span class="ft-explore__pill-text">Vestibulum Rutula</span>
+                    </div>
+                </div>
+                <div class="ft-explore__pill-wrapper">
+                    <div class="ft-explore__pill ft-explore__pill--blue">
+                        <span class="ft-explore__pill-text">UI/UX Design</span>
+                    </div>
+                </div>
+                <div class="ft-explore__pill-wrapper">
+                    <div class="ft-explore__pill ft-explore__pill--green">
+                        <span class="ft-explore__pill-text">Vestibulum Rutula</span>
+                    </div>
+                </div>
+
+                <div class="ft-explore__card">
+                    <div class="ft-explore__card-image">
+                        <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=400&h=200&fit=crop" alt="Course">
+                        <div class="ft-explore__card-badge">LOREM IPSUM</div>
+                    </div>
+                    <div class="ft-explore__card-content">
+                        <h3 class="ft-explore__card-title">Integer id Orc Sed Ante Tincidunt</h3>
+                        <p class="ft-explore__card-desc">Cras convallis lacus orci, tristique tincidunt magna fringilla at faucibus vel.</p>
+                        <div class="ft-explore__card-footer">
+                            <div class="ft-explore__card-rating">
+                                <div class="ft-explore__stars">
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#FDB022" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#FDB022" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#FDB022" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#FDB022" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#FDB022" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                </div>
+                                <span class="ft-explore__price">$ 450</span>
+                            </div>
+                            <button class="ft-explore__card-button">EXPLORE</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Category 2 -->
+        <div class="ft-explore__category">
+            <div class="ft-explore__category-header">
+                <div class="ft-explore__category-title">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18Z" stroke="currentColor" stroke-width="2"/>
+                        <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span>Quisque a Consequat</span>
+                </div>
+                <a href="#" class="ft-explore__see-all">
+                    SEE ALL
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            </div>
+
+            <div class="ft-explore__scroll-container">
+                <div class="ft-explore__pill-wrapper">
+                    <div class="ft-explore__pill ft-explore__pill--orange">
+                        <span class="ft-explore__pill-text">UI/UX Design</span>
+                    </div>
+                </div>
+                <div class="ft-explore__pill-wrapper">
+                    <div class="ft-explore__pill ft-explore__pill--coral">
+                        <span class="ft-explore__pill-text">Quantum Physics</span>
+                    </div>
+                </div>
+                <div class="ft-explore__pill-wrapper">
+                    <div class="ft-explore__pill ft-explore__pill--brown">
+                        <span class="ft-explore__pill-text">Quisque Orci</span>
+                    </div>
+                </div>
+                <div class="ft-explore__pill-wrapper">
+                    <div class="ft-explore__pill ft-explore__pill--yellow">
+                        <span class="ft-explore__pill-text">Cras Convallis</span>
+                    </div>
+                </div>
+
+                <div class="ft-explore__card ft-explore__card--bordered">
+                    <div class="ft-explore__card-image ft-explore__card-image--gradient">
+                        <div class="ft-explore__gradient-content">
+                            <p class="ft-explore__gradient-subtitle">Vestibulum rutula</p>
+                            <h4 class="ft-explore__gradient-title">LOREM IPSUM</h4>
+                            <p class="ft-explore__gradient-text">Lorem ipsum dolor sit amet</p>
+                        </div>
+                    </div>
+                    <div class="ft-explore__card-content">
+                        <h3 class="ft-explore__card-title">Integer id Orc Sed Ante Tincidunt</h3>
+                        <p class="ft-explore__card-desc">Cras convallis lacus orci, tristique tincidunt magna fringilla at faucibus vel.</p>
+                        <div class="ft-explore__card-footer">
+                            <div class="ft-explore__card-rating">
+                                <div class="ft-explore__stars">
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#FDB022" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#FDB022" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#FDB022" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#FDB022" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#FDB022" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                </div>
+                                <span class="ft-explore__price">$ 450</span>
+                            </div>
+                            <button class="ft-explore__card-button">EXPLORE</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ft-explore__pill-wrapper">
+                    <div class="ft-explore__pill ft-explore__pill--teal">
+                        <span class="ft-explore__pill-text">Vestibulum Rutula</span>
+                    </div>
+                </div>
+                <div class="ft-explore__pill-wrapper">
+                    <div class="ft-explore__pill ft-explore__pill--blue">
+                        <span class="ft-explore__pill-text">UI/UX Design</span>
+                    </div>
+                </div>
+                <div class="ft-explore__pill-wrapper">
+                    <div class="ft-explore__pill ft-explore__pill--green">
+                        <span class="ft-explore__pill-text">Vestibulum Rutula</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Category 3 -->
+        <div class="ft-explore__category">
+            <div class="ft-explore__category-header">
+                <div class="ft-explore__category-title">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17 3H3C1.89543 3 1 3.89543 1 5V15C1 16.1046 1.89543 17 3 17H17C18.1046 17 19 16.1046 19 15V5C19 3.89543 18.1046 3 17 3Z" stroke="currentColor" stroke-width="2"/>
+                        <path d="M10 7C10.5523 7 11 7.44772 11 8C11 8.55228 10.5523 9 10 9C9.44772 9 9 8.55228 9 8C9 7.44772 9.44772 7 10 7Z" fill="currentColor"/>
+                        <path d="M1 13L6 8L10 12L14 8L19 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Aenean Facilisis</span>
+                </div>
+                <a href="#" class="ft-explore__see-all">
+                    SEE ALL
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            </div>
+
+            <div class="ft-explore__scroll-container">
+                <div class="ft-explore__card">
+                    <div class="ft-explore__card-image">
+                        <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&h=200&fit=crop" alt="Course">
+                        <div class="ft-explore__card-badge">LOREM IPSUM</div>
+                    </div>
+                    <div class="ft-explore__card-content">
+                        <h3 class="ft-explore__card-title">Integer id Orc Sed Ante Tincidunt</h3>
+                        <p class="ft-explore__card-desc">Cras convallis lacus orci, tristique tincidunt magna fringilla at faucibus vel.</p>
+                        <div class="ft-explore__card-footer">
+                            <div class="ft-explore__card-rating">
+                                <div class="ft-explore__stars">
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#FDB022" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#FDB022" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#FDB022" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#FDB022" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#E0E0E0" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                </div>
+                                <span class="ft-explore__price">$ 450</span>
+                            </div>
+                            <button class="ft-explore__card-button">EXPLORE</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ft-explore__pill-wrapper">
+                    <div class="ft-explore__pill ft-explore__pill--coral">
+                        <span class="ft-explore__pill-text">Quantum Physics</span>
+                    </div>
+                </div>
+                <div class="ft-explore__pill-wrapper">
+                    <div class="ft-explore__pill ft-explore__pill--brown">
+                        <span class="ft-explore__pill-text">Quisque Orci</span>
+                    </div>
+                </div>
+                <div class="ft-explore__pill-wrapper">
+                    <div class="ft-explore__pill ft-explore__pill--yellow">
+                        <span class="ft-explore__pill-text">Cras Convallis</span>
+                    </div>
+                </div>
+                <div class="ft-explore__pill-wrapper">
+                    <div class="ft-explore__pill ft-explore__pill--teal">
+                        <span class="ft-explore__pill-text">Vestibulum Rutula</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+ 
+{% endblock %}
