@@ -2013,9 +2013,10 @@
      ft-membership: Testimonials Section
      =========================== */
   .ft-membership-testimonials {
-    background: var(--ft-bg-light);
+    /* background: #9DCCFF; */
+    background: #9DCCFF;
     padding: 64px 0 72px;
-    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+   
   }
 
   .ft-membership-testimonials__title {
@@ -2056,7 +2057,7 @@
     width: 42px;
     height: 42px;
     border-radius: 50%;
-    background: var(--ft-teal);
+    background: var(--primary-teal);
     border: none;
     color: var(--ft-white);
     display: flex;
