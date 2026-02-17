@@ -19,4 +19,8 @@ def about(request):
 def blog(request):
     return render(request, 'blog.html',)
 
+# Membership
+def membership(request):
+    return render(request, 'membership.html')
+
 
