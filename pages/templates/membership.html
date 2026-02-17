@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Membership | i-Code
+{% endblock %}
+
+{% block content %}
+
+<!-- ft-membership: Pricing Section -->
+<section class="ft-membership-pricing">
+  <h2 class="ft-membership-pricing__title">Affordable pricing</h2>
+
+  <div class="ft-membership-pricing__cards">
+
+    <!-- Free Plan -->
+    <div class="ft-membership-card">
+      <p class="ft-membership-card__label">Basic</p>
+      <div class="ft-membership-card__price">
+        <span class="ft-membership-card__amount">Free</span>
+        <span class="ft-membership-card__period">/ forever</span>
+      </div>
+      <ul class="ft-membership-card__features">
+        <li class="ft-membership-card__feature ft-membership-card__feature--inactive">
+          <span class="ft-membership-card__check">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Components-driven system
+        </li>
+        <li class="ft-membership-card__feature ft-membership-card__feature--inactive">
+          <span class="ft-membership-card__check">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Sales-boosting landing pages
+        </li>
+        <li class="ft-membership-card__feature ft-membership-card__feature--inactive">
+          <span class="ft-membership-card__check">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Awesome Feather icons pack
+        </li>
+      </ul>
+      <a href="#" class="ft-membership-card__btn ft-membership-card__btn--outline">Try for free</a>
+    </div>
+
+    <!-- Individual Plan (Featured) -->
+    <div class="ft-membership-card ft-membership-card--featured">
+      <div class="ft-membership-card__header">
+        <p class="ft-membership-card__label ft-membership-card__label--teal">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Individual
+        </p>
+        <span class="ft-membership-card__badge">BEST!</span>
+      </div>
+      <div class="ft-membership-card__price">
+        <span class="ft-membership-card__amount">$24</span>
+        <span class="ft-membership-card__period">/ month</span>
+      </div>
+      <ul class="ft-membership-card__features">
+        <li class="ft-membership-card__feature ft-membership-card__feature--active">
+          <span class="ft-membership-card__check ft-membership-card__check--gold">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Components-driven system
+        </li>
+        <li class="ft-membership-card__feature ft-membership-card__feature--active">
+          <span class="ft-membership-card__check ft-membership-card__check--gold">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Sales-boosting landing pages
+        </li>
+        <li class="ft-membership-card__feature ft-membership-card__feature--active">
+          <span class="ft-membership-card__check ft-membership-card__check--gold">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Awesome Feather icons pack
+        </li>
+        <li class="ft-membership-card__feature ft-membership-card__feature--active">
+          <span class="ft-membership-card__check ft-membership-card__check--gold">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Themed into 3 different styles
+        </li>
+        <li class="ft-membership-card__feature ft-membership-card__feature--active">
+          <span class="ft-membership-card__check ft-membership-card__check--gold">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Will help to learn Figma
+        </li>
+      </ul>
+      <a href="#" class="ft-membership-card__btn ft-membership-card__btn--solid">Regular license</a>
+    </div>
+
+    <!-- Corporate Plan -->
+    <div class="ft-membership-card">
+      <p class="ft-membership-card__label ft-membership-card__label--teal">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Corporate
+      </p>
+      <div class="ft-membership-card__price">
+        <span class="ft-membership-card__amount">$12</span>
+        <span class="ft-membership-card__period">/ editor</span>
+      </div>
+      <ul class="ft-membership-card__features">
+        <li class="ft-membership-card__feature ft-membership-card__feature--teal">
+          <span class="ft-membership-card__check ft-membership-card__check--teal">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Components-driven system
+        </li>
+        <li class="ft-membership-card__feature ft-membership-card__feature--teal">
+          <span class="ft-membership-card__check ft-membership-card__check--teal">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Sales-boosting landing pages
+        </li>
+        <li class="ft-membership-card__feature ft-membership-card__feature--teal">
+          <span class="ft-membership-card__check ft-membership-card__check--teal">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Awesome Feather icons pack
+        </li>
+        <li class="ft-membership-card__feature ft-membership-card__feature--teal">
+          <span class="ft-membership-card__check ft-membership-card__check--teal">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Themed into 3 different styles
+        </li>
+      </ul>
+      <a href="#" class="ft-membership-card__btn ft-membership-card__btn--outline">Extended license</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ft-membership: CTA Banner Section -->
+<section class="ft-membership-cta">
+  <div class="ft-membership-cta__inner">
+    <h2 class="ft-membership-cta__title">Online coaching lessons for remote learning.</h2>
+    <p class="ft-membership-cta__text">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempos Lorem ipsum dolor sitamet,
+      consectetur adipiscing elit, sed do eiusmod tempor
+    </p>
+    <a href="#" class="ft-membership-cta__btn">Start learning now</a>
+  </div>
+</section>
+
+
+
+
+{% endblock content %}
