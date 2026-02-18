@@ -1856,7 +1856,6 @@
 
   .ft-membership-card__btn--outline:hover {
     border-color: #ffffff;
-    /* background: rgba(62, 207, 178, 0.06); */
     background: var(--primary-teal);
     color: #ffffff;
 
@@ -1870,7 +1869,7 @@
 
   .ft-membership-card__btn--solid:hover {
     background: var(--primary-teal);
-    /* border-color: var(--ft-teal-dark); */
+    
   }
 
   /* ===========================
@@ -2020,7 +2019,7 @@
      =========================== */
   .ft-membership-testimonials {
     /* background: #9DCCFF; */
-    background: #9DCCFF;
+    background: #ebf5ff;
     padding: 64px 0 72px;
    
   }
