@@ -1704,6 +1704,7 @@
   .ft-membership-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 20px 48px rgba(0,0,0,0.14);
+
   }
 
   .ft-membership-card--featured {
@@ -1845,15 +1846,20 @@
     cursor: pointer;
   }
 
+   
+
   .ft-membership-card__btn--outline {
-    border: 1.5px solid var(--ft-border);
-    color: var(--ft-teal);
+    border: 1.5px solid #9DCCFF;
+    color: var(--primary-teal);
     background: transparent;
   }
 
   .ft-membership-card__btn--outline:hover {
-    border-color: var(--ft-teal);
-    background: rgba(62, 207, 178, 0.06);
+    border-color: #ffffff;
+    /* background: rgba(62, 207, 178, 0.06); */
+    background: var(--primary-teal);
+    color: #ffffff;
+
   }
 
   .ft-membership-card__btn--solid {
