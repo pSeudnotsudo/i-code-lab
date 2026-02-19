@@ -1849,7 +1849,7 @@
    
 
   .ft-membership-card__btn--outline {
-    border: 1.5px solid #9DCCFF;
+    border: 1.5px solid var(--primary-teal);
     color: var(--primary-teal);
     background: transparent;
   }
