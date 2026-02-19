@@ -2085,7 +2085,7 @@
      ft-membership: Testimonial Card
      =========================== */
   .ft-membership-testimonial-card {
-    background: var(--ft-white);
+    background: #ffffff;
     border-radius: 14px;
     padding: 28px 24px;
     min-width: 210px;
