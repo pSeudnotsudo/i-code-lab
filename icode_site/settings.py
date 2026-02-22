@@ -165,3 +165,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Sweet alerts # notifications
 SWEETIFY_SWEETALERT_LIBRARY = 'sweetalert2'
+
+
+# PASSWORD RESET TIMESPAN
+PASSWORD_RESET_TIMEOUT = 259200
