@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render,redirect
 
 
 def login(request):
-    return render(request, 'login.html',)
+    return render(request, 'authentication/auth_page.html',)
 
 def register(request):
     return render(request, 'register.html',)
@@ -18,5 +18,9 @@ def about(request):
 
 def blog(request):
     return render(request, 'blog.html',)
+
+# Membership
+def membership(request):
+    return render(request, 'membership.html')
 
 
