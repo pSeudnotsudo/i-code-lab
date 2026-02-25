@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 /* CSS Variables for theming */
 :root {
     --primary-teal: #49BBBD;
@@ -23,19 +24,17 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Nunito", sans-serif;
-    
+    /* font-family: "DM Sans", sans-serif; */
+    font-family: "DM Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;  
 }
 
-/* body {
-    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-    color: var(--text-dark);
-    overflow-x: hidden;
-    background: var(--white);
-} */
+
 
 /* ===== NAVBAR ===== */
-.navbar {
+.icode-navbar {
     position: fixed;
     top: 0;
     left: 0;
@@ -46,7 +45,7 @@
     box-shadow: var(--shadow-sm);
 }
 
-.nav-container {
+.icode-nav-container {
     max-width: 1280px;
     margin: 0 auto;
     padding: 0 2rem;
@@ -68,14 +67,15 @@
     transform: scale(1.05);
 }
 
-.nav-links {
+.icode-nav-links {
     display: flex;
     list-style: none;
     gap: 2.5rem;
     align-items: center;
+    font-weight: 500;
 }
 
-.nav-links a {
+.icode-nav-links a {
     color: var(--white);
     text-decoration: none;
     font-weight: 500;
@@ -84,7 +84,7 @@
     position: relative;
 }
 
-.nav-links a::after {
+.icode-nav-links a::after {
     content: '';
     position: absolute;
     bottom: -4px;
@@ -95,7 +95,7 @@
     transition: width 0.3s ease;
 }
 
-.nav-links a:hover::after {
+.icode-nav-links a:hover::after {
     width: 100%;
 }
 
@@ -200,6 +200,7 @@
     color: var(--accent-orange);
     display: inline-block;
     animation: slideInLeft 0.8s ease-out 0.2s both;
+    font-weight: 600;
 }
 
 @keyframes slideInLeft {
@@ -252,7 +253,8 @@
     background: transparent;
     border: none;
     color: var(--white);
-    font-family: "Nunito", sans-serif;
+    /* font-family: "Nunito", sans-serif; */
+    font-family: "DM Sans", sans-serif;
     font-size: 1rem;
     font-weight: 500;
     cursor: pointer;
@@ -420,7 +422,8 @@
     color: var(--white);
     border: none;
     border-radius: 50px;
-    font-family: "Nunito", sans-serif;
+    /* font-family: "Nunito", sans-serif; */
+    font-family: "DM Sans", sans-serif;
     font-weight: 600;
     font-size: 0.85rem;
     cursor: pointer;
