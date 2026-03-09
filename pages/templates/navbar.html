@@ -6,14 +6,14 @@
         <a href="/" class="logo">I-CODE</a>
         <ul class="icode-nav-links">
             <li><a href="{% url 'index' %}">Home</a></li>
-            <li><a href="{% url 'courses' %}">Courses</a></li>
+            <li><a href="{% url 'courses' %}">Programs</a></li>
             <li><a href="{% url 'membership' %}">Membership</a></li>
             <li><a href="{% url 'blog' %}">Blog</a></li>
             <li><a href="{% url 'about' %}">About Us</a></li>
         </ul>
-        <div class="nav-auth">
+        {% comment %} <div class="nav-auth">
             <a href="{% url 'login' %}" class="btn-login">Login</a>
             <a href="{% url 'register' %}" class="btn-signup">Sign Up</a>
-        </div>
+        </div> {% endcomment %}
     </div>
 </nav>
