@@ -43,23 +43,25 @@
       margin: 0;
       padding: 0;
     }
-    .container-fluid{
-      padding: 0 3.125em;
-      
-    }
+
     .icode-programs {
       font-family: "DM Sans", sans-serif;
-      
       background: var(--bg);
       color: var(--text-dark);
+    }
+
+    .icode-programs .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 52px;
     }
     
     /* ─────────────────────────────────────────
                SECTION 1 — CONTINUE LEARNING
-            ───────────────────────────────────────── */
+    ───────────────────────────────────────── */
     .cl-section {
       background: var(--white);
-      padding: 40px 52px 44px;
+      padding-top: 2rem;
       position: relative;
     }
     
@@ -67,7 +69,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 30px;
+      margin-bottom: 2rem;
     }
     
     .cl-title {
@@ -339,7 +341,7 @@
             ───────────────────────────────────────── */
     .cat-section {
       background: var(--bg);
-      padding: 48px 52px 60px;
+      padding: 48px 0 60px;
     }
     
     .cat-header {
@@ -414,55 +416,23 @@
       transform: scale(1);
     }
     
-    .cat-card:nth-child(1)::after {
-      background: var(--primary);
-    }
-    .cat-card:nth-child(2)::after {
-      background: var(--purple);
-    }
-    .cat-card:nth-child(3)::after {
-      background: var(--blue);
-    }
-    .cat-card:nth-child(4)::after {
-      background: var(--orange);
-    }
-    .cat-card:nth-child(5)::after {
-      background: var(--pink);
-    }
-    .cat-card:nth-child(6)::after {
-      background: var(--green);
-    }
-    .cat-card:nth-child(7)::after {
-      background: var(--primary);
-    }
-    .cat-card:nth-child(8)::after {
-      background: var(--purple);
-    }
+    .cat-card:nth-child(1)::after { background: var(--primary); }
+    .cat-card:nth-child(2)::after { background: var(--purple); }
+    .cat-card:nth-child(3)::after { background: var(--blue); }
+    .cat-card:nth-child(4)::after { background: var(--orange); }
+    .cat-card:nth-child(5)::after { background: var(--pink); }
+    .cat-card:nth-child(6)::after { background: var(--green); }
+    .cat-card:nth-child(7)::after { background: var(--primary); }
+    .cat-card:nth-child(8)::after { background: var(--purple); }
     
-    .cat-card:nth-child(1) {
-      animation-delay: 0s;
-    }
-    .cat-card:nth-child(2) {
-      animation-delay: 0.06s;
-    }
-    .cat-card:nth-child(3) {
-      animation-delay: 0.12s;
-    }
-    .cat-card:nth-child(4) {
-      animation-delay: 0.18s;
-    }
-    .cat-card:nth-child(5) {
-      animation-delay: 0.24s;
-    }
-    .cat-card:nth-child(6) {
-      animation-delay: 0.3s;
-    }
-    .cat-card:nth-child(7) {
-      animation-delay: 0.36s;
-    }
-    .cat-card:nth-child(8) {
-      animation-delay: 0.42s;
-    }
+    .cat-card:nth-child(1) { animation-delay: 0s; }
+    .cat-card:nth-child(2) { animation-delay: 0.06s; }
+    .cat-card:nth-child(3) { animation-delay: 0.12s; }
+    .cat-card:nth-child(4) { animation-delay: 0.18s; }
+    .cat-card:nth-child(5) { animation-delay: 0.24s; }
+    .cat-card:nth-child(6) { animation-delay: 0.3s; }
+    .cat-card:nth-child(7) { animation-delay: 0.36s; }
+    .cat-card:nth-child(8) { animation-delay: 0.42s; }
     
     .cat-card:hover {
       transform: translateY(-6px);
@@ -512,21 +482,18 @@
     }
     
     @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(18px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
     
     /* Responsive */
     @media (max-width: 900px) {
       .cl-section,
       .cat-section {
-        padding: 28px 20px 32px;
+        padding: 28px 0 32px;
+      }
+      .icode-programs .container {
+        padding: 0 20px;
       }
       .cl-card {
         flex: 0 0 78%;
@@ -552,25 +519,27 @@
 {% endblock %}
 
 {% block content %}
-  <div class="container">
-    <div class="icode-programs">
-      <!--   ═══════════════════════════════════════════════════════
-       SECTION 1: CONTINUE LEARNING
-       ── Django wiring ──────────────────────────────────────
-       View: pass `enrolled_courses` — Enrollment queryset
-             select_related('course', 'course__instructor')
-       Model fields:
-         enrollment.progress            (int 0–100)
-         enrollment.current_lesson      (int)
-         enrollment.course.title
-         enrollment.course.total_lessons
-         enrollment.course.thumbnail    (ImageField, optional)
-         enrollment.course.get_absolute_url
-         enrollment.course.instructor.name
-         enrollment.course.instructor.avatar (ImageField, optional)
-       URL name: 'course_history'
-  ═══════════════════════════════════════════════════════   -->
-      <section class="cl-section">
+  <div class="icode-programs">
+
+    <!--   ═══════════════════════════════════════════════════════
+     SECTION 1: CONTINUE LEARNING
+     ── Django wiring ──────────────────────────────────────
+     View: pass `enrolled_courses` — Enrollment queryset
+           select_related('course', 'course__instructor')
+     Model fields:
+       enrollment.progress            (int 0–100)
+       enrollment.current_lesson      (int)
+       enrollment.course.title
+       enrollment.course.total_lessons
+       enrollment.course.thumbnail    (ImageField, optional)
+       enrollment.course.get_absolute_url
+       enrollment.course.instructor.name
+       enrollment.course.instructor.avatar (ImageField, optional)
+     URL name: 'course_history'
+═══════════════════════════════════════════════════════   -->
+    <section class="cl-section">
+      <div class="container">
+
         <div class="cl-header">
           <h2 class="cl-title">Welcome back, <span>ready for your next lesson?</span></h2>
           {# swap href below with {% url 'course_history' %} when ready #}
@@ -579,7 +548,8 @@
 
         <div class="cl-slider-outer">
           <div class="cl-slider-track" id="cl-track">
-            {% comment %}── DYNAMIC: uncomment & remove static block below once enrolled_courses is passed ──{% for enrollment in enrolled_courses %}
+            {% comment %}── DYNAMIC: uncomment & remove static block below once enrolled_courses is passed ──
+            {% for enrollment in enrolled_courses %}
               <a href="{{ enrollment.course.get_absolute_url }}" class="cl-card">
                 <div class="cl-card__thumb">
                   {% if enrollment.course.thumbnail %}
@@ -723,28 +693,33 @@
           <button class="cl-nav-btn" id="cl-prev" aria-label="Previous" disabled><i class="fa-solid fa-angles-left"></i></button>
           <button class="cl-nav-btn" id="cl-next" aria-label="Next"><i class="fa-solid fa-angles-right"></i></button>
         </div>
-      </section>
 
-      <!--   ═══════════════════════════════════════════════════════
-       SECTION 2: TOP CATEGORIES
-       ── Django wiring ──────────────────────────────────────
-       View: pass `categories` — Category queryset
-       Model fields:
-         category.name
-         category.description
-         category.icon              (emoji string or icon tag)
-         category.icon_bg_color     (hex / rgba, optional)
-         category.course_count      (annotated int, optional)
-         category.get_absolute_url
-  ═══════════════════════════════════════════════════════   -->
-      <section class="cat-section">
+      </div><!-- /.container -->
+    </section>
+
+    <!--   ═══════════════════════════════════════════════════════
+     SECTION 2: TOP CATEGORIES
+     ── Django wiring ──────────────────────────────────────
+     View: pass `categories` — Category queryset
+     Model fields:
+       category.name
+       category.description
+       category.icon              (emoji string or icon tag)
+       category.icon_bg_color     (hex / rgba, optional)
+       category.course_count      (annotated int, optional)
+       category.get_absolute_url
+═══════════════════════════════════════════════════════   -->
+    <section class="cat-section">
+      <div class="container">
+
         <div class="cat-header">
           <h2 class="cat-title">Choose your favourite course from <span>top categories</span></h2>
           <p class="cat-subtitle">Explore skills across every domain</p>
         </div>
 
         <div class="cat-grid">
-          {% comment %}── DYNAMIC: uncomment & remove static block once categories is passed ──{% for category in categories %}
+          {% comment %}── DYNAMIC: uncomment & remove static block once categories is passed ──
+          {% for category in categories %}
             <a href="{{ category.get_absolute_url }}" class="cat-card">
               <div class="cat-card__icon-wrap" style="background:{{ category.icon_bg_color|default:'rgba(73,187,189,0.12)' }}">
                 <span>{{ category.icon }}</span>
@@ -818,9 +793,11 @@
           </a>
           {# ── END STATIC DEMO ── #}
         </div>
-      </section>
-    </div>
-  </div>
+
+      </div><!-- /.container -->
+    </section>
+
+  </div><!-- /.icode-programs -->
 
   <script>
     ;(function () {
@@ -864,16 +841,10 @@
       }
     
       prevBtn.addEventListener('click', () => {
-        if (idx > 0) {
-          idx--
-          update()
-        }
+        if (idx > 0) { idx--; update() }
       })
       nextBtn.addEventListener('click', () => {
-        if (idx < maxIdx()) {
-          idx++
-          update()
-        }
+        if (idx < maxIdx()) { idx++; update() }
       })
     
       window.addEventListener('resize', () => {
