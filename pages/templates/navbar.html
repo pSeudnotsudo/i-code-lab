@@ -7,8 +7,8 @@
         <ul class="icode-nav-links">
             <li><a href="{% url 'index' %}">Home</a></li>
             <li><a href="{% url 'courses' %}">Programs</a></li>
-            <li><a href="{% url 'membership' %}">Membership</a></li>
-            <li><a href="{% url 'blog' %}">Blog</a></li>
+            {% comment %} <li><a href="{% url 'membership' %}">Membership</a></li> {% endcomment %}
+            <li><a href="{% url 'services' %}">Services</a></li>
             <li><a href="{% url 'about' %}">About Us</a></li>
         </ul>
         {% comment %} <div class="nav-auth">

@@ -1,26 +1,44 @@
-from django.shortcuts import get_object_or_404, render,redirect
+from django.shortcuts import render
 
-
-def login(request):
-    return render(request, 'authentication/auth_page.html',)
-
-def register(request):
-    return render(request, 'register.html',)
 
 def index(request):
-    return render(request, 'index.html',)
+    """
+    Landing page view.
+    All dummy data is hardcoded in landing.html.
+    When your models are ready, pass real querysets here and
+    activate the commented-out {% for %} loops in the template.
 
-def courses(request):
-    return render(request, 'courses.html',)
+    Example (when models exist):
+    ─────────────────────────────
+    from .models import Program, Testimonial, SiteSettings
 
-def about(request):
-    return render(request, 'about.html',)
+    context = {
+        'programs':     Program.objects.filter(is_active=True).order_by('order'),
+        'testimonials': Testimonial.objects.filter(is_published=True)[:3],
+        'stats':        SiteSettings.objects.first().stats_as_list(),
+    }
+    return render(request, 'landing.html', context)
+    ─────────────────────────────
+    """
+    return render(request, 'index.html', {})
 
-def blog(request):
-    return render(request, 'blog.html',)
 
-# Membership
-def membership(request):
-    return render(request, 'membership.html')
+def programs(request):
+    """
+    Programs listing page.
+    All dummy data is hardcoded in programs.html.
+    When your models are ready, pass real querysets here.
 
+    Example (when models exist):
+    ─────────────────────────────
+    from .models import Program, Schedule, FAQ
 
+    context = {
+        'programs':  Program.objects.filter(is_active=True).order_by('order'),
+        'schedule':  Schedule.objects.filter(is_active=True).order_by('day_order', 'time'),
+        'faqs':      FAQ.objects.filter(page='programs').order_by('order'),
+    }
+    return render(request, 'programs.html', context)
+    ─────────────────────────────
+    """
+    return render(request, 'programs.html', {})

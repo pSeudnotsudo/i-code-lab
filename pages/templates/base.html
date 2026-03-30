@@ -1,44 +1,219 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
-      {% block title %}
-        i-Code Innovation Lab
-      {% endblock %}
+      {% block title %}I-code - Online Learning Platform{% endblock %}
     </title>
-    {% comment %}Bootstrap{% endcomment %}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
-    <!-- Font Awesome -->
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts: Poppins & Nunito Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    
 
-    {% block extra_css %}
+    <!-- AOS (Animate On Scroll) -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
 
-    {% endblock %}
+    <!-- Lucide Icons (CDN) -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+
+    <style>
+      /* ── CSS Custom Properties (mirrors theme.css) ── */
+      :root {
+        --font-size: 16px;
+        --background: #ffffff;
+        --foreground: #0d0d0d;
+        --primary: #030213;
+        --primary-foreground: #ffffff;
+        --muted: #ececf0;
+        --muted-foreground: #717182;
+        --accent: #e9ebef;
+        --accent-foreground: #030213;
+        --destructive: #d4183d;
+        --border: rgba(0, 0, 0, 0.1);
+        --radius: 0.625rem;
+
+        /* Brand colours */
+        --brand-teal: #49bbbd;
+        --brand-teal-dk: #3da3a5;
+        --brand-navy: #2f327d;
+        --brand-navy-dk: #252641;
+        --brand-orange: #f48c06;
+        --brand-pink: #d8587e;
+        --brand-blue: #23bdee;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        font-size: var(--font-size);
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Nunito", sans-serif;
+        background: var(--background);
+        color: var(--foreground);
+        overflow-x: hidden;
+        min-height: 100vh;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "Poppins", sans-serif;
+        line-height: 1.3;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      img {
+        max-width: 100%;
+        display: block;
+      }
+
+      /* ── Utility classes used across templates ── */
+      .container {
+        max-width: 1280px;
+        margin-inline: auto;
+        padding-inline: 1rem;
+      }
+      .text-teal {
+        color: var(--brand-teal);
+      }
+      .text-navy {
+        color: var(--brand-navy);
+      }
+      .text-orange {
+        color: var(--brand-orange);
+      }
+      .bg-teal {
+        background: var(--brand-teal);
+      }
+      .bg-navy {
+        background: var(--brand-navy);
+      }
+      .bg-teal-gradient {
+        background: linear-gradient(
+          135deg,
+          var(--brand-teal),
+          var(--brand-teal-dk)
+        );
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        border: none;
+        font-family: "Nunito", sans-serif;
+        font-weight: 600;
+        transition: all 0.25s;
+      }
+      .btn-primary {
+        background: var(--brand-teal);
+        color: #fff;
+        padding: 0.75rem 2rem;
+        border-radius: 9999px;
+      }
+      .btn-primary:hover {
+        background: var(--brand-teal-dk);
+      }
+      .btn-outline {
+        background: rgba(255, 255, 255, 0.3);
+        color: #fff;
+        padding: 0.75rem 2rem;
+        border-radius: 9999px;
+        backdrop-filter: blur(8px);
+      }
+      .btn-outline:hover {
+        background: rgba(255, 255, 255, 0.45);
+      }
+      .btn-white {
+        background: #fff;
+        color: #5b5b5b;
+        padding: 0.75rem 2rem;
+        border-radius: 9999px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      }
+      .btn-white:hover {
+        background: #f5f5f5;
+      }
+      .section-title {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 800;
+        color: var(--brand-navy);
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+      .section-subtitle {
+        font-size: 1.125rem;
+        color: #6b7280;
+        max-width: 40rem;
+        margin-inline: auto;
+        text-align: center;
+      }
+      .card {
+        background: #fff;
+        border-radius: 1rem;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        transition:
+          transform 0.3s,
+          box-shadow 0.3s;
+      }
+      .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+      }
+    </style>
+
+    {% block extra_head %}{% endblock %}
   </head>
   <body>
-    <main>
-      {% include 'navbar.html' %}
-      {% block content %}
+    <!-- ══════════════════════════════
+       MAIN CONTENT (per-page block)
+       ══════════════════════════════ -->
+    {% block content %}{% endblock %}
 
-      {% endblock %}
-      {% include 'footer.html' %}
+    <!-- ═══════
+       FOOTER (included on every page)
+       ═══════ -->
+    {% include 'components/footer.html' %}
 
-      {% block scripts %}
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-        <!-- JQuery -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- AOS JS -->
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script>
+      AOS.init({
+        duration: 1000,
+        once: false,
+        mirror: true,
+        offset: 100,
+      });
+    </script>
 
-        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
-      {% endblock %}
-    </main>
+    <!-- Lucide icon hydration -->
+    <script>
+      lucide.createIcons();
+    </script>
 
-    {% comment %} <footer>
-      <p>© 2026 i-Code Innovation Lab | Invent the Code. Ignite the Future.</p>
-    </footer> {% endcomment %}
+    {% block extra_scripts %}{% endblock %}
   </body>
 </html>
