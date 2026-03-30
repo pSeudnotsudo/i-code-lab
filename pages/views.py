@@ -42,3 +42,12 @@ def programs(request):
     ─────────────────────────────
     """
     return render(request, 'programs.html', {})
+
+def course_detail(request):
+    
+    return render(request, 'course_detail', {})
+
+
+def newsletter_subscribe(request):
+    
+    return render(request, 'course_detail', {})

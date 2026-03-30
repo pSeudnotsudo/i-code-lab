@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>I-code Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --font-size: 16px;
+    --background: #ffffff;
+    --foreground: #0d0d0d;
+    --primary: #030213;
+    --primary-foreground: #ffffff;
+    --muted: #ececf0;
+    --muted-foreground: #717182;
+    --accent: #e9ebef;
+    --accent-foreground: #030213;
+    --destructive: #d4183d;
+    --border: rgba(0,0,0,0.08);
+    --radius: 0.625rem;
+    --brand-teal: #49bbbd;
+    --brand-teal-dk: #3da3a5;
+    --brand-navy: #2f327d;
+    --brand-navy-dk: #252641;
+    --brand-orange: #f48c06;
+    --brand-pink: #d8587e;
+    --brand-blue: #23bdee;
+    --sidebar-w: 240px;
+    --topbar-h: 64px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: var(--font-size);
+    background: #f3f4f8;
+    color: var(--foreground);
+    min-height: 100vh;
+    display: flex;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    min-height: 100vh;
+    background: var(--brand-navy-dk);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    padding: 0 0 24px;
+  }
+
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 22px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--brand-teal), var(--brand-blue));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 14px; color: #fff; letter-spacing: -0.5px;
+  }
+
+  .logo-text { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+  .logo-text span { color: var(--brand-teal); }
+
+  .nav-section { padding: 20px 0 0; flex: 1; }
+
+  .nav-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+    color: rgba(255,255,255,0.3); text-transform: uppercase;
+    padding: 0 22px 8px;
+  }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 22px;
+    color: rgba(255,255,255,0.55);
+    font-size: 13.5px; font-weight: 500;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all 0.18s ease;
+    user-select: none;
+  }
+
+  .nav-item:hover { color: #fff; background: rgba(255,255,255,0.05); }
+
+  .nav-item.active {
+    color: #fff;
+    background: rgba(73,187,189,0.15);
+    border-left-color: var(--brand-teal);
+  }
+
+  .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.8; }
+  .nav-item.active svg { opacity: 1; }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--brand-teal);
+    color: #fff;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 7px; border-radius: 20px;
+  }
+
+  .sidebar-footer {
+    padding: 16px 22px 0;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    margin-top: 16px;
+  }
+
+  .admin-chip { display: flex; align-items: center; gap: 10px; }
+
+  .admin-avatar {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--brand-orange), var(--brand-pink));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff;
+  }
+
+  .admin-info { flex: 1; overflow: hidden; }
+  .admin-name { font-size: 13px; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .admin-role { font-size: 11px; color: rgba(255,255,255,0.4); }
+
+  /* ── MAIN ── */
+  .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    height: var(--topbar-h);
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    padding: 0 28px; gap: 16px;
+    position: sticky; top: 0; z-index: 50;
+  }
+
+  .topbar-title { font-size: 18px; font-weight: 700; color: var(--primary); flex: 1; }
+  .topbar-sub { font-size: 12px; color: var(--muted-foreground); font-weight: 400; display: block; }
+
+  .topbar-search {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--muted); border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 13px; color: var(--muted-foreground);
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: var(--radius);
+    font-size: 13px; font-weight: 600;
+    border: none; cursor: pointer;
+    transition: all 0.15s ease; font-family: inherit;
+  }
+
+  .btn-primary { background: var(--brand-teal); color: #fff; }
+  .btn-primary:hover { background: var(--brand-teal-dk); }
+  .btn-ghost { background: transparent; color: var(--muted-foreground); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: var(--muted); }
+  .btn-danger { background: var(--destructive); color: #fff; }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  /* ── CONTENT ── */
+  .content { padding: 28px; flex: 1; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── STAT CARDS ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px; margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: #fff; border-radius: 14px;
+    padding: 20px; border: 1px solid var(--border);
+    position: relative; overflow: hidden;
+  }
+
+  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .stat-card.teal::before { background: var(--brand-teal); }
+  .stat-card.orange::before { background: var(--brand-orange); }
+  .stat-card.navy::before { background: var(--brand-navy); }
+  .stat-card.pink::before { background: var(--brand-pink); }
+  .stat-card.blue::before { background: var(--brand-blue); }
+
+  .stat-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+  .stat-icon.teal { background: rgba(73,187,189,0.12); color: var(--brand-teal); }
+  .stat-icon.orange { background: rgba(244,140,6,0.12); color: var(--brand-orange); }
+  .stat-icon.navy { background: rgba(47,50,125,0.1); color: var(--brand-navy); }
+  .stat-icon.pink { background: rgba(216,88,126,0.12); color: var(--brand-pink); }
+  .stat-icon.blue { background: rgba(35,189,238,0.12); color: var(--brand-blue); }
+
+  .stat-value { font-size: 26px; font-weight: 800; color: var(--primary); line-height: 1; }
+  .stat-label { font-size: 12px; color: var(--muted-foreground); margin-top: 4px; font-weight: 500; }
+
+  /* ── CARDS ── */
+  .card { background: #fff; border-radius: 14px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 24px; }
+  .card-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid var(--border); }
+  .card-title { font-size: 15px; font-weight: 700; color: var(--primary); }
+  .card-subtitle { font-size: 12px; color: var(--muted-foreground); }
+  .card-body { padding: 22px; }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+  thead th {
+    text-align: left; padding: 10px 14px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.8px;
+    text-transform: uppercase; color: var(--muted-foreground);
+    background: var(--muted); border-bottom: 1px solid var(--border);
+  }
+
+  thead th:first-child { border-radius: 8px 0 0 8px; }
+  thead th:last-child { border-radius: 0 8px 8px 0; }
+
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #fafafa; }
+  tbody td { padding: 12px 14px; color: var(--foreground); vertical-align: middle; }
+
+  .badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-green { background: rgba(22,163,74,0.1); color: #16a34a; }
+  .badge-red { background: rgba(212,24,61,0.1); color: var(--destructive); }
+  .badge-orange { background: rgba(244,140,6,0.1); color: var(--brand-orange); }
+  .badge-blue { background: rgba(35,189,238,0.1); color: var(--brand-blue); }
+  .badge-navy { background: rgba(47,50,125,0.1); color: var(--brand-navy); }
+
+  /* ── FORM ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .form-grid.cols-1 { grid-template-columns: 1fr; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.span-2 { grid-column: span 2; }
+  .form-group.span-3 { grid-column: span 3; }
+
+  label { font-size: 12px; font-weight: 600; color: var(--muted-foreground); letter-spacing: 0.3px; }
+
+  input[type="text"], input[type="email"], input[type="number"], input[type="url"],
+  input[type="datetime-local"], select, textarea {
+    width: 100%; padding: 9px 12px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 13.5px; font-family: inherit; color: var(--foreground);
+    background: #fff; outline: none; transition: border-color 0.15s;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--brand-teal);
+    box-shadow: 0 0 0 3px rgba(73,187,189,0.12);
+  }
+
+  textarea { resize: vertical; min-height: 80px; }
+
+  .form-actions {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 20px; padding-top: 18px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── TOGGLE ── */
+  .toggle-wrap { display: flex; align-items: center; gap: 10px; padding: 10px 0; }
+
+  .toggle {
+    width: 38px; height: 22px; background: var(--muted);
+    border-radius: 11px; position: relative; cursor: pointer;
+    border: none; transition: background 0.2s; flex-shrink: 0;
+  }
+
+  .toggle::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 16px; height: 16px; background: #fff; border-radius: 50%;
+    transition: left 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  .toggle.on { background: var(--brand-teal); }
+  .toggle.on::after { left: 19px; }
+  .toggle-label { font-size: 13px; font-weight: 500; color: var(--foreground); }
+
+  /* ── TOAST ── */
+  #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+
+  .toast {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--primary); color: #fff;
+    padding: 12px 16px; border-radius: 10px;
+    font-size: 13px; font-weight: 500;
+    min-width: 260px; box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    animation: slideUp 0.3s ease;
+  }
+
+  .toast.success { background: #15803d; }
+  .toast.error { background: var(--destructive); }
+
+  @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── MODAL ── */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(3,2,19,0.5); z-index: 200; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: #fff; border-radius: 16px; width: 560px;
+    max-width: 95vw; max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.2);
+    animation: modalIn 0.22s ease;
+  }
+
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.96) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+  .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--border); }
+  .modal-title { font-size: 15px; font-weight: 700; }
+
+  .modal-close {
+    width: 30px; height: 30px; border-radius: 50%;
+    border: none; background: var(--muted); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: var(--muted-foreground); transition: background 0.15s;
+  }
+  .modal-close:hover { background: var(--accent); }
+  .modal-body { padding: 24px; }
+
+  .chip { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background: var(--muted); color: var(--muted-foreground); }
+
+  .sep { height: 1px; background: var(--border); margin: 24px 0; }
+
+  .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .pending-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--brand-orange); display: inline-block; margin-right: 6px; }
+
+  @media (max-width: 768px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .form-group.span-2, .form-group.span-3 { grid-column: span 1; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">i</div>
+    <span class="logo-text">i<span>-code</span></span>
+  </div>
+
+  <nav class="nav-section">
+    <div class="nav-label">Overview</div>
+    <div class="nav-item active" data-page="dashboard" onclick="navigate(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </div>
+
+    <div class="nav-label" style="margin-top:16px">Content</div>
+    <div class="nav-item" data-page="courses" onclick="navigate(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      Courses
+    </div>
+    <div class="nav-item" data-page="scheduled" onclick="navigate(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Scheduled Classes
+    </div>
+    <div class="nav-item" data-page="stats" onclick="navigate(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Stats Strip
+    </div>
+
+    <div class="nav-label" style="margin-top:16px">Community</div>
+    <div class="nav-item" data-page="enrollments" onclick="navigate(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Enrollments
+      <span class="nav-badge" id="enroll-badge">0</span>
+    </div>
+    <div class="nav-item" data-page="reviews" onclick="navigate(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Reviews
+      <span class="nav-badge" id="reviews-badge" style="background:var(--brand-orange)">0</span>
+    </div>
+    <div class="nav-item" data-page="testimonials" onclick="navigate(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Testimonials
+    </div>
+    <div class="nav-item" data-page="newsletter" onclick="navigate(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Newsletter
+    </div>
+
+    <div class="nav-label" style="margin-top:16px">Settings</div>
+    <div class="nav-item" data-page="settings" onclick="navigate(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M2 12h2M20 12h2M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41"/></svg>
+      Site Settings
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="admin-chip">
+      <div class="admin-avatar">AD</div>
+      <div class="admin-info">
+        <div class="admin-name">Admin User</div>
+        <div class="admin-role">Super Admin</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════ MAIN -->
+<main class="main">
+  <header class="topbar">
+    <div>
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <span class="topbar-sub" id="topbar-sub">Welcome back, Admin</span>
+    </div>
+    <div class="topbar-search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      Search anything...
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ─────────── DASHBOARD PAGE ─────────── -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-row">
+        <div class="stat-card teal">
+          <div class="stat-icon teal">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+          <div class="stat-value" id="dash-courses">—</div>
+          <div class="stat-label">Active Courses</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-icon orange">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          </div>
+          <div class="stat-value" id="dash-enrollments">—</div>
+          <div class="stat-label">Total Enrollments</div>
+        </div>
+        <div class="stat-card pink">
+          <div class="stat-icon pink">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div class="stat-value" id="dash-reviews">—</div>
+          <div class="stat-label">Pending Reviews</div>
+        </div>
+        <div class="stat-card navy">
+          <div class="stat-icon navy">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/></svg>
+          </div>
+          <div class="stat-value" id="dash-subscribers">—</div>
+          <div class="stat-label">Subscribers</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-icon blue">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div class="stat-value" id="dash-scheduled">—</div>
+          <div class="stat-label">Upcoming Classes</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Recent Enrollments</div>
+            <div class="card-subtitle">Latest sign-ups across all courses</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="navigate(document.querySelector('[data-page=enrollments]'))">View all</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Student</th><th>Course</th><th>Child</th><th>Date</th></tr>
+            </thead>
+            <tbody id="dash-enroll-tbody">
+              <tr><td colspan="4" style="text-align:center;padding:24px;color:var(--muted-foreground)">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────── COURSES PAGE ─────────── -->
+    <div class="page" id="page-courses">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Courses</div>
+            <div class="card-subtitle">Manage all courses</div>
+          </div>
+          <button class="btn btn-primary" onclick="openModal('modal-add-course')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Course
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Title</th><th>Program</th><th>Level</th><th>Age</th><th>Price</th><th>Instructor</th><th>Featured</th><th>Active</th><th></th></tr>
+            </thead>
+            <tbody id="courses-tbody">
+              <tr><td colspan="9" style="text-align:center;padding:24px;color:var(--muted-foreground)">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────── SCHEDULED CLASSES PAGE ─────────── -->
+    <div class="page" id="page-scheduled">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Scheduled Classes</div>
+            <div class="card-subtitle">Upcoming class sessions powering the hero card</div>
+          </div>
+          <button class="btn btn-primary" onclick="openModal('modal-add-scheduled')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Schedule Class
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Title</th><th>Course</th><th>Instructor</th><th>Date &amp; Time</th><th>Active</th><th></th></tr>
+            </thead>
+            <tbody id="scheduled-tbody">
+              <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted-foreground)">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────── STATS PAGE ─────────── -->
+    <div class="page" id="page-stats">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Stats Strip</div>
+            <div class="card-subtitle">Editable numbers shown on the homepage</div>
+          </div>
+          <button class="btn btn-primary" onclick="openModal('modal-add-stat')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Stat
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Label</th><th>Value</th><th>Order</th><th></th></tr>
+            </thead>
+            <tbody id="stats-tbody">
+              <tr><td colspan="4" style="text-align:center;padding:24px;color:var(--muted-foreground)">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────── ENROLLMENTS PAGE ─────────── -->
+    <div class="page" id="page-enrollments">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Enrollments</div>
+            <div class="card-subtitle">All enrollment submissions</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Name</th><th>Email</th><th>Course</th><th>Child</th><th>Age</th><th>Phone</th><th>Date</th></tr>
+            </thead>
+            <tbody id="enrollments-tbody">
+              <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted-foreground)">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────── REVIEWS PAGE ─────────── -->
+    <div class="page" id="page-reviews">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Reviews</div>
+            <div class="card-subtitle">Approve or reject submitted reviews</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Reviewer</th><th>Course</th><th>Rating</th><th>Comment</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody id="reviews-tbody">
+              <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted-foreground)">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────── TESTIMONIALS PAGE ─────────── -->
+    <div class="page" id="page-testimonials">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Testimonials</div>
+            <div class="card-subtitle">Hand-picked quotes for the homepage</div>
+          </div>
+          <button class="btn btn-primary" onclick="openModal('modal-add-testimonial')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Testimonial
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Name</th><th>Occupation</th><th>Rating</th><th>Comment</th><th>Featured</th><th></th></tr>
+            </thead>
+            <tbody id="testimonials-tbody">
+              <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted-foreground)">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────── NEWSLETTER PAGE ─────────── -->
+    <div class="page" id="page-newsletter">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Newsletter Subscribers</div>
+            <div class="card-subtitle">All active email subscribers</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="exportCSV()">Export CSV</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Email</th><th>Subscribed</th><th>Active</th><th></th></tr>
+            </thead>
+            <tbody id="newsletter-tbody">
+              <tr><td colspan="4" style="text-align:center;padding:24px;color:var(--muted-foreground)">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────── SITE SETTINGS PAGE ─────────── -->
+    <div class="page" id="page-settings">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Site Settings</div>
+            <div class="card-subtitle">Edit hero copy, contact info &amp; social links</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <form id="form-settings" onsubmit="submitSettings(event)">
+            {% csrf_token %}
+            <div style="font-size:13px;font-weight:700;color:var(--muted-foreground);letter-spacing:.5px;margin-bottom:12px;">HERO SECTION</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Site Name</label>
+                <input type="text" name="site_name" id="s-site_name" />
+              </div>
+              <div class="form-group">
+                <label>Hero Heading (Accent — orange text)</label>
+                <input type="text" name="hero_heading_accent" id="s-hero_heading_accent" />
+              </div>
+              <div class="form-group span-2">
+                <label>Hero Heading (Main)</label>
+                <input type="text" name="hero_heading_main" id="s-hero_heading_main" />
+              </div>
+              <div class="form-group span-2">
+                <label>Hero Sub-text</label>
+                <textarea name="hero_subtext" id="s-hero_subtext"></textarea>
+              </div>
+              <div class="form-group span-2">
+                <label>Footer Description</label>
+                <textarea name="footer_description" id="s-footer_description"></textarea>
+              </div>
+            </div>
+
+            <div class="sep"></div>
+            <div style="font-size:13px;font-weight:700;color:var(--muted-foreground);letter-spacing:.5px;margin-bottom:12px;">CONTACT</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Contact Email</label>
+                <input type="email" name="contact_email" id="s-contact_email" />
+              </div>
+              <div class="form-group">
+                <label>Phone Number</label>
+                <input type="text" name="phone_number" id="s-phone_number" />
+              </div>
+              <div class="form-group span-2">
+                <label>Address / Opening Hours</label>
+                <input type="text" name="address" id="s-address" />
+              </div>
+            </div>
+
+            <div class="sep"></div>
+            <div style="font-size:13px;font-weight:700;color:var(--muted-foreground);letter-spacing:.5px;margin-bottom:12px;">SOCIAL LINKS</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Facebook URL</label>
+                <input type="url" name="facebook_url" id="s-facebook_url" placeholder="https://facebook.com/..." />
+              </div>
+              <div class="form-group">
+                <label>Twitter URL</label>
+                <input type="url" name="twitter_url" id="s-twitter_url" placeholder="https://twitter.com/..." />
+              </div>
+              <div class="form-group">
+                <label>Instagram URL</label>
+                <input type="url" name="instagram_url" id="s-instagram_url" placeholder="https://instagram.com/..." />
+              </div>
+              <div class="form-group">
+                <label>LinkedIn URL</label>
+                <input type="url" name="linkedin_url" id="s-linkedin_url" placeholder="https://linkedin.com/..." />
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="btn-save-settings">Save Settings</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<!-- ═══════════════════════════════════════════ MODALS -->
+
+<!-- Add Course Modal -->
+<div class="modal-overlay" id="modal-add-course">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add New Course</div>
+      <button class="modal-close" onclick="closeModal('modal-add-course')">×</button>
+    </div>
+    <div class="modal-body">
+      <form id="form-add-course" onsubmit="submitCourse(event)">
+        {% csrf_token %}
+        <div class="form-grid">
+          <div class="form-group span-2">
+            <label>Title *</label>
+            <input type="text" name="title" required placeholder="e.g. Intro to Python" />
+          </div>
+          <div class="form-group">
+            <label>Slug *</label>
+            <input type="text" name="slug" required placeholder="intro-to-python" />
+          </div>
+          <div class="form-group">
+            <label>Program Type *</label>
+            <select name="program_type" required>
+              <option value="">Select…</option>
+              <option value="coding">Coding</option>
+              <option value="robotics">Robotics</option>
+              <option value="cybersecurity">Cybersecurity</option>
+              <option value="drone">Drone Training</option>
+              <option value="ai">Artificial Intelligence</option>
+              <option value="flexible">Flexible Schedules</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Level *</label>
+            <select name="level" required>
+              <option value="all">All Levels</option>
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Price (KES)</label>
+            <input type="number" name="price" value="0" min="0" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label>Duration</label>
+            <input type="text" name="duration" placeholder="e.g. 8 weeks" />
+          </div>
+          <div class="form-group">
+            <label>Age Min</label>
+            <input type="number" name="age_min" value="7" min="1" max="18" />
+          </div>
+          <div class="form-group">
+            <label>Age Max</label>
+            <input type="number" name="age_max" value="18" min="1" max="18" />
+          </div>
+          <div class="form-group span-2">
+            <label>Instructor Name *</label>
+            <input type="text" name="instructor_name" required placeholder="Full name" />
+          </div>
+          <div class="form-group span-2">
+            <label>Description *</label>
+            <textarea name="description" required placeholder="Course description…"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Display Order</label>
+            <input type="number" name="order" value="0" min="0" />
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:14px;">
+          <div class="toggle-wrap">
+            <button type="button" class="toggle on" id="toggle-active" onclick="toggleBtn(this, 'val-active')"></button>
+            <input type="hidden" name="is_active" id="val-active" value="true" />
+            <span class="toggle-label">Active</span>
+          </div>
+          <div class="toggle-wrap">
+            <button type="button" class="toggle" id="toggle-featured" onclick="toggleBtn(this, 'val-featured')"></button>
+            <input type="hidden" name="is_featured" id="val-featured" value="false" />
+            <span class="toggle-label">Featured on homepage</span>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="btn-add-course">Create Course</button>
+          <button type="button" class="btn btn-ghost" onclick="closeModal('modal-add-course')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Add Scheduled Class Modal -->
+<div class="modal-overlay" id="modal-add-scheduled">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Schedule a Class</div>
+      <button class="modal-close" onclick="closeModal('modal-add-scheduled')">×</button>
+    </div>
+    <div class="modal-body">
+      <form id="form-add-scheduled" onsubmit="submitScheduled(event)">
+        {% csrf_token %}
+        <div class="form-grid">
+          <div class="form-group span-2">
+            <label>Title *</label>
+            <input type="text" name="title" required placeholder="e.g. Robotics Workshop — Beginners" />
+          </div>
+          <div class="form-group span-2">
+            <label>Course *</label>
+            <select name="course" id="scheduled-course-select" required>
+              <option value="">Select course…</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Instructor Name *</label>
+            <input type="text" name="instructor_name" required />
+          </div>
+          <div class="form-group">
+            <label>Date &amp; Time *</label>
+            <input type="datetime-local" name="scheduled_time" required />
+          </div>
+        </div>
+        <div class="toggle-wrap" style="margin-top:12px;">
+          <button type="button" class="toggle on" onclick="toggleBtn(this, 'val-sched-active')"></button>
+          <input type="hidden" name="is_active" id="val-sched-active" value="true" />
+          <span class="toggle-label">Active</span>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="btn-add-scheduled">Schedule</button>
+          <button type="button" class="btn btn-ghost" onclick="closeModal('modal-add-scheduled')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Add Stat Modal -->
+<div class="modal-overlay" id="modal-add-stat">
+  <div class="modal" style="width:420px">
+    <div class="modal-header">
+      <div class="modal-title">Add Stat</div>
+      <button class="modal-close" onclick="closeModal('modal-add-stat')">×</button>
+    </div>
+    <div class="modal-body">
+      <form id="form-add-stat" onsubmit="submitStat(event)">
+        {% csrf_token %}
+        <div class="form-grid cols-1">
+          <div class="form-group">
+            <label>Label *</label>
+            <input type="text" name="label" required placeholder="e.g. Students Enrolled" />
+          </div>
+          <div class="form-group">
+            <label>Value *</label>
+            <input type="text" name="value" required placeholder='e.g. 500+ or 98%' />
+          </div>
+          <div class="form-group">
+            <label>Display Order</label>
+            <input type="number" name="order" value="0" min="0" />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="btn-add-stat">Add Stat</button>
+          <button type="button" class="btn btn-ghost" onclick="closeModal('modal-add-stat')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Add Testimonial Modal -->
+<div class="modal-overlay" id="modal-add-testimonial">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add Testimonial</div>
+      <button class="modal-close" onclick="closeModal('modal-add-testimonial')">×</button>
+    </div>
+    <div class="modal-body">
+      <form id="form-add-testimonial" onsubmit="submitTestimonial(event)">
+        {% csrf_token %}
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" name="full_name" required />
+          </div>
+          <div class="form-group">
+            <label>Occupation</label>
+            <input type="text" name="occupation" placeholder='e.g. "Parent of Alex, age 10"' />
+          </div>
+          <div class="form-group">
+            <label>Rating</label>
+            <select name="rating">
+              <option value="5">5 ★★★★★</option>
+              <option value="4">4 ★★★★</option>
+              <option value="3">3 ★★★</option>
+              <option value="2">2 ★★</option>
+              <option value="1">1 ★</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Course (optional)</label>
+            <select name="course" id="testimonial-course-select">
+              <option value="">None</option>
+            </select>
+          </div>
+          <div class="form-group span-2">
+            <label>Comment *</label>
+            <textarea name="comment" required placeholder="Their words…"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Display Order</label>
+            <input type="number" name="order" value="0" min="0" />
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:12px;">
+          <div class="toggle-wrap">
+            <button type="button" class="toggle on" onclick="toggleBtn(this,'val-test-featured')"></button>
+            <input type="hidden" name="is_featured" id="val-test-featured" value="true" />
+            <span class="toggle-label">Featured</span>
+          </div>
+          <div class="toggle-wrap">
+            <button type="button" class="toggle on" onclick="toggleBtn(this,'val-test-approved')"></button>
+            <input type="hidden" name="is_approved" id="val-test-approved" value="true" />
+            <span class="toggle-label">Approved</span>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="btn-add-testimonial">Save Testimonial</button>
+          <button type="button" class="btn btn-ghost" onclick="closeModal('modal-add-testimonial')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════════════
+
+function getCsrf() {
+  // Try cookie first, fallback to hidden input injected by Django
+  const fromCookie = document.cookie.split('; ')
+    .find(r => r.startsWith('csrftoken='))?.split('=')[1];
+  if (fromCookie) return fromCookie;
+  return document.querySelector('[name=csrfmiddlewaretoken]')?.value || '';
+}
+
+function toast(msg, type = 'success') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      ${type === 'success'
+        ? '<polyline points="20 6 9 17 4 12"/>'
+        : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'}
+    </svg> ${msg}`;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+/**
+ * Wrapper around fetch() that:
+ *  - Injects CSRF token header on every request
+ *  - Marks request as AJAX
+ *  - Throws on non-2xx with the server error message
+ */
+async function apiFetch(url, options = {}) {
+  const resp = await fetch(url, {
+    headers: {
+      'X-CSRFToken': getCsrf(),
+      'X-Requested-With': 'XMLHttpRequest',
+      ...options.headers,
+    },
+    ...options,
+  });
+  const data = await resp.json().catch(() => ({}));
+  if (!resp.ok) throw new Error(data.error || data.message || `Request failed (${resp.status})`);
+  return data;
+}
+
+function setLoading(btnId, loading, label = null) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.disabled = loading;
+  if (loading) {
+    btn.dataset.origText = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner"></span> Saving…';
+  } else {
+    btn.innerHTML = label || btn.dataset.origText || btn.innerHTML;
+  }
+}
+
+function stars(n) { return '★'.repeat(n) + '☆'.repeat(5 - n); }
+
+function fmtDate(s) {
+  if (!s) return '—';
+  return new Date(s).toLocaleDateString('en-KE', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function fmtDateTime(s) {
+  if (!s) return '—';
+  return new Date(s).toLocaleString('en-KE', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+function emptyRow(cols, msg = 'No data yet') {
+  return `<tr><td colspan="${cols}" style="text-align:center;padding:24px;color:var(--muted-foreground)">${msg}</td></tr>`;
+}
+
+// ── NAVIGATION ──────────────────────────────────────────
+const pageTitles = {
+  dashboard:    ['Dashboard', 'Welcome back, Admin'],
+  courses:      ['Courses', 'Manage all course listings'],
+  scheduled:    ['Scheduled Classes', 'Upcoming class sessions'],
+  stats:        ['Stats Strip', 'Editable homepage numbers'],
+  enrollments:  ['Enrollments', 'All student sign-ups'],
+  reviews:      ['Reviews', 'Moderate community feedback'],
+  testimonials: ['Testimonials', 'Curated homepage quotes'],
+  newsletter:   ['Newsletter', 'Subscriber management'],
+  settings:     ['Site Settings', 'Edit hero copy & contact info'],
+};
+
+function navigate(el) {
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+  const page = el.dataset.page;
+  el.classList.add('active');
+  document.getElementById(`page-${page}`).classList.add('active');
+
+  const [title, sub] = pageTitles[page] || [page, ''];
+  document.getElementById('topbar-title').textContent = title;
+  document.getElementById('topbar-sub').textContent = sub;
+
+  loaders[page]?.();
+}
+
+// ── TOGGLE BUTTONS ──────────────────────────────────────
+function toggleBtn(btn, hiddenId) {
+  btn.classList.toggle('on');
+  if (hiddenId) {
+    document.getElementById(hiddenId).value = btn.classList.contains('on') ? 'true' : 'false';
+  } else {
+    const inp = btn.nextElementSibling;
+    if (inp && inp.type === 'hidden') inp.value = btn.classList.contains('on') ? 'true' : 'false';
+  }
+}
+
+// ── MODALS ───────────────────────────────────────────────
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  if (id === 'modal-add-scheduled' || id === 'modal-add-testimonial') populateCourseSelects();
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.getElementById(id).querySelector('form')?.reset();
+  // Reset toggles back to defaults after form reset
+  document.querySelectorAll(`#${id} .toggle`).forEach(t => {
+    const hid = t.getAttribute('onclick')?.match(/'([^']+)'/g)?.[1]?.replace(/'/g,'');
+    if (hid) {
+      const inp = document.getElementById(hid);
+      if (inp) t.classList.toggle('on', inp.value === 'true');
+    }
+  });
+}
+
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+});
+
+// ══════════════════════════════════════════════════════════
+//  PAGE LOADERS  — each calls a real Django endpoint
+// ══════════════════════════════════════════════════════════
+
+async function loadDashboard() {
+  try {
+    const data = await apiFetch('/admin-ajax/stats-summary/');
+    document.getElementById('dash-courses').textContent    = data.active_courses    ?? '—';
+    document.getElementById('dash-enrollments').textContent = data.total_enrollments ?? '—';
+    document.getElementById('dash-reviews').textContent    = data.pending_reviews   ?? '—';
+    document.getElementById('dash-subscribers').textContent = data.subscribers       ?? '—';
+    document.getElementById('dash-scheduled').textContent  = data.upcoming_classes  ?? '—';
+    document.getElementById('enroll-badge').textContent    = data.total_enrollments ?? 0;
+    document.getElementById('reviews-badge').textContent   = data.pending_reviews   ?? 0;
+  } catch (err) {
+    toast('Could not load dashboard stats: ' + err.message, 'error');
+  }
+
+  // Recent enrollments
+  try {
+    const data = await apiFetch('/admin-ajax/enrollments/');
+    const tbody = document.getElementById('dash-enroll-tbody');
+    const items = (data.enrollments || []).slice(0, 5);
+    if (!items.length) { tbody.innerHTML = emptyRow(4, 'No enrollments yet'); return; }
+    tbody.innerHTML = items.map(e => `
+      <tr>
+        <td><strong>${e.full_name}</strong><br/><span style="color:var(--muted-foreground);font-size:12px">${e.email}</span></td>
+        <td>${e.course__title || e.course || '—'}</td>
+        <td>${e.child_name || '<span style="color:var(--muted-foreground)">—</span>'}</td>
+        <td style="color:var(--muted-foreground)">${fmtDate(e.enrolled_at)}</td>
+      </tr>`).join('');
+  } catch (err) {
+    document.getElementById('dash-enroll-tbody').innerHTML = emptyRow(4, 'Failed to load enrollments');
+  }
+}
+
+async function loadCourses() {
+  const tbody = document.getElementById('courses-tbody');
+  tbody.innerHTML = emptyRow(9, 'Loading…');
+  try {
+    const data = await apiFetch('/admin-ajax/courses/');
+    const courses = data.courses || [];
+    if (!courses.length) { tbody.innerHTML = emptyRow(9, 'No courses yet'); return; }
+
+    const programLabel = { coding:'Coding', robotics:'Robotics', cybersecurity:'Cybersecurity', drone:'Drone', ai:'AI', flexible:'Flexible' };
+    const levelColors  = { all:'badge-blue', beginner:'badge-green', intermediate:'badge-orange', advanced:'badge-navy' };
+
+    tbody.innerHTML = courses.map(c => `
+      <tr>
+        <td><strong>${c.title}</strong><br/><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted-foreground)">${c.slug}</span></td>
+        <td><span class="chip">${programLabel[c.program_type] || c.program_type}</span></td>
+        <td><span class="badge ${levelColors[c.level] || 'badge-blue'}">${c.level}</span></td>
+        <td style="font-size:12px;color:var(--muted-foreground)">${c.age_min}–${c.age_max} yrs</td>
+        <td>KES ${parseFloat(c.price).toLocaleString()}</td>
+        <td>${c.instructor_name}</td>
+        <td>${c.is_featured ? '<span class="badge badge-green">Yes</span>' : '<span style="color:var(--muted-foreground);font-size:12px">No</span>'}</td>
+        <td>${c.is_active ? '<span class="badge badge-green">Active</span>' : '<span class="badge badge-red">Inactive</span>'}</td>
+        <td><button class="btn btn-ghost btn-sm" onclick="deleteCourse(${c.id})">Delete</button></td>
+      </tr>`).join('');
+  } catch (err) {
+    tbody.innerHTML = emptyRow(9, 'Failed to load courses');
+    toast(err.message, 'error');
+  }
+}
+
+async function loadScheduled() {
+  const tbody = document.getElementById('scheduled-tbody');
+  tbody.innerHTML = emptyRow(6, 'Loading…');
+  try {
+    const data = await apiFetch('/admin-ajax/scheduled/');
+    const items = data.scheduled || [];
+    if (!items.length) { tbody.innerHTML = emptyRow(6, 'No scheduled classes'); return; }
+    tbody.innerHTML = items.map(s => `
+      <tr>
+        <td><strong>${s.title}</strong></td>
+        <td>${s.course__title || '—'}</td>
+        <td>${s.instructor_name}</td>
+        <td style="color:var(--muted-foreground)">${fmtDateTime(s.scheduled_time)}</td>
+        <td>${s.is_active ? '<span class="badge badge-green">Active</span>' : '<span class="badge badge-red">Off</span>'}</td>
+        <td><button class="btn btn-ghost btn-sm" onclick="deleteScheduled(${s.id})">Delete</button></td>
+      </tr>`).join('');
+  } catch (err) {
+    tbody.innerHTML = emptyRow(6, 'Failed to load');
+    toast(err.message, 'error');
+  }
+}
+
+async function loadStats() {
+  const tbody = document.getElementById('stats-tbody');
+  tbody.innerHTML = emptyRow(4, 'Loading…');
+  try {
+    const data = await apiFetch('/admin-ajax/stats/');
+    const items = data.stats || [];
+    if (!items.length) { tbody.innerHTML = emptyRow(4, 'No stats yet'); return; }
+    tbody.innerHTML = items.map(s => `
+      <tr>
+        <td>${s.label}</td>
+        <td><strong>${s.value}</strong></td>
+        <td style="color:var(--muted-foreground)">${s.order}</td>
+        <td><button class="btn btn-ghost btn-sm" onclick="deleteStat(${s.id})">Delete</button></td>
+      </tr>`).join('');
+  } catch (err) {
+    tbody.innerHTML = emptyRow(4, 'Failed to load');
+    toast(err.message, 'error');
+  }
+}
+
+async function loadEnrollments() {
+  const tbody = document.getElementById('enrollments-tbody');
+  tbody.innerHTML = emptyRow(7, 'Loading…');
+  try {
+    const data = await apiFetch('/admin-ajax/enrollments/');
+    const items = data.enrollments || [];
+    if (!items.length) { tbody.innerHTML = emptyRow(7, 'No enrollments'); return; }
+    tbody.innerHTML = items.map(e => `
+      <tr>
+        <td><strong>${e.full_name}</strong></td>
+        <td>${e.email}</td>
+        <td>${e.course__title || e.course || '—'}</td>
+        <td>${e.child_name || '—'}</td>
+        <td>${e.child_age || '—'}</td>
+        <td>${e.phone || '—'}</td>
+        <td style="color:var(--muted-foreground)">${fmtDate(e.enrolled_at)}</td>
+      </tr>`).join('');
+  } catch (err) {
+    tbody.innerHTML = emptyRow(7, 'Failed to load');
+    toast(err.message, 'error');
+  }
+}
+
+async function loadReviews() {
+  const tbody = document.getElementById('reviews-tbody');
+  tbody.innerHTML = emptyRow(6, 'Loading…');
+  try {
+    const data = await apiFetch('/admin-ajax/reviews/');
+    const items = data.reviews || [];
+    if (!items.length) { tbody.innerHTML = emptyRow(6, 'No reviews'); return; }
+    tbody.innerHTML = items.map(r => `
+      <tr>
+        <td><strong>${r.full_name}</strong></td>
+        <td>${r.course__title || '—'}</td>
+        <td style="color:var(--brand-orange)">${stars(r.rating)}</td>
+        <td style="max-width:220px;color:var(--muted-foreground);font-size:12px">${r.comment}</td>
+        <td>${r.is_approved
+          ? '<span class="badge badge-green">Approved</span>'
+          : '<span class="badge badge-orange"><span class="pending-dot"></span>Pending</span>'}</td>
+        <td style="display:flex;gap:6px;align-items:center;padding-top:12px">
+          ${!r.is_approved ? `<button class="btn btn-primary btn-sm" onclick="approveReview(${r.id})">Approve</button>` : ''}
+          <button class="btn btn-ghost btn-sm" onclick="deleteReview(${r.id})">Delete</button>
+        </td>
+      </tr>`).join('');
+  } catch (err) {
+    tbody.innerHTML = emptyRow(6, 'Failed to load');
+    toast(err.message, 'error');
+  }
+}
+
+async function loadTestimonials() {
+  const tbody = document.getElementById('testimonials-tbody');
+  tbody.innerHTML = emptyRow(6, 'Loading…');
+  try {
+    const data = await apiFetch('/admin-ajax/testimonials/');
+    const items = data.testimonials || [];
+    if (!items.length) { tbody.innerHTML = emptyRow(6, 'No testimonials'); return; }
+    tbody.innerHTML = items.map(t => `
+      <tr>
+        <td><strong>${t.full_name}</strong></td>
+        <td style="color:var(--muted-foreground);font-size:12px">${t.occupation || '—'}</td>
+        <td style="color:var(--brand-orange)">${stars(t.rating)}</td>
+        <td style="max-width:220px;color:var(--muted-foreground);font-size:12px">${t.comment}</td>
+        <td>${t.is_featured ? '<span class="badge badge-green">Yes</span>' : '<span style="color:var(--muted-foreground);font-size:12px">No</span>'}</td>
+        <td><button class="btn btn-ghost btn-sm" onclick="deleteTestimonial(${t.id})">Delete</button></td>
+      </tr>`).join('');
+  } catch (err) {
+    tbody.innerHTML = emptyRow(6, 'Failed to load');
+    toast(err.message, 'error');
+  }
+}
+
+async function loadNewsletter() {
+  const tbody = document.getElementById('newsletter-tbody');
+  tbody.innerHTML = emptyRow(4, 'Loading…');
+  try {
+    const data = await apiFetch('/admin-ajax/newsletter/');
+    const items = data.subscribers || [];
+    if (!items.length) { tbody.innerHTML = emptyRow(4, 'No subscribers'); return; }
+    tbody.innerHTML = items.map(n => `
+      <tr>
+        <td><strong>${n.email}</strong></td>
+        <td style="color:var(--muted-foreground)">${fmtDate(n.subscribed_at)}</td>
+        <td>${n.is_active ? '<span class="badge badge-green">Active</span>' : '<span class="badge badge-red">Inactive</span>'}</td>
+        <td><button class="btn btn-ghost btn-sm" onclick="deleteSubscriber(${n.id})">Remove</button></td>
+      </tr>`).join('');
+  } catch (err) {
+    tbody.innerHTML = emptyRow(4, 'Failed to load');
+    toast(err.message, 'error');
+  }
+}
+
+async function loadSettings() {
+  try {
+    const data = await apiFetch('/admin-ajax/settings/');
+    // Populate every field whose id matches s-<field_name>
+    Object.entries(data).forEach(([key, val]) => {
+      const el = document.getElementById(`s-${key}`);
+      if (el) el.value = val ?? '';
+    });
+  } catch (err) {
+    toast('Could not load settings: ' + err.message, 'error');
+  }
+}
+
+const loaders = {
+  dashboard:    loadDashboard,
+  courses:      loadCourses,
+  scheduled:    loadScheduled,
+  stats:        loadStats,
+  enrollments:  loadEnrollments,
+  reviews:      loadReviews,
+  testimonials: loadTestimonials,
+  newsletter:   loadNewsletter,
+  settings:     loadSettings,
+};
+
+// ══════════════════════════════════════════════════════════
+//  SUBMIT HANDLERS  — POST to real Django endpoints
+// ══════════════════════════════════════════════════════════
+
+async function submitCourse(e) {
+  e.preventDefault();
+  setLoading('btn-add-course', true);
+  try {
+    await apiFetch('/admin-ajax/courses/add/', { method: 'POST', body: new FormData(e.target) });
+    toast('Course created successfully!');
+    closeModal('modal-add-course');
+    loadCourses();
+    loadDashboard();
+  } catch (err) {
+    toast(err.message, 'error');
+  } finally {
+    setLoading('btn-add-course', false, 'Create Course');
+  }
+}
+
+async function submitScheduled(e) {
+  e.preventDefault();
+  setLoading('btn-add-scheduled', true);
+  try {
+    await apiFetch('/admin-ajax/scheduled/add/', { method: 'POST', body: new FormData(e.target) });
+    toast('Class scheduled!');
+    closeModal('modal-add-scheduled');
+    loadScheduled();
+    loadDashboard();
+  } catch (err) {
+    toast(err.message, 'error');
+  } finally {
+    setLoading('btn-add-scheduled', false, 'Schedule');
+  }
+}
+
+async function submitStat(e) {
+  e.preventDefault();
+  setLoading('btn-add-stat', true);
+  try {
+    await apiFetch('/admin-ajax/stats/add/', { method: 'POST', body: new FormData(e.target) });
+    toast('Stat added!');
+    closeModal('modal-add-stat');
+    loadStats();
+  } catch (err) {
+    toast(err.message, 'error');
+  } finally {
+    setLoading('btn-add-stat', false, 'Add Stat');
+  }
+}
+
+async function submitTestimonial(e) {
+  e.preventDefault();
+  setLoading('btn-add-testimonial', true);
+  try {
+    await apiFetch('/admin-ajax/testimonials/add/', { method: 'POST', body: new FormData(e.target) });
+    toast('Testimonial saved!');
+    closeModal('modal-add-testimonial');
+    loadTestimonials();
+  } catch (err) {
+    toast(err.message, 'error');
+  } finally {
+    setLoading('btn-add-testimonial', false, 'Save Testimonial');
+  }
+}
+
+async function submitSettings(e) {
+  e.preventDefault();
+  setLoading('btn-save-settings', true);
+  try {
+    await apiFetch('/admin-ajax/settings/update/', { method: 'POST', body: new FormData(e.target) });
+    toast('Settings saved!');
+  } catch (err) {
+    toast(err.message, 'error');
+  } finally {
+    setLoading('btn-save-settings', false, 'Save Settings');
+  }
+}
+
+// ── DELETE HANDLERS ──────────────────────────────────────
+
+async function deleteCourse(id) {
+  if (!confirm('Delete this course? This cannot be undone.')) return;
+  try {
+    await apiFetch(`/admin-ajax/courses/${id}/delete/`, { method: 'POST' });
+    toast('Course deleted');
+    loadCourses();
+    loadDashboard();
+  } catch (err) { toast(err.message, 'error'); }
+}
+
+async function deleteScheduled(id) {
+  if (!confirm('Remove this scheduled class?')) return;
+  try {
+    await apiFetch(`/admin-ajax/scheduled/${id}/delete/`, { method: 'POST' });
+    toast('Scheduled class removed');
+    loadScheduled();
+    loadDashboard();
+  } catch (err) { toast(err.message, 'error'); }
+}
+
+async function deleteStat(id) {
+  if (!confirm('Remove this stat?')) return;
+  try {
+    await apiFetch(`/admin-ajax/stats/${id}/delete/`, { method: 'POST' });
+    toast('Stat removed');
+    loadStats();
+  } catch (err) { toast(err.message, 'error'); }
+}
+
+async function approveReview(id) {
+  try {
+    await apiFetch(`/admin-ajax/reviews/${id}/approve/`, { method: 'POST' });
+    toast('Review approved and published!');
+    loadReviews();
+    loadDashboard();
+  } catch (err) { toast(err.message, 'error'); }
+}
+
+async function deleteReview(id) {
+  if (!confirm('Delete this review?')) return;
+  try {
+    await apiFetch(`/admin-ajax/reviews/${id}/delete/`, { method: 'POST' });
+    toast('Review deleted');
+    loadReviews();
+    loadDashboard();
+  } catch (err) { toast(err.message, 'error'); }
+}
+
+async function deleteTestimonial(id) {
+  if (!confirm('Delete this testimonial?')) return;
+  try {
+    await apiFetch(`/admin-ajax/testimonials/${id}/delete/`, { method: 'POST' });
+    toast('Testimonial removed');
+    loadTestimonials();
+  } catch (err) { toast(err.message, 'error'); }
+}
+
+async function deleteSubscriber(id) {
+  if (!confirm('Remove subscriber?')) return;
+  try {
+    await apiFetch(`/admin-ajax/newsletter/${id}/delete/`, { method: 'POST' });
+    toast('Subscriber removed');
+    loadNewsletter();
+    loadDashboard();
+  } catch (err) { toast(err.message, 'error'); }
+}
+
+// ── COURSE SELECTS (for modals) ──────────────────────────
+async function populateCourseSelects() {
+  try {
+    const data = await apiFetch('/admin-ajax/courses/');
+    const courses = data.courses || [];
+    ['scheduled-course-select', 'testimonial-course-select'].forEach(selId => {
+      const sel = document.getElementById(selId);
+      if (!sel) return;
+      const isOptional = selId === 'testimonial-course-select';
+      sel.innerHTML = (isOptional ? '<option value="">None</option>' : '<option value="">Select course…</option>') +
+        courses.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
+    });
+  } catch (_) { /* non-critical */ }
+}
+
+// ── CSV EXPORT ───────────────────────────────────────────
+async function exportCSV() {
+  try {
+    const data = await apiFetch('/admin-ajax/newsletter/');
+    const rows = [
+      ['Email', 'Subscribed', 'Active'],
+      ...(data.subscribers || []).map(n => [n.email, fmtDate(n.subscribed_at), n.is_active ? 'Yes' : 'No'])
+    ];
+    const csv = rows.map(r => r.join(',')).join('\n');
+    const a = Object.assign(document.createElement('a'), {
+      href: URL.createObjectURL(new Blob([csv], { type: 'text/csv' })),
+      download: 'icode_subscribers.csv',
+    });
+    a.click();
+    toast('CSV exported!');
+  } catch (err) { toast(err.message, 'error'); }
+}
+
+// ── INIT ─────────────────────────────────────────────────
+loadDashboard();
+</script>
+</body>
+</html>
