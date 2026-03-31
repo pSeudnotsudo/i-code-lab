@@ -516,17 +516,17 @@ I-code - Innovate Tech | Coding School for Kids Ages 7–18
           <li><a href="">Blog</a></li>
           <li><a href="">About Us</a></li>
         </ul>
-        {% comment %}
+        
         <div class="navbar__auth" data-aos="fade-left" data-aos-delay="200">
           {% if user.is_authenticated %}
-          <a href="{% url 'dashboard' %}" class="btn btn-white">Dashboard</a>
+          <a href="{% url 'icode' %}" class="btn btn-white">Dashboard</a>
           <a href="{% url 'logout' %}" class="btn btn-outline">Logout</a>
           {% else %}
           <a href="{% url 'login' %}" class="btn btn-white">Login</a>
-          <a href="{% url 'register' %}" class="btn btn-outline">Sign Up</a>
+          
           {% endif %}
         </div>
-        {% endcomment %}
+        
       </div>
     </div>
   </nav>
@@ -782,7 +782,32 @@ I-code - Innovate Tech | Coding School for Kids Ages 7–18
           </div>
 
           <!-- Floating: Upcoming class -->
-          <div class="floating-card floating-card--class" data-aos="zoom-in" data-aos-delay="1000">
+          {% if upcoming_class %}
+<div class="floating-card floating-card--class" data-aos="zoom-in" data-aos-delay="1000">
+    <div class="floating-card--class-inner">
+        <div class="instructor-avatar">
+            {% if upcoming_class.instructor_avatar %}
+                <img src="{{ upcoming_class.instructor_avatar.url }}" alt="{{ upcoming_class.instructor_name }}"/>
+            {% else %}
+                <img src="{% static 'images/instructor-avatar.png' %}" alt="{{ upcoming_class.instructor_name }}"/>
+            {% endif %}
+            <span class="online-dot"></span>
+        </div>
+        <div>
+            <div class="floating-card__title" style="font-size:1rem">{{ upcoming_class.title }}</div>
+            <div class="floating-card__sub">
+                {% if upcoming_class.scheduled_time|date:"Ymd" == today|date:"Ymd" %}
+                    Today at {{ upcoming_class.scheduled_time|time:"H:i" }}
+                {% else %}
+                    {{ upcoming_class.scheduled_time|date:"d M" }} at {{ upcoming_class.scheduled_time|time:"H:i" }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <button class="btn-join">Join Now</button>
+</div>
+{% endif %}
+          {% comment %} <div class="floating-card floating-card--class" data-aos="zoom-in" data-aos-delay="1000">
             <div class="floating-card--class-inner">
               <div class="instructor-avatar">
                 <img src="{% static 'images/instructor-avatar.png' %}" alt="Instructor"/>
@@ -794,7 +819,7 @@ I-code - Innovate Tech | Coding School for Kids Ages 7–18
               </div>
             </div>
             <button class="btn-join">Join Now</button>
-          </div>
+          </div> {% endcomment %}
 
           <!-- Floating: Stats icon -->
           <div class="floating-icon--analytics" data-aos="flip-left" data-aos-delay="1200">
@@ -1061,7 +1086,7 @@ I-code - Innovate Tech | Coding School for Kids Ages 7–18
       </p>
     </div>
     <div class="courses__grid">
-      {% for course in courses %}
+      {% comment %} {% for course in courses %}
       <div class="course-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}00">
         <div class="course-card__thumb">
           <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" loading="lazy"/>
@@ -1106,7 +1131,80 @@ I-code - Innovate Tech | Coding School for Kids Ages 7–18
       <p style="grid-column:1/-1; text-align:center; color:#6b7280">
         No classes available yet. Check back soon!
       </p>
-      {% endfor %}
+      {% endfor %} {% endcomment %}
+{% for class in classes %}
+<div class="course-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}00">
+  <div class="course-card__thumb">
+
+    {% if class.course.thumbnail %}
+      <img src="{{ class.course.thumbnail.url }}" alt="{{ class.title }}" loading="lazy"/>
+    {% else %}
+      {# Coloured gradient fallback based on program type #}
+      <div style="
+        width:100%; height:100%;
+        display:flex; align-items:center; justify-content:center; flex-direction:column; gap:0.5rem;
+        background: {% if class.course.program_type == 'coding' %}linear-gradient(135deg,#3b82f6,#1d4ed8)
+          {% elif class.course.program_type == 'robotics' %}linear-gradient(135deg,#22c55e,#15803d)
+          {% elif class.course.program_type == 'cybersecurity' %}linear-gradient(135deg,#a855f7,#7e22ce)
+          {% elif class.course.program_type == 'drone' %}linear-gradient(135deg,#f97316,#c2410c)
+          {% elif class.course.program_type == 'ai' %}linear-gradient(135deg,#ec4899,#9d174d)
+          {% else %}linear-gradient(135deg,#49bbbd,#0f766e){% endif %};
+      ">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+          fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="16 18 22 12 16 6"></polyline>
+          <polyline points="8 6 2 12 8 18"></polyline>
+        </svg>
+        <span style="color:rgba(255,255,255,0.85);font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
+          {{ class.course.get_program_type_display }}
+        </span>
+      </div>
+    {% endif %}
+
+    {% comment %} <span class="course-card__price">${{ class.course.price }}</span> {% endcomment %}
+    <span class="course-card__price">KSh {{ class.course.price|floatformat:0|intcomma }}</span>
+  </div>
+
+  <div class="course-card__body">
+    <h3 class="course-card__title">{{ class.title }}</h3>
+    <p class="course-card__desc">{{ class.description|default:class.course.description }}</p>
+    <p class="course-card__instructor">
+      By <a href="#">{{ class.instructor_name }}</a>
+    </p>
+    <div class="course-card__meta">
+      <span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        {{ class.scheduled_time|date:"d M" }} · {{ class.scheduled_time|time:"H:i" }}
+      </span>
+      <span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        {{ class.course.students_enrolled }} enrolled
+      </span>
+      <span>
+        <svg class="star-filled" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        {{ class.course.average_rating|default:"New" }}
+      </span>
+    </div>
+    <a href="{% url 'course_detail' class.course.slug %}" class="btn-enroll">Enroll Now</a>
+  </div>
+</div>
+{% empty %}
+<p style="grid-column:1/-1; text-align:center; color:#6b7280">
+  No upcoming classes yet — check back soon!
+</p>
+{% endfor %}
     </div>
     <div class="courses__cta" data-aos="fade-up">
       <a href="" class="btn-navy">View All Programs</a>
@@ -1152,14 +1250,26 @@ I-code - Innovate Tech | Coding School for Kids Ages 7–18
         <p class="testimonial-card__comment">"{{ testimonial.comment }}"</p>
         <span class="testimonial-card__badge">{{ testimonial.course.title }}</span>
         <div class="testimonial-card__footer">
-          <img class="testimonial-card__avatar"
-            src="{{ testimonial.student.profile.avatar.url }}"
-            alt="{{ testimonial.student.get_full_name }}" loading="lazy"/>
-          <div>
-            <div class="testimonial-card__name">{{ testimonial.student.get_full_name }}</div>
-            <div class="testimonial-card__role">{{ testimonial.student.profile.occupation }}</div>
-          </div>
-        </div>
+  {% if testimonial.avatar %}
+    <img class="testimonial-card__avatar"
+      src="{{ testimonial.avatar.url }}"
+      alt="{{ testimonial.full_name }}" loading="lazy"/>
+  {% else %}
+    {# Initials avatar fallback #}
+    <div style="
+      width:3.5rem; height:3.5rem; border-radius:9999px;
+      background: linear-gradient(135deg,#49bbbd,#2f327d);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:700; font-size:1.1rem; color:#fff; flex-shrink:0;
+    ">
+      {{ testimonial.full_name|slice:":1"|upper }}
+    </div>
+  {% endif %}
+  <div>
+    <div class="testimonial-card__name">{{ testimonial.full_name }}</div>
+    <div class="testimonial-card__role">{{ testimonial.occupation }}</div>
+  </div>
+</div>
       </div>
       {% empty %}
       <p style="grid-column:1/-1; text-align:center; color:#6b7280">
