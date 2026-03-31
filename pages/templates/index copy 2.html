@@ -1,0 +1,892 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home | i-Code{% endblock %}
+
+{% block content %}
+
+<style>
+  :root {
+    --teal:        #49BBBD;
+    --teal-dark:   #3DA4A6;
+    --orange:      #F48C06;
+    --pink:        #E94B7F;
+    --text-dark:   #2C3E50;
+    --text-gray:   #5D6C7B;
+    --text-muted:  #8392A5;
+    --bg-light:    #F8FAFB;
+  }
+
+  /* ── Utilities ── */
+  .text-teal        { color: var(--teal) !important; }
+  .text-orange      { color: var(--orange) !important; }
+  .bg-teal          { background-color: var(--teal) !important; }
+  .bg-site-light    { background-color: var(--bg-light) !important; }
+  .fw-800           { font-weight: 800; }
+
+  .btn-teal {
+    background: var(--teal); color: #fff;
+    border: 2px solid var(--teal); border-radius: 50px;
+    font-weight: 600; transition: all .3s;
+  }
+  .btn-teal:hover {
+    background: var(--teal-dark); border-color: var(--teal-dark);
+    color: #fff; transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(73,187,189,.35);
+  }
+  .btn-teal-outline {
+    background: transparent; color: var(--teal);
+    border: 2px solid var(--teal); border-radius: 50px;
+    font-weight: 600; transition: all .3s;
+  }
+  .btn-teal-outline:hover {
+    background: var(--teal); color: #fff; transform: translateY(-2px);
+  }
+  .btn-white-pill {
+    background: #fff; color: var(--teal);
+    border-radius: 50px; font-weight: 700;
+    box-shadow: 0 4px 15px rgba(0,0,0,.1);
+    transition: all .3s; text-decoration: none;
+    display: inline-block;
+  }
+  .btn-white-pill:hover {
+    transform: translateY(-3px); color: var(--teal);
+    box-shadow: 0 8px 25px rgba(0,0,0,.15);
+  }
+  .btn-outline-white {
+    background: transparent; color: #fff;
+    border: 2px solid #fff; border-radius: 50px;
+    font-weight: 600; transition: all .3s;
+  }
+  .btn-outline-white:hover { background: #fff; color: var(--teal); transform: translateY(-2px); }
+
+  /* ── HERO ── */
+  .hero-section {
+    background: linear-gradient(135deg, var(--teal) 0%, #6DD5DA 100%);
+    padding-top: 100px;
+    position: relative; overflow: hidden;
+    min-height: 92vh;
+  }
+  .hero-section::before {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(circle at 15% 50%, rgba(255,255,255,.12) 0%, transparent 50%),
+      radial-gradient(circle at 85% 80%, rgba(255,255,255,.10) 0%, transparent 50%);
+  }
+  .hero-title {
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-weight: 700; color: #fff; line-height: 1.2;
+  }
+  .hero-title .highlight {
+    color: var(--orange);
+    animation: slideInLeft .8s ease-out .2s both;
+  }
+  .hero-subtitle { color: rgba(255,255,255,.93); font-size: 1.1rem; line-height: 1.75; }
+
+  .btn-play-wrap {
+    display: flex; align-items: center; gap: .75rem;
+    background: none; border: none; color: #fff;
+    font-weight: 500; font-size: 1rem; cursor: pointer;
+    transition: transform .3s;
+  }
+  .btn-play-wrap:hover { transform: translateX(5px); }
+  .play-circle {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: #fff; color: var(--teal);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; transition: transform .3s;
+  }
+  .btn-play-wrap:hover .play-circle { transform: scale(1.1); }
+
+  /* floating cards */
+  .hero-img-wrap { position: relative; display: flex; justify-content: center; align-items: flex-end; }
+  .student-img   { max-width: 100%; height: auto; position: relative; z-index: 2;
+                   filter: drop-shadow(0 20px 40px rgba(0,0,0,.15));
+                   animation: fadeIn 1s ease-out .3s both; }
+
+  .fcard {
+    position: absolute; background: #fff; border-radius: 16px;
+    padding: 1rem 1.2rem; box-shadow: 0 12px 32px rgba(0,0,0,.10);
+    display: flex; align-items: center; gap: .9rem;
+    animation: float 3s ease-in-out infinite; z-index: 3;
+  }
+  .fcard-students { top: 14%; left: 0; animation-delay: 0s; }
+  .fcard-congrats { top: 38%; right: -4%; animation-delay: .5s; }
+  .fcard-class    { bottom: 20%; left: 4%; flex-direction: column; align-items: flex-start; animation-delay: 1s; }
+
+  .fcard-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .fcard-icon-blue   { background: linear-gradient(135deg,#5DB0F5,#4A90E2); }
+  .fcard-icon-orange { background: linear-gradient(135deg,#FFA36C,#FF8866); }
+
+  .fcard-number  { font-size: 1.2rem; font-weight: 700; color: var(--text-dark); }
+  .fcard-label   { font-size: .78rem; color: var(--text-muted); }
+  .fcard-title   { font-size: .9rem; font-weight: 600; color: var(--text-dark); }
+  .fcard-sub     { font-size: .75rem; color: var(--text-muted); }
+  .fcard-time    { font-size: .75rem; color: var(--text-muted); margin-bottom: .5rem; }
+
+  .fcard-avatar  { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; margin-bottom: .5rem; }
+  .fcard-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  .btn-join-now {
+    padding: .4rem 1.3rem; border: none; border-radius: 50px;
+    background: linear-gradient(135deg, var(--pink), #D83F6E);
+    color: #fff; font-weight: 600; font-size: .8rem;
+    cursor: pointer; transition: all .3s;
+  }
+  .btn-join-now:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(233,75,127,.4); }
+
+  .deco-analytics {
+    position: absolute; top: 6%; right: 8%; z-index: 3;
+    width: 52px; height: 52px; border-radius: 14px;
+    background: linear-gradient(135deg, var(--pink), #D83F6E);
+    display: flex; align-items: center; justify-content: center;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .wave-wrap { position: absolute; bottom: -2px; left: 0; width: 100%; z-index: 1; }
+  .wave-wrap svg { display: block; width: 100%; height: auto; }
+
+  /* ── STATS ── */
+  .stat-number { font-size: 2.6rem; font-weight: 700; color: var(--teal); line-height: 1; }
+  .stat-label  { font-size: .95rem; color: var(--text-gray); font-weight: 500; }
+  .stat-divider-v { border-right: 1px solid #e8edf2; }
+  @media (max-width:767px) { .stat-divider-v { border-right: none; } }
+
+  /* ── FEATURE CARDS ── */
+  .feat-card {
+    border: none !important; border-radius: 14px !important;
+    border-bottom: 3px solid transparent !important;
+    transition: all .3s; box-shadow: 0 8px 8px -4px rgba(73,187,189,.4) !important;
+  }
+  .feat-card:hover {
+    transform: translateY(-6px);
+    border-bottom-color: var(--teal) !important;
+    box-shadow: 0 16px 32px rgba(73,187,189,.2) !important;
+  }
+  .feat-icon {
+    width: 60px; height: 60px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; margin: 0 auto;
+    transition: transform .3s;
+  }
+  .feat-card:hover .feat-icon { transform: translateY(-4px); }
+  .feat-icon-blue   { background: #5B72EE; color: #fff; }
+  .feat-icon-teal   { background: var(--teal); color: #fff; }
+  .feat-icon-cyan   { background: #29B9E7; color: #fff; }
+
+  /* ── WHAT IS ICODE cards ── */
+  .icode-role-card {
+    height: 280px; border-radius: 18px;
+    background-size: cover; background-position: center;
+    position: relative; overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,.15);
+    transition: transform .3s;
+  }
+  .icode-role-card:hover { transform: translateY(-5px); }
+  .icode-role-card--inst {
+    background: linear-gradient(160deg,rgba(0,0,0,.45),rgba(0,0,0,.18)),
+                url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&h=400&fit=crop') center/cover;
+  }
+  .icode-role-card--stud {
+    background: linear-gradient(160deg,rgba(0,0,0,.30),rgba(0,0,0,.10)),
+                url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=400&fit=crop') center/cover;
+  }
+  .icode-role-overlay {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; padding: 2rem;
+  }
+
+  /* physical classroom image */
+  .physical-img-wrap { border-radius: 20px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,.15); position: relative; }
+  .physical-img-wrap img { width: 100%; height: 400px; object-fit: cover; display: block; }
+  .deco-box { position: absolute; border-radius: 14px; }
+  .deco-box--1 { width:110px; height:110px; background: var(--teal);    bottom:-18px; right:-18px; opacity:.28; }
+  .deco-box--2 { width: 72px; height: 72px; background: #00E87A; top:-14px;    right:-14px; opacity:.45; }
+
+  /* green badge circle */
+  .badge-circle {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: linear-gradient(135deg,#00E87A,var(--teal));
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* avatar grid */
+  .avatar-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; max-width: 340px; }
+  .avatar-cell { aspect-ratio:1; border-radius:14px; overflow:hidden; box-shadow: 0 4px 14px rgba(0,0,0,.1); }
+  .avatar-cell img { width:100%; height:100%; object-fit:cover; }
+
+  /* teacher img */
+  .teacher-img-wrap { max-width:360px; margin:0 auto; }
+  .teacher-img-wrap img { width:100%; border-radius:180px 180px 18px 18px; box-shadow: 0 12px 40px rgba(0,0,0,.15); }
+
+  /* check bullet */
+  .check-bullet {
+    width: 26px; height: 26px; border-radius: 6px;
+    background: var(--teal); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: .85rem;
+  }
+
+  /* ── COURSES ── */
+  .explore-bg { background: linear-gradient(135deg,#E5F4F8 0%,#F2F2F2 55%,#FEFEFE 100%); }
+
+  /* Scroll row breaks out of container to fill viewport width */
+  .scroll-outer {
+    margin-left:  calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    padding-left: calc(50vw - 50%);
+    overflow: hidden;
+  }
+
+  .scroll-row {
+    display: flex; gap: 18px; align-items: flex-end;
+    overflow-x: auto;
+    padding: 18px 2rem 36px;
+    scroll-behavior: smooth;
+  }
+  .scroll-row::-webkit-scrollbar { height: 5px; }
+  .scroll-row::-webkit-scrollbar-track { background: rgba(0,0,0,.04); border-radius: 8px; }
+  .scroll-row::-webkit-scrollbar-thumb { background: var(--teal); border-radius: 8px; }
+
+  .pill-wrap {
+    flex-shrink: 0; background: rgba(255,255,255,.55);
+    backdrop-filter: blur(18px); border-radius: 35px; padding: 9px;
+    transform: rotate(-8deg); transition: transform .3s;
+    box-shadow: 0 8px 28px rgba(0,0,0,.08);
+  }
+  .pill-wrap:hover { transform: rotate(0deg) translateY(-10px); }
+
+  .course-pill {
+    width: 86px; height: 370px; border-radius: 35px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 18px 10px; cursor: pointer;
+  }
+  .pill-text {
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    font-size: 13px; font-weight: 600; color: #fff; white-space: nowrap;
+  }
+  .pill-orange { background: linear-gradient(180deg,#FF8A3D,#FF6B1A); }
+  .pill-coral  { background: linear-gradient(180deg,#FF7E7E,#FF5757); }
+  .pill-brown  { background: linear-gradient(180deg,#C49B6C,#A67C52); }
+  .pill-yellow { background: linear-gradient(180deg,#FFD93D,#FFC107); }
+  .pill-purple { background: linear-gradient(180deg,#C490E4,#A569BD); }
+  .pill-blue   { background: linear-gradient(180deg,#6DB9F7,#3498DB); }
+  .pill-green  { background: linear-gradient(180deg,#82D8A8,#5FBEAA); }
+  .pill-teal   { background: linear-gradient(180deg,#66D9D9,var(--teal)); }
+
+  .course-card {
+    flex-shrink: 0; width: 355px; border-radius: 22px !important;
+    border: 2px solid rgba(0,0,0,.06) !important;
+    box-shadow: 0 10px 36px rgba(0,0,0,.09) !important;
+    transition: transform .3s, box-shadow .3s; overflow: hidden;
+  }
+  .course-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 18px 48px rgba(0,0,0,.14) !important;
+  }
+  .course-card--featured { border-color: var(--pink) !important; border-width: 3px !important; }
+  .course-card .card-img-top { height: 205px; object-fit: cover; }
+  .course-badge-label {
+    position: absolute; top: 12px; left: 12px; z-index: 2;
+    background: #fff; padding: 5px 13px; border-radius: 20px;
+    font-size: 11px; font-weight: 700; color: var(--teal); letter-spacing: .5px;
+  }
+  .gradient-card-bg {
+    height: 205px;
+    background: linear-gradient(180deg,#1A3A52 0%,#2D5F7F 55%,#E8A598 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .btn-explore {
+    padding: .55rem 1.4rem; background: transparent;
+    border: 2px solid var(--teal); color: var(--teal);
+    border-radius: 24px; font-size: .8rem; font-weight: 600;
+    transition: all .3s; cursor: pointer;
+  }
+  .btn-explore:hover { background: var(--teal); color: #fff; transform: scale(1.05); }
+
+  /* ── TESTIMONIAL ── */
+  .testimonial-label {
+    font-size: .8rem; font-weight: 500; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 2px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .testimonial-label::before { content:''; width:36px; height:2px; background: var(--text-muted); }
+  .testimonial-quote-card {
+    border-left: 4px solid var(--orange) !important;
+    border-radius: 16px !important; border: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,.09) !important;
+  }
+  .student-portrait {
+    width: 270px; height: 330px; object-fit: cover;
+    border-radius: 18px; box-shadow: 0 12px 36px rgba(0,0,0,.15);
+    flex-shrink: 0;
+  }
+  @media (max-width:767px) {
+    .student-portrait { width: 100%; height: 230px; }
+  }
+
+  /* ── Keyframes ── */
+  @keyframes fadeInUp {
+    from { opacity:0; transform:translateY(28px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  @keyframes slideInLeft {
+    from { opacity:0; transform:translateX(-28px); }
+    to   { opacity:1; transform:translateX(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity:0; } to { opacity:1; }
+  }
+  @keyframes float {
+    0%,100% { transform:translateY(0); }
+    50%      { transform:translateY(-10px); }
+  }
+  @keyframes pulse {
+    0%,100% { transform:scale(1); }
+    50%      { transform:scale(1.1); }
+  }
+  .anim-fadeup { animation: fadeInUp .8s ease-out both; }
+</style>
+
+<!-- ════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════ -->
+<section class="hero-section">
+  <div class="container position-relative" style="z-index:2;">
+    <div class="row align-items-center gy-5 pb-5">
+
+      <!-- Text -->
+      <div class="col-lg-6 anim-fadeup">
+        <h1 class="hero-title mb-4">
+          <span class="highlight">Studying</span> at i-Code is now<br/>much easier
+        </h1>
+        <p class="hero-subtitle mb-4">
+          i-Code is an interesting platform that will teach you
+          in a more interactive way.
+        </p>
+        <div class="d-flex flex-wrap gap-3 align-items-center">
+          <a href="/join" class="btn btn-white-pill px-4 py-2 fs-6">Join for free</a>
+          <button class="btn-play-wrap">
+            <span class="play-circle">
+              <i class="bi bi-play-fill"></i>
+            </span>
+            Watch how it works
+          </button>
+        </div>
+      </div>
+
+      <!-- Image -->
+      <div class="col-lg-6 hero-img-wrap">
+        <img src="https://tinyurl.com/3jura2y5" alt="Student" class="student-img" />
+
+        <!-- Floating: Students -->
+        <div class="fcard fcard-students">
+          <div class="fcard-icon fcard-icon-blue">
+            <i class="bi bi-calendar3 text-white"></i>
+          </div>
+          <div>
+            <div class="fcard-number">250k</div>
+            <div class="fcard-label">Assisted Students</div>
+          </div>
+        </div>
+
+        <!-- Floating: Congrats -->
+        <div class="fcard fcard-congrats">
+          <div class="fcard-icon fcard-icon-orange">
+            <i class="bi bi-envelope text-white"></i>
+          </div>
+          <div>
+            <div class="fcard-title">Congratulations</div>
+            <div class="fcard-sub">Your admission completed</div>
+          </div>
+        </div>
+
+        <!-- Floating: Class -->
+        <div class="fcard fcard-class">
+          <div class="fcard-avatar">
+            <img src="{% static 'images/img.jpg' %}" alt="User" />
+          </div>
+          <div class="fcard-title">User Experience Class</div>
+          <div class="fcard-time">Today at 12:00 PM</div>
+          <button class="btn-join-now">Join Now</button>
+        </div>
+
+        <!-- Deco analytics icon -->
+        <div class="deco-analytics">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="12" width="4" height="9" fill="white"/>
+            <rect x="10" y="6" width="4" height="15" fill="white"/>
+            <rect x="17" y="9" width="4" height="12" fill="white"/>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Wave -->
+  <div class="wave-wrap">
+    <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
+      <path fill="#ffffff" d="M0,96L48,112C96,128,192,160,288,165.3C384,171,480,149,576,133.3C672,117,768,107,864,122.7C960,139,1056,181,1152,181.3C1248,181,1344,139,1392,117.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     OUR SUCCESS
+════════════════════════════════════════════════ -->
+<section class="py-5 bg-white">
+  <div class="container py-4 text-center">
+    <h2 class="fw-700 text-dark mb-3" style="font-size:2.2rem;">Our Success</h2>
+    <p class="text-secondary mx-auto" style="max-width:600px; line-height:1.85;">
+      Ornare id fames interdum porttitor nulla turpis etiam. Diam vitae sollicitudin at nec
+      nam et pharetra gravida. Adipiscing a quis ultrices eu ornare tristique vel nisl orci.
+    </p>
+
+    <div class="row justify-content-center mt-5 gy-4 gx-0">
+      <div class="col-6 col-md-4 col-lg-2 text-center stat-divider-v py-2">
+        <div class="stat-number">15K+</div>
+        <div class="stat-label mt-1">Students</div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2 text-center stat-divider-v py-2">
+        <div class="stat-number">75%</div>
+        <div class="stat-label mt-1">Total Success</div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2 text-center stat-divider-v py-2">
+        <div class="stat-number">35</div>
+        <div class="stat-label mt-1">Main Questions</div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2 text-center stat-divider-v py-2">
+        <div class="stat-number">26</div>
+        <div class="stat-label mt-1">Chief Experts</div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2 text-center py-2">
+        <div class="stat-number">16</div>
+        <div class="stat-label mt-1">Years Experience</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     ALL-IN-ONE CLOUD SOFTWARE + FEATURES
+════════════════════════════════════════════════ -->
+<section class="py-5 bg-site-light">
+  <!-- Cloud header -->
+  <div class="container text-center mb-5">
+    <h2 class="fw-bold text-dark mb-3" style="font-size:2.1rem;">
+      All-In-One <span class="text-teal">Cloud Software.</span>
+    </h2>
+    <p class="text-secondary mx-auto" style="max-width:580px; line-height:1.85;">
+      i-CODE is one powerful online software suite that combines all the tools
+      needed to run a successful school or office.
+    </p>
+  </div>
+
+  <!-- Three feature cards -->
+  <div class="container">
+    <div class="row g-4">
+
+      <div class="col-md-4">
+        <div class="card feat-card h-100 p-4 text-center">
+          <div class="feat-icon feat-icon-blue mb-4">
+            <i class="bi bi-file-earmark-text"></i>
+          </div>
+          <h5 class="fw-bold text-dark mb-2">Online Billing,<br>Invoicing &amp; Contracts</h5>
+          <p class="text-secondary small lh-lg mb-0">
+            Simple and secure control of your organisation's financial and legal
+            transactions. Send customised invoices and contracts.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card feat-card h-100 p-4 text-center">
+          <div class="feat-icon feat-icon-teal mb-4">
+            <i class="bi bi-calendar-check"></i>
+          </div>
+          <h5 class="fw-bold text-dark mb-2">Easy Scheduling &amp;<br>Attendance Tracking</h5>
+          <p class="text-secondary small lh-lg mb-0">
+            Schedule and reserve classrooms at one campus or multiple campuses.
+            Keep detailed records of student attendance.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card feat-card h-100 p-4 text-center">
+          <div class="feat-icon feat-icon-cyan mb-4">
+            <i class="bi bi-people"></i>
+          </div>
+          <h5 class="fw-bold text-dark mb-2">Customer Tracking</h5>
+          <p class="text-secondary small lh-lg mb-0">
+            Automate and track emails to individuals or groups. i-Code's built-in
+            system helps organise your institution effectively.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     WHAT IS ICODE?
+════════════════════════════════════════════════ -->
+<section class="py-5 bg-site-light">
+  <div class="container py-2">
+
+    <!-- Header -->
+    <div class="text-center mb-5">
+      <h2 class="fw-bold text-dark mb-3" style="font-size:2.1rem;">
+        What is <span class="text-teal">ICODE?</span>
+      </h2>
+      <p class="text-secondary mx-auto" style="max-width:780px; line-height:1.85;">
+        ICODE is a platform that allows educators to create online classes whereby they can
+        store course materials online; manage assignments, quizzes and exams; monitor due dates;
+        grade results and provide students with feedback all in one place.
+      </p>
+    </div>
+
+    <!-- Role cards -->
+    <div class="row g-4 mb-5">
+      <div class="col-md-6">
+        <div class="icode-role-card icode-role-card--inst">
+          <div class="icode-role-overlay">
+            <h3 class="fw-bold text-white text-uppercase mb-3 fs-4">For Instructors</h3>
+            <button class="btn btn-outline-white px-4 py-2">Start a class today</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="icode-role-card icode-role-card--stud">
+          <div class="icode-role-overlay">
+            <h3 class="fw-bold text-white text-uppercase mb-3 fs-4">For Students</h3>
+            <button class="btn btn-teal px-4 py-2">Enter access code</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Physical classroom -->
+    <div class="row align-items-center g-5 mb-5">
+      <div class="col-lg-6">
+        <div class="badge-circle mb-3">
+          <i class="bi bi-check-lg text-white fs-5"></i>
+        </div>
+        <h3 class="fw-bold text-dark mb-3" style="font-size:1.7rem; line-height:1.45;">
+          Everything you can do in a physical classroom,
+          <span class="text-teal">you can do with ICODE</span>
+        </h3>
+        <p class="text-secondary lh-lg mb-3">
+          ICODE's school management software helps traditional and online schools manage
+          scheduling, attendance, payments and virtual classrooms all in one secure cloud-based system.
+        </p>
+        <a href="#" class="text-teal fw-semibold text-decoration-none">
+          Learn more <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+      </div>
+      <div class="col-lg-6">
+        <div class="physical-img-wrap">
+          <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop" alt="Students in classroom" />
+          <div class="deco-box deco-box--1"></div>
+          <div class="deco-box deco-box--2"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inner features panel -->
+    <div class="bg-white rounded-4 p-4 p-md-5 shadow-sm">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold text-dark mb-2" style="font-size:2rem;">
+          Our <span class="text-teal">Features</span>
+        </h2>
+        <p class="text-secondary">This very extraordinary feature, can make learning activities more efficient</p>
+      </div>
+
+      <!-- Feature 1: UI for classroom -->
+      <div class="row align-items-center g-5 mb-5">
+        <div class="col-lg-6">
+          <div class="avatar-grid mb-4">
+            <div class="avatar-cell"><img src="https://i.pravatar.cc/150?img=1"  alt="S1" /></div>
+            <div class="avatar-cell"><img src="https://i.pravatar.cc/150?img=5"  alt="S2" /></div>
+            <div class="avatar-cell"><img src="https://i.pravatar.cc/150?img=3"  alt="S3" /></div>
+            <div class="avatar-cell"><img src="https://i.pravatar.cc/150?img=8"  alt="S4" /></div>
+            <div class="avatar-cell"><img src="https://i.pravatar.cc/150?img=9"  alt="S5" /></div>
+          </div>
+          <div class="d-flex gap-2 flex-wrap">
+            <span class="badge rounded-pill px-3 py-2" style="background:#5B72EE; font-size:.82rem;">Present</span>
+            <span class="badge rounded-pill px-3 py-2" style="background:var(--pink); font-size:.82rem;">+ Call</span>
+            <span class="badge rounded-pill px-3 py-2" style="background:var(--teal); font-size:.82rem;">Message</span>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <h3 class="fw-bold text-dark mb-4" style="font-size:1.6rem; line-height:1.45;">
+            A <span class="text-teal">user interface</span> designed for the classroom
+          </h3>
+          <div class="d-flex flex-column gap-3">
+            <div class="d-flex gap-3 align-items-start">
+              <span class="check-bullet"><i class="bi bi-check-lg small"></i></span>
+              <p class="mb-0 text-secondary lh-lg">Teachers don't get lost in the grid view and have a dedicated Podium space.</p>
+            </div>
+            <div class="d-flex gap-3 align-items-start">
+              <span class="check-bullet"><i class="bi bi-check-lg small"></i></span>
+              <p class="mb-0 text-secondary lh-lg">TA's and presenters can be moved to the front of the class.</p>
+            </div>
+            <div class="d-flex gap-3 align-items-start">
+              <span class="check-bullet"><i class="bi bi-check-lg small"></i></span>
+              <p class="mb-0 text-secondary lh-lg">Teachers can easily see all students and class data at one time.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 2: Tools -->
+      <div class="row align-items-center g-5 flex-lg-row-reverse">
+        <div class="col-lg-6">
+          <h3 class="fw-bold text-dark mb-3" style="font-size:1.6rem; line-height:1.45;">
+            <span class="text-teal">Tools</span> For Teachers And Learners
+          </h3>
+          <p class="text-secondary lh-lg">
+            Class has a dynamic set of teaching tools built to be deployed and used during class.
+            Teachers can handout assignments in real-time for students to complete and submit.
+          </p>
+        </div>
+        <div class="col-lg-6 d-flex justify-content-center">
+          <div class="teacher-img-wrap">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop" alt="Teacher with tablet" />
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /inner panel -->
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     EXPLORE COURSES
+════════════════════════════════════════════════ -->
+<section class="py-5 explore-bg">
+  <div class="container">
+
+    <div class="mb-4">
+      <h2 class="fw-bold text-dark mb-1" style="font-size:2rem;">Explore Course</h2>
+      <p class="text-secondary">Ut sed eros finibus, placerat orci id, dapibus.</p>
+    </div>
+
+    <!-- ── Category 1 ── -->
+    <div class="mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="fw-semibold text-dark d-flex align-items-center gap-2">
+          <i class="bi bi-layers text-teal"></i> Lorem Ipsum
+        </span>
+        <a href="#" class="text-teal text-decoration-none fw-semibold small">
+          SEE ALL <i class="bi bi-chevron-right"></i>
+        </a>
+      </div>
+      <div class="scroll-outer">
+        <div class="scroll-row">
+          <div class="pill-wrap"><div class="course-pill pill-orange"><span class="pill-text">UI/UX Design</span></div></div>
+          <div class="pill-wrap"><div class="course-pill pill-coral"><span class="pill-text">Quantum Physics</span></div></div>
+          <div class="pill-wrap"><div class="course-pill pill-brown"><span class="pill-text">Quisque Orci</span></div></div>
+          <div class="pill-wrap"><div class="course-pill pill-yellow"><span class="pill-text">Cras Convallis</span></div></div>
+
+          <div class="card course-card">
+            <div class="position-relative">
+              <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=400&h=210&fit=crop" class="card-img-top" alt="Course" />
+              <span class="course-badge-label">LOREM IPSUM</span>
+            </div>
+            <div class="card-body p-4">
+              <h5 class="fw-bold text-dark mb-2">Integer id Orc Sed Ante Tincidunt</h5>
+              <p class="text-secondary small lh-lg mb-3">Cras convallis lacus orci, tristique tincidunt magna fringilla at faucibus vel.</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="d-flex gap-1 mb-1">
+                    <i class="bi bi-star-fill text-warning small"></i>
+                    <i class="bi bi-star-fill text-warning small"></i>
+                    <i class="bi bi-star-fill text-warning small"></i>
+                    <i class="bi bi-star-fill text-warning small"></i>
+                    <i class="bi bi-star-fill text-warning small"></i>
+                  </div>
+                  <span class="fw-bold text-dark">$450</span>
+                </div>
+                <button class="btn-explore">EXPLORE</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="pill-wrap"><div class="course-pill pill-purple"><span class="pill-text">Vestibulum</span></div></div>
+          <div class="pill-wrap"><div class="course-pill pill-blue"><span class="pill-text">UI/UX Design</span></div></div>
+          <div class="pill-wrap"><div class="course-pill pill-green"><span class="pill-text">Vestibulum</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Category 2 ── -->
+    <div class="mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="fw-semibold text-dark d-flex align-items-center gap-2">
+          <i class="bi bi-clock text-teal"></i> Quisque a Consequat
+        </span>
+        <a href="#" class="text-teal text-decoration-none fw-semibold small">
+          SEE ALL <i class="bi bi-chevron-right"></i>
+        </a>
+      </div>
+      <div class="scroll-outer">
+        <div class="scroll-row">
+          <div class="pill-wrap"><div class="course-pill pill-orange"><span class="pill-text">UI/UX Design</span></div></div>
+          <div class="pill-wrap"><div class="course-pill pill-coral"><span class="pill-text">Quantum Physics</span></div></div>
+
+          <div class="card course-card course-card--featured">
+            <div class="gradient-card-bg">
+              <div class="text-center text-white p-3">
+                <p class="small mb-1 opacity-75">Vestibulum rutula</p>
+                <h4 class="fw-bold mb-1">LOREM IPSUM</h4>
+                <p class="small opacity-75 mb-0">Lorem ipsum dolor sit amet</p>
+              </div>
+            </div>
+            <div class="card-body p-4">
+              <h5 class="fw-bold text-dark mb-2">Integer id Orc Sed Ante Tincidunt</h5>
+              <p class="text-secondary small lh-lg mb-3">Cras convallis lacus orci, tristique tincidunt magna fringilla at faucibus vel.</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="d-flex gap-1 mb-1">
+                    <i class="bi bi-star-fill text-warning small"></i>
+                    <i class="bi bi-star-fill text-warning small"></i>
+                    <i class="bi bi-star-fill text-warning small"></i>
+                    <i class="bi bi-star-fill text-warning small"></i>
+                    <i class="bi bi-star-fill text-warning small"></i>
+                  </div>
+                  <span class="fw-bold text-dark">$450</span>
+                </div>
+                <button class="btn-explore">EXPLORE</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="pill-wrap"><div class="course-pill pill-brown"><span class="pill-text">Quisque Orci</span></div></div>
+          <div class="pill-wrap"><div class="course-pill pill-teal"><span class="pill-text">Vestibulum</span></div></div>
+          <div class="pill-wrap"><div class="course-pill pill-blue"><span class="pill-text">UI/UX Design</span></div></div>
+          <div class="pill-wrap"><div class="course-pill pill-green"><span class="pill-text">Vestibulum</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Category 3 ── -->
+    <div>
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="fw-semibold text-dark d-flex align-items-center gap-2">
+          <i class="bi bi-image text-teal"></i> Aenean Facilisis
+        </span>
+        <a href="#" class="text-teal text-decoration-none fw-semibold small">
+          SEE ALL <i class="bi bi-chevron-right"></i>
+        </a>
+      </div>
+      <div class="scroll-outer">
+        <div class="scroll-row">
+          <div class="card course-card">
+          <div class="position-relative">
+            <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&h=210&fit=crop" class="card-img-top" alt="Course" />
+            <span class="course-badge-label">LOREM IPSUM</span>
+          </div>
+          <div class="card-body p-4">
+            <h5 class="fw-bold text-dark mb-2">Integer id Orc Sed Ante Tincidunt</h5>
+            <p class="text-secondary small lh-lg mb-3">Cras convallis lacus orci, tristique tincidunt magna fringilla at faucibus vel.</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="d-flex gap-1 mb-1">
+                  <i class="bi bi-star-fill text-warning small"></i>
+                  <i class="bi bi-star-fill text-warning small"></i>
+                  <i class="bi bi-star-fill text-warning small"></i>
+                  <i class="bi bi-star-fill text-warning small"></i>
+                  <i class="bi bi-star-half text-warning small"></i>
+                </div>
+                <span class="fw-bold text-dark">$450</span>
+              </div>
+              <button class="btn-explore">EXPLORE</button>
+            </div>
+          </div>
+        </div>
+
+          <div class="pill-wrap"><div class="course-pill pill-coral"><span class="pill-text">Quantum Physics</span></div></div>
+          <div class="pill-wrap"><div class="course-pill pill-brown"><span class="pill-text">Quisque Orci</span></div></div>
+          <div class="pill-wrap"><div class="course-pill pill-yellow"><span class="pill-text">Cras Convallis</span></div></div>
+          <div class="pill-wrap"><div class="course-pill pill-teal"><span class="pill-text">Vestibulum</span></div></div>
+        </div><!-- /scroll-row -->
+      </div><!-- /scroll-outer -->
+    </div><!-- /category 3 -->
+
+  </div><!-- /container -->
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     TESTIMONIAL
+════════════════════════════════════════════════ -->
+<section class="py-5 bg-white">
+  <div class="container py-3">
+    <div class="row align-items-center g-5">
+
+      <!-- Left text -->
+      <div class="col-lg-5">
+        <div class="testimonial-label mb-3">Testimonial</div>
+        <h2 class="fw-bold text-dark mb-4" style="font-size:2.2rem;">What They Say?</h2>
+        <p class="text-secondary lh-lg mb-2">
+          i-CODE has got more than 100k positive ratings from our users around the world.
+        </p>
+        <p class="text-secondary lh-lg mb-2">
+          Some of the students and teachers were greatly helped by i-Code.
+        </p>
+        <p class="text-secondary lh-lg mb-4">
+          Are you too? Please give your assessment
+        </p>
+        <a href="#" class="btn btn-teal-outline px-4 py-2 d-inline-flex align-items-center gap-2">
+          Write your assessment <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+
+      <!-- Right card + photo -->
+      <div class="col-lg-7">
+        <div class="d-flex flex-column flex-md-row align-items-md-end gap-4">
+          <img
+            src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300&h=350&fit=crop"
+            alt="Student testimonial"
+            class="student-portrait"
+          />
+          <div class="card testimonial-quote-card p-4 flex-grow-1">
+            <p class="text-secondary lh-lg mb-4">
+              "Thank you so much for your help. It's exactly what I've been looking for.
+              You won't regret it. It really saves me time and effort. i-CODE is exactly
+              what our business has been lacking."
+            </p>
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+              <div>
+                <div class="fw-bold text-dark">Gloria Rose</div>
+                <div class="small text-muted">12 reviews at Yelp</div>
+              </div>
+              <div class="d-flex gap-1">
+                <i class="bi bi-star-fill text-warning"></i>
+                <i class="bi bi-star-fill text-warning"></i>
+                <i class="bi bi-star-fill text-warning"></i>
+                <i class="bi bi-star-fill text-warning"></i>
+                <i class="bi bi-star-fill text-warning"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,318 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ course.title }} — I-code{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* ── Page wrapper ── */
+  .detail-hero {
+    background: linear-gradient(135deg, #49bbbd, #3da3a5);
+    padding: 5rem 0 6rem;
+    color: #fff;
+  }
+  .detail-hero__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: rgba(255,255,255,0.8);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s;
+  }
+  .detail-hero__back:hover { color: #fff; }
+  .detail-hero__title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; margin-bottom: 1rem; }
+  .detail-hero__meta  { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; }
+  .detail-badge {
+    display: inline-block;
+    padding: 0.3rem 0.9rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+  }
+  .detail-hero__desc { font-size: 1.1rem; line-height: 1.75; max-width: 48rem; opacity: 0.9; }
+
+  /* ── Content below hero ── */
+  .detail-body { padding: 4rem 0; background: #f9fafb; }
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 3rem;
+    align-items: start;
+  }
+  @media (max-width: 900px) { .detail-grid { grid-template-columns: 1fr; } }
+
+  /* ── Forms ── */
+  .form-card {
+    background: #fff;
+    border-radius: 1.25rem;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    margin-bottom: 2rem;
+  }
+  .form-card h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 1.5rem;
+  }
+  .form-group { margin-bottom: 1.25rem; }
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #374151;
+    margin-bottom: 0.4rem;
+  }
+  .form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 0.625rem;
+    font-size: 1rem;
+    font-family: "Nunito", sans-serif;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    box-sizing: border-box;
+  }
+  .form-input:focus {
+    border-color: #49bbbd;
+    box-shadow: 0 0 0 3px rgba(73,187,189,0.15);
+  }
+  textarea.form-input { resize: vertical; }
+
+  /* Star radio */
+  .star-radio-group {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 0.3rem;
+    justify-content: flex-end;
+  }
+  .star-radio-group input { display: none; }
+  .star-radio-group label {
+    font-size: 1.75rem;
+    color: #d1d5db;
+    cursor: pointer;
+    transition: color 0.15s;
+    margin: 0;
+  }
+  .star-radio-group input:checked ~ label,
+  .star-radio-group label:hover,
+  .star-radio-group label:hover ~ label { color: #facc15; }
+
+  .btn-submit {
+    width: 100%;
+    padding: 0.85rem;
+    background: #49bbbd;
+    color: #fff;
+    border: none;
+    border-radius: 0.75rem;
+    font-weight: 700;
+    font-size: 1rem;
+    font-family: "Nunito", sans-serif;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-submit:hover { background: #3da3a5; }
+
+  .form-error { color: #dc2626; font-size: 0.82rem; margin-top: 0.3rem; }
+
+  /* ── Reviews ── */
+  .reviews-section { margin-top: 3rem; }
+  .reviews-section h2 { font-size: 1.5rem; font-weight: 700; color: #1f2937; margin-bottom: 1.5rem; }
+  .review-card {
+    background: #fff;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    margin-bottom: 1rem;
+  }
+  .review-card__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+  .review-card__name   { font-weight: 700; color: #1f2937; }
+  .review-card__stars  { color: #facc15; font-size: 1rem; }
+  .review-card__date   { font-size: 0.8rem; color: #9ca3af; margin-bottom: 0.75rem; }
+  .review-card__text   { color: #374151; line-height: 1.65; }
+
+  /* ── Messages ── */
+  .alert {
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+  }
+  .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+  .alert-error   { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+  <div class="container" style="padding-top:1.5rem">
+    {% for msg in messages %}
+      <div class="alert alert-{{ msg.tags }}">{{ msg }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<!-- Hero -->
+<section class="detail-hero">
+  <div class="container">
+    <a href="{% url 'index' %}" class="detail-hero__back">
+      ← Back to Home
+    </a>
+    <h1 class="detail-hero__title">{{ course.title }}</h1>
+    <div class="detail-hero__meta">
+      <span class="detail-badge">{{ course.get_program_type_display }}</span>
+      <span class="detail-badge">{{ course.get_level_display }}</span>
+      <span class="detail-badge">Ages {{ course.age_min }}–{{ course.age_max }}</span>
+      <span class="detail-badge">{{ course.duration }}</span>
+      {% if course.price %}
+        <span class="detail-badge">${{ course.price }}</span>
+      {% endif %}
+    </div>
+    <p class="detail-hero__desc">{{ course.description }}</p>
+  </div>
+</section>
+
+<!-- Body -->
+<section class="detail-body">
+  <div class="container">
+    <div class="detail-grid">
+
+      <!-- Left: Reviews -->
+      <div>
+        <div class="reviews-section">
+          <h2>
+            Reviews
+            {% if course.average_rating %}
+              <span style="color:#facc15;font-size:1rem">
+                ★ {{ course.average_rating }}
+              </span>
+            {% endif %}
+          </h2>
+
+          {% for review in reviews %}
+            <div class="review-card">
+              <div class="review-card__header">
+                <span class="review-card__name">{{ review.full_name }}</span>
+                <span class="review-card__stars">
+                  {% for i in "12345" %}
+                    {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+                  {% endfor %}
+                </span>
+              </div>
+              <div class="review-card__date">
+                {{ review.created_at|date:"d M Y" }}
+              </div>
+              <p class="review-card__text">{{ review.comment }}</p>
+            </div>
+          {% empty %}
+            <p style="color:#6b7280">No reviews yet — be the first!</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Right: Forms -->
+      <div>
+
+        <!-- Enroll form -->
+        <div class="form-card">
+          <h2>Enroll in This Class</h2>
+          <form method="POST">
+            {% csrf_token %}
+            {% for field in enroll_form %}
+              <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                  {% for error in field.errors %}
+                    <div class="form-error">{{ error }}</div>
+                  {% endfor %}
+                {% endif %}
+              </div>
+            {% endfor %}
+            <button type="submit" name="enroll_submit" class="btn-submit">
+              Request Enrollment
+            </button>
+          </form>
+        </div>
+
+        <!-- Review form -->
+        <div class="form-card">
+          <h2>Leave a Review</h2>
+          <form method="POST">
+            {% csrf_token %}
+
+            <!-- Name -->
+            <div class="form-group">
+              <label for="{{ review_form.full_name.id_for_label }}">
+                {{ review_form.full_name.label }}
+              </label>
+              {{ review_form.full_name }}
+              {% for error in review_form.full_name.errors %}
+                <div class="form-error">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+              <label for="{{ review_form.email.id_for_label }}">
+                {{ review_form.email.label }}
+              </label>
+              {{ review_form.email }}
+              {% for error in review_form.email.errors %}
+                <div class="form-error">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- Star rating (custom radio) -->
+            <div class="form-group">
+              <label>Your Rating</label>
+              <div class="star-radio-group">
+                {% for val, label in review_form.rating.field.choices %}
+                  <input
+                    type="radio"
+                    name="rating"
+                    id="star{{ val }}"
+                    value="{{ val }}"
+                    {% if review_form.rating.value == val|stringformat:"s" %}checked{% endif %}
+                  />
+                  <label for="star{{ val }}" title="{{ val }} star">★</label>
+                {% endfor %}
+              </div>
+              {% for error in review_form.rating.errors %}
+                <div class="form-error">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- Comment -->
+            <div class="form-group">
+              <label for="{{ review_form.comment.id_for_label }}">
+                {{ review_form.comment.label }}
+              </label>
+              {{ review_form.comment }}
+              {% for error in review_form.comment.errors %}
+                <div class="form-error">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <button type="submit" name="review_submit" class="btn-submit"
+              style="background:#2f327d">
+              Submit Review
+            </button>
+          </form>
+          <p style="font-size:0.82rem;color:#9ca3af;margin-top:0.75rem;text-align:center">
+            Reviews are published after a quick check by our team.
+          </p>
+        </div>
+
+      </div><!-- /.right -->
+    </div><!-- /.detail-grid -->
+  </div><!-- /.container -->
+</section>
+
+{% endblock %}
