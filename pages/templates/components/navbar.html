@@ -1,0 +1,109 @@
+{% load static %}
+<style>
+  /* ── NAVBAR ── */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 1rem 0;
+    /*background: rgba(73, 187, 189, 0.85);*/
+    background: #49bbbd;
+    backdrop-filter: blur(12px);
+    
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+  }
+  .navbar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .navbar__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+  }
+  .navbar__logo-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .navbar__logo-icon span {
+    display: block;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 2px solid #67e8f9;
+    transform: rotate(45deg);
+  }
+  .navbar__brand {
+    font-family: "Nunito", sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.05em;
+  }
+  .navbar__links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .navbar__links a {
+    font-family: "Nunito", sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .navbar__links a:hover {
+    color: #a5f3fc;
+  }
+  .navbar__auth {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  @media (max-width: 768px) {
+    .navbar__links { display: none; }
+  }
+
+  
+</style>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar__inner">
+      <a href="{% url 'index' %}" class="navbar__logo" data-aos="fade-right">
+        <div class="navbar__logo-icon"><span></span></div>
+        <span class="navbar__brand">I-code</span>
+      </a>
+
+      <ul class="navbar__links" data-aos="fade-down" data-aos-delay="100">
+        <li><a href="{% url 'index' %}">Home</a></li>
+        <li><a href="">Programs</a></li>
+        <li><a href="">Schedule</a></li>
+        <li><a href="">Blog</a></li>
+        <li><a href="">About Us</a></li>
+      </ul>
+
+      <div class="navbar__auth" data-aos="fade-left" data-aos-delay="200">
+        {% if user.is_authenticated %}
+          <a href="{% url 'icode' %}" class="btn btn-white">Dashboard</a>
+          <a href="{% url 'logout' %}" class="btn btn-outline">Logout</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn btn-white">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>

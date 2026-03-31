@@ -77,9 +77,9 @@ def programs(request):
     """
     return render(request, 'programs.html', {})
 
-def course_detail(request):
-    
-    return render(request, 'course_detail', {})
+def course_detail(request, slug):  
+    course = get_object_or_404(Course, slug=slug)  
+    return render(request, 'course_detail.html', {'course': course})
 
 
 def newsletter_subscribe(request):
