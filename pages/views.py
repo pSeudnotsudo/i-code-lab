@@ -89,6 +89,24 @@ def newsletter_subscribe(request):
     return render(request, 'course_detail', {})
 
 
+def programs(request):
+    courses = Course.objects.all().order_by('-id')
+    students = Enrollment.objects.count
+
+    program_types = Course.objects.values_list('program_type', flat=True).distinct()
+    
+    program_type = request.GET.get('type')
+    if program_type and program_type != 'all':
+        courses = courses.filter(type=program_type)
+
+    context = {
+        'courses': courses,
+        'program_types': program_types,
+        'students':students
+    }
+    return render(request, 'courses.html', context)
+
+
 
 
 @require_POST

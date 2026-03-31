@@ -1,860 +1,1064 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'base.html' %} 
+{% load static %} 
+{% load humanize %} 
+{% block title%}
+Programs & Courses- Innovate Tech | Coding School for Kids Ages 7–18 
+{% endblock%} 
+{% block extra_head %}
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 
-{% block title %}
-  Programs | i-Code
-{% endblock %}
+  :root {
+    --teal: #49bbbd;
+    --teal-dark: #3da3a5;
+    --orange: #f48c06;
+    --navy: #2f327d;
+    --navy-dark: #252641;
+    --dark-bg: #0f1624;
+    --text: #1f2937;
+    --muted: #6b7280;
+    
+  }
 
-{% block extra_css %}
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
-    
-    :root {
-      --primary: #49bbbd;
-      --primary-dark: #3aa6a8;
-      --primary-light: #e6f7f7;
-      --primary-glow: rgba(73, 187, 189, 0.18);
-      --orange: #f48c06;
-      --pink: #e94b7f;
-      --purple: #7c5cbf;
-      --blue: #2d82e3;
-      --green: #27ae78;
-      --text-dark: #1a2332;
-      --text-mid: #4b5c6b;
-      --text-muted: #8fa0b0;
-      --white: #ffffff;
-      --bg: #f2f8f8;
-      --bg-card: #ffffff;
-      --border: #e4eef0;
-      --shadow-xs: 0 1px 4px rgba(0, 0, 0, 0.06);
-      --shadow-sm: 0 2px 12px rgba(73, 187, 189, 0.1);
-      --shadow-md: 0 6px 24px rgba(73, 187, 189, 0.16);
-      --shadow-lg: 0 16px 48px rgba(73, 187, 189, 0.18);
-      --radius-sm: 10px;
-      --radius-md: 16px;
-      --radius-lg: 24px;
-    }
-    
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: "Nunito", sans-serif;
+    color: var(--text);
+    background: #fff;
+    overflow-x: hidden;
+  }
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
 
-    .icode-programs {
-      font-family: "DM Sans", sans-serif;
-      background: var(--bg);
-      color: var(--text-dark);
-    }
+  /* ── PAGE HERO ── */
+  .page-hero {
+    background: linear-gradient(135deg, #49bbbd, #3da3a5);
+    padding: 5rem 0 8rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-hero::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: #f3f4f6;
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+  .page-hero__bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(
+      rgba(255, 255, 255, 0.07) 1px,
+      transparent 1px
+    );
+    background-size: 28px 28px;
+  }
+  .page-hero__content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+  .page-hero__eyebrow {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border-radius: 9999px;
+    padding: 0.35rem 1.2rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  .page-hero__title {
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: 1.25rem;
+  }
+  .page-hero__title span {
+    color: #fde68a;
+  }
+  .page-hero__sub {
+    font-size: 1.15rem;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 38rem;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+  }
+  .page-hero__stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+  }
+  .page-hero__stat {
+    text-align: center;
+  }
+  .page-hero__stat-val {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #fff;
+  }
+  .page-hero__stat-lab {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+  }
 
-    .icode-programs .container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 52px;
+  /* ── FILTER BAR ── */
+  .filter-section {
+    background: #f3f4f6;
+    padding: 2.5rem 0 0;
+  }
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-bottom: 2.5rem;
+  }
+  .filter-btn {
+    padding: 0.55rem 1.5rem;
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background: #fff;
+    color: var(--muted);
+    font-family: "Nunito", sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .filter-btn .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .filter-btn:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+  .filter-btn.active {
+    background: var(--teal);
+    color: #fff;
+    border-color: var(--teal);
+    box-shadow: 0 4px 14px rgba(73, 187, 189, 0.35);
+  }
+  .filter-btn.active .dot {
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  .search-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+  }
+  .search-wrap svg {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .search-wrap input {
+    width: 100%;
+    padding: 0.65rem 1rem 0.65rem 2.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 9999px;
+    font-family: "Nunito", sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+  .search-wrap input:focus {
+    border-color: var(--teal);
+  }
+
+  /* ── COURSES GRID ── */
+  .courses-section {
+    background: #f3f4f6;
+    padding: 3rem 0 6rem;
+  }
+  .section-title {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .section-title .text-teal {
+    color: var(--teal);
+  }
+  .section-sub {
+    color: var(--muted);
+    font-size: 1rem;
+  }
+
+  .courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+  }
+
+  /* ── COURSE CARD ── */
+  .course-card {
+    background: #fff;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+    transition:
+      transform 0.3s,
+      box-shadow 0.3s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+  }
+  .course-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
+  }
+  .course-card:hover .course-card__title {
+    color: var(--teal);
+  }
+
+  .course-card__thumb {
+    position: relative;
+    height: 13rem;
+    overflow: hidden;
+  }
+  .course-card__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+  }
+  .course-card:hover .course-card__thumb img {
+    transform: scale(1.07);
+  }
+  .thumb-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .thumb-fallback span {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+  .course-card__badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(15, 22, 36, 0.6);
+    backdrop-filter: blur(6px);
+    color: #fff;
+    border-radius: 9999px;
+    padding: 0.22rem 0.75rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  .course-card__price {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--orange);
+    color: #fff;
+    padding: 0.28rem 0.9rem;
+    border-radius: 9999px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 10px rgba(244, 140, 6, 0.4);
+  }
+  .course-card__level {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    display: flex;
+    gap: 0.4rem;
+  }
+  .level-pill {
+    padding: 0.22rem 0.7rem;
+    border-radius: 9999px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    backdrop-filter: blur(6px);
+  }
+
+  .course-card__body {
+    padding: 1.6rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .course-card__title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    transition: color 0.2s;
+    line-height: 1.3;
+  }
+  .course-card__desc {
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .course-card__instructor {
+    font-size: 0.82rem;
+    color: #9ca3af;
+    margin-bottom: 1rem;
+  }
+  .course-card__instructor a {
+    color: var(--teal);
+    font-weight: 700;
+  }
+  .course-card__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    color: var(--muted);
+    padding-top: 0.875rem;
+    border-top: 1px solid #f3f4f6;
+    margin-bottom: 1.1rem;
+  }
+  .course-card__meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .course-card__meta svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+  .star-filled {
+    color: #facc15;
+    fill: #facc15;
+  }
+
+  .btn-enroll {
+    display: block;
+    width: 100%;
+    padding: 0.8rem;
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    border-radius: 0.75rem;
+    font-weight: 800;
+    font-size: 1rem;
+    font-family: "Nunito", sans-serif;
+    cursor: pointer;
+    text-align: center;
+    transition:
+      background 0.2s,
+      transform 0.2s,
+      box-shadow 0.2s;
+    box-shadow: 0 4px 14px rgba(73, 187, 189, 0.3);
+    letter-spacing: 0.02em;
+  }
+  .btn-enroll:hover {
+    background: var(--teal-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(73, 187, 189, 0.4);
+  }
+
+  /* ── EMPTY / LOADING STATE ── */
+  .empty-state {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+  .empty-state svg {
+    opacity: 0.2;
+    margin-bottom: 1rem;
+  }
+  .empty-state p {
+    color: var(--muted);
+    font-size: 1rem;
+  }
+
+  .loading-state {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+  .spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 4px solid #e5e7eb;
+    border-top-color: var(--teal);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 1rem;
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
     }
-    
-    /* ─────────────────────────────────────────
-               SECTION 1 — CONTINUE LEARNING
-    ───────────────────────────────────────── */
-    .cl-section {
-      background: var(--white);
-      padding-top: 2rem;
-      position: relative;
+  }
+  .loading-state p {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  /* ── SKELETON CARDS ── */
+  .skeleton-card {
+    background: #fff;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+  }
+  .skeleton-thumb {
+    height: 13rem;
+    background: #e5e7eb;
+    position: relative;
+    overflow: hidden;
+  }
+  .skeleton-body {
+    padding: 1.6rem;
+  }
+  .skeleton-line {
+    height: 14px;
+    border-radius: 9999px;
+    background: #e5e7eb;
+    margin-bottom: 0.75rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .skeleton-line.wide {
+    width: 80%;
+  }
+  .skeleton-line.medium {
+    width: 60%;
+  }
+  .skeleton-line.short {
+    width: 40%;
+  }
+  .skeleton-line.btn {
+    height: 44px;
+    border-radius: 0.75rem;
+    margin-top: 1rem;
+    width: 100%;
+  }
+  .skeleton-thumb::after,
+  .skeleton-line::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.6),
+      transparent
+    );
+    animation: shimmer 1.4s infinite;
+  }
+  @keyframes shimmer {
+    from {
+      transform: translateX(-100%);
     }
-    
-    .cl-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 2rem;
+    to {
+      transform: translateX(100%);
     }
-    
-    .cl-title {
-      font-family: 'Nunito', sans-serif;
-      font-size: 1.35rem;
-      font-weight: 800;
-      color: var(--text-dark);
-      letter-spacing: -0.3px;
-    }
-    
-    .cl-title span {
-      color: var(--primary);
-    }
-    
-    .cl-view-all {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--primary);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      padding: 6px 14px;
-      border: 1.5px solid var(--primary);
-      border-radius: 999px;
-      transition: background 0.2s, color 0.2s;
-      white-space: nowrap;
-    }
-    
-    .cl-view-all:hover {
-      background: var(--primary);
-      color: var(--white);
-    }
-    
-    /* Slider */
-    .cl-slider-outer {
-      overflow: hidden;
-      position: relative;
-    }
-    
-    .cl-slider-outer::before,
-    .cl-slider-outer::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 32px;
-      z-index: 2;
-      pointer-events: none;
-    }
-    .cl-slider-outer::before {
-      left: 0;
-      background: linear-gradient(to right, var(--white), transparent);
-    }
-    .cl-slider-outer::after {
-      right: 0;
-      background: linear-gradient(to left, var(--white), transparent);
-    }
-    
-    .cl-slider-track {
-      display: flex;
-      gap: 20px;
-      transition: transform 0.42s cubic-bezier(0.4, 0, 0.2, 1);
-      will-change: transform;
-    }
-    
-    /* Course card */
-    .cl-card {
-      background: var(--bg-card);
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      border: 1.5px solid var(--border);
-      flex: 0 0 calc(33.333% - 14px);
-      min-width: 240px;
-      text-decoration: none;
-      color: inherit;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s;
-    }
-    
-    .cl-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-md);
-      border-color: var(--primary);
-    }
-    
-    .cl-card__thumb {
-      position: relative;
-      height: 155px;
-      overflow: hidden;
-      background: linear-gradient(135deg, #b2e0e0, #7fcfcf);
-    }
-    
-    .cl-card__thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.4s ease;
-    }
-    
-    .cl-card:hover .cl-card__thumb img {
-      transform: scale(1.05);
-    }
-    
-    .cl-card__thumb-placeholder {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.8rem;
-    }
-    
-    .cl-card__badge {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(6px);
-      border-radius: 999px;
-      font-size: 0.68rem;
-      font-weight: 700;
-      color: var(--primary-dark);
-      padding: 3px 9px;
-      border: 1px solid rgba(73, 187, 189, 0.25);
-    }
-    
-    .cl-card__progress-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.3);
-    }
-    
-    .cl-card__progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--primary), #6dd5d6);
-      border-radius: 0 4px 4px 0;
-    }
-    
-    .cl-card__body {
-      padding: 16px 18px 18px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-    
-    .cl-card__title {
-      font-family: "DM Sans", sans-serif;
-      font-weight: 800;
-      font-size: 0.92rem;
-      color: var(--text-dark);
-      line-height: 1.35;
-      margin-bottom: 14px;
-    }
-    
-    .cl-card__instructor {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      margin-top: auto;
-    }
-    
-    .cl-card__avatar {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.68rem;
-      font-weight: 800;
-      color: white;
-      flex-shrink: 0;
-      overflow: hidden;
-      border: 2px solid var(--primary-light);
-    }
-    
-    .cl-card__avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
-    .cl-card__instructor-info {
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .cl-card__instructor-name {
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--text-mid);
-      line-height: 1.2;
-    }
-    
-    .cl-card__lesson-text {
-      font-size: 0.68rem;
-      color: var(--text-muted);
-    }
-    
-    /* Slider nav */
-    .cl-nav {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 10px;
-      margin-top: 24px;
-    }
-    
-    .cl-nav-dots {
-      display: flex;
-      gap: 6px;
-      margin-right: auto;
-      align-items: center;
-    }
-    
-    .cl-nav-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: var(--border);
-      cursor: pointer;
-      transition: width 0.3s ease, background 0.3s ease;
-    }
-    
-    .cl-nav-dot.active {
-      width: 22px;
-      background: var(--primary);
-    }
-    
-    .cl-nav-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      border: 2px solid var(--border);
-      background: var(--primary);
-      color: #ffffff;
-      font-size: 1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-    }
-    
-    .cl-nav-btn:hover:not(:disabled) {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: white;
-      box-shadow: 0 4px 12px var(--primary-glow);
-    }
-    
-    .cl-nav-btn:disabled {
-      opacity: 0.35;
-      cursor: not-allowed;
-    }
-    .cl-nav-btn:active:not(:disabled) {
-      transform: scale(0.94);
-    }
-    
-    /* ─────────────────────────────────────────
-               SECTION 2 — CATEGORIES
-            ───────────────────────────────────────── */
-    .cat-section {
-      background: var(--bg);
-      padding: 48px 0 60px;
-    }
-    
-    .cat-header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-bottom: 32px;
-      gap: 16px;
-    }
-    
-    .cat-title {
-      font-family: "DM Sans", sans-serif;
-      font-size: 1.35rem;
-      font-weight: 900;
-      color: var(--text-dark);
-      letter-spacing: -0.3px;
-      max-width: 420px;
-      line-height: 1.35;
-    }
-    
-    .cat-title span {
-      color: var(--primary);
-    }
-    
-    .cat-subtitle {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      text-align: right;
-      flex-shrink: 0;
-    }
-    
-    .cat-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 16px;
-    }
-    
-    .cat-card {
-      background: var(--white);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 26px 18px 22px;
-      text-align: center;
-      cursor: pointer;
-      text-decoration: none;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      color: inherit;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
-      animation: fadeUp 0.4s ease both;
-    }
-    
-    /* decorative circle accent */
-    .cat-card::after {
-      content: '';
-      position: absolute;
-      bottom: -24px;
-      right: -24px;
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
+  }
+
+  /* ── ERROR BANNER ── */
+  .error-banner {
+    grid-column: 1/-1;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+  }
+  .error-banner p {
+    color: #dc2626;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .error-banner small {
+    color: #6b7280;
+    font-size: 0.85rem;
+  }
+  .retry-btn {
+    margin-top: 1rem;
+    padding: 0.6rem 1.5rem;
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    border-radius: 9999px;
+    font-family: "Nunito", sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .retry-btn:hover {
+    background: var(--teal-dark);
+  }
+
+  /* ── CTA BANNER ── */
+  .cta-banner {
+    background: var(--dark-bg);
+    padding: 5rem 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-banner::before {
+    content: "";
+    position: absolute;
+    width: 30rem;
+    height: 30rem;
+    background: rgba(73, 187, 189, 0.08);
+    border-radius: 50%;
+    top: -10rem;
+    left: -8rem;
+    filter: blur(60px);
+  }
+  .cta-banner::after {
+    content: "";
+    position: absolute;
+    width: 22rem;
+    height: 22rem;
+    background: rgba(244, 140, 6, 0.07);
+    border-radius: 50%;
+    bottom: -6rem;
+    right: -5rem;
+    filter: blur(60px);
+  }
+  .cta-banner__content {
+    position: relative;
+    z-index: 1;
+  }
+  .cta-banner h2 {
+    font-size: 2.4rem;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 1rem;
+  }
+  .cta-banner p {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 1.1rem;
+    margin-bottom: 2.5rem;
+    max-width: 32rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .cta-banner__btns {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .btn-teal {
+    background: var(--teal);
+    color: #fff;
+    padding: 0.9rem 2.5rem;
+    border-radius: 9999px;
+    font-weight: 800;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    font-family: "Nunito", sans-serif;
+    box-shadow: 0 4px 20px rgba(73, 187, 189, 0.4);
+    transition:
+      background 0.2s,
+      transform 0.2s;
+  }
+  .btn-teal:hover {
+    background: var(--teal-dark);
+    transform: translateY(-2px);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: #fff;
+    padding: 0.9rem 2.5rem;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    font-family: "Nunito", sans-serif;
+    transition:
+      border-color 0.2s,
+      background 0.2s;
+  }
+  .btn-ghost:hover {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .modal {
+    background: #fff;
+    border-radius: 1.75rem;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(30px) scale(0.97);
+    transition: transform 0.3s;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+  }
+  .modal-overlay.open .modal {
+    transform: translateY(0) scale(1);
+  }
+  .modal__hero {
+    position: relative;
+    height: 15rem;
+    overflow: hidden;
+    border-radius: 1.75rem 1.75rem 0 0;
+  }
+  .modal__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.4);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    transition: background 0.2s;
+  }
+  .modal__close:hover {
+    background: rgba(0, 0, 0, 0.65);
+  }
+  .modal__body {
+    padding: 2rem;
+  }
+  .modal__program-tag {
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    padding: 0.25rem 0.9rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .modal__title {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .modal__instructor {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+  }
+  .modal__instructor strong {
+    color: var(--teal);
+  }
+  .modal__meta-row {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+    padding: 1.25rem;
+    background: #f9fafb;
+    border-radius: 1rem;
+  }
+  .modal__meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    color: var(--text);
+  }
+  .modal__meta-item svg {
+    color: var(--teal);
+    flex-shrink: 0;
+  }
+  .modal__desc {
+    color: #374151;
+    line-height: 1.75;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+  .modal__what-learn h4 {
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+  .modal__what-learn ul {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1.75rem;
+  }
+  .modal__what-learn li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    color: #374151;
+  }
+  .modal__what-learn li::before {
+    content: "✓";
+    font-weight: 900;
+    color: var(--teal);
+    flex-shrink: 0;
+  }
+  .modal__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1.25rem;
+    border-top: 1px solid #f3f4f6;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .modal__price {
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: var(--orange);
+  }
+  .modal__price span {
+    font-size: 0.9rem;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .modal__enroll-btn {
+    background: var(--teal);
+    color: #fff;
+    padding: 0.9rem 2.5rem;
+    border-radius: 0.875rem;
+    font-weight: 800;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    font-family: "Nunito", sans-serif;
+    transition: background 0.2s;
+    box-shadow: 0 4px 16px rgba(73, 187, 189, 0.35);
+  }
+  .modal__enroll-btn:hover {
+    background: var(--teal-dark);
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--navy-dark);
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.88rem;
+  }
+  .footer a {
+    color: var(--teal);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from {
       opacity: 0;
-      transition: opacity 0.3s, transform 0.3s;
-      transform: scale(0.7);
+      transform: translateY(24px);
     }
-    
-    .cat-card:hover::after {
-      opacity: 0.09;
-      transform: scale(1);
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
-    
-    .cat-card:nth-child(1)::after { background: var(--primary); }
-    .cat-card:nth-child(2)::after { background: var(--purple); }
-    .cat-card:nth-child(3)::after { background: var(--blue); }
-    .cat-card:nth-child(4)::after { background: var(--orange); }
-    .cat-card:nth-child(5)::after { background: var(--pink); }
-    .cat-card:nth-child(6)::after { background: var(--green); }
-    .cat-card:nth-child(7)::after { background: var(--primary); }
-    .cat-card:nth-child(8)::after { background: var(--purple); }
-    
-    .cat-card:nth-child(1) { animation-delay: 0s; }
-    .cat-card:nth-child(2) { animation-delay: 0.06s; }
-    .cat-card:nth-child(3) { animation-delay: 0.12s; }
-    .cat-card:nth-child(4) { animation-delay: 0.18s; }
-    .cat-card:nth-child(5) { animation-delay: 0.24s; }
-    .cat-card:nth-child(6) { animation-delay: 0.3s; }
-    .cat-card:nth-child(7) { animation-delay: 0.36s; }
-    .cat-card:nth-child(8) { animation-delay: 0.42s; }
-    
-    .cat-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-md);
-      border-color: var(--primary);
-    }
-    
-    .cat-card__icon-wrap {
-      width: 58px;
-      height: 58px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 14px;
-      font-size: 1.6rem;
-      transition: transform 0.3s ease;
-    }
-    
-    .cat-card:hover .cat-card__icon-wrap {
-      transform: scale(1.1) rotate(-4deg);
-    }
-    
-    .cat-card__name {
-      font-family: "DM Sans", sans-serif;
-      font-weight: 800;
-      font-size: 0.95rem;
-      color: var(--text-dark);
-      margin-bottom: 7px;
-    }
-    
-    .cat-card__count {
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--primary-dark);
-      background: var(--primary-light);
-      border-radius: 999px;
-      padding: 2px 10px;
-      margin-bottom: 9px;
-      display: inline-block;
-    }
-    
-    .cat-card__desc {
-      font-size: 0.74rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-    
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Responsive */
-    @media (max-width: 900px) {
-      .cl-section,
-      .cat-section {
-        padding: 28px 0 32px;
-      }
-      .icode-programs .container {
-        padding: 0 20px;
-      }
-      .cl-card {
-        flex: 0 0 78%;
-      }
-      .cat-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .cat-subtitle {
-        text-align: left;
-      }
-    }
-    
-    @media (max-width: 560px) {
-      .cl-card {
-        flex: 0 0 92%;
-      }
-      .cat-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-  </style>
-{% endblock %}
+  }
+  .animate {
+    opacity: 0;
+  }
+  .animate.in {
+    animation: fadeUp 0.5s ease forwards;
+  }
 
-{% block content %}
-  <div class="icode-programs">
-
-    <!--   ═══════════════════════════════════════════════════════
-     SECTION 1: CONTINUE LEARNING
-     ── Django wiring ──────────────────────────────────────
-     View: pass `enrolled_courses` — Enrollment queryset
-           select_related('course', 'course__instructor')
-     Model fields:
-       enrollment.progress            (int 0–100)
-       enrollment.current_lesson      (int)
-       enrollment.course.title
-       enrollment.course.total_lessons
-       enrollment.course.thumbnail    (ImageField, optional)
-       enrollment.course.get_absolute_url
-       enrollment.course.instructor.name
-       enrollment.course.instructor.avatar (ImageField, optional)
-     URL name: 'course_history'
-═══════════════════════════════════════════════════════   -->
-    <section class="cl-section">
-      <div class="container">
-
-        <div class="cl-header">
-          <h2 class="cl-title">Welcome back, <span>ready for your next lesson?</span></h2>
-          {# swap href below with {% url 'course_history' %} when ready #}
-          <a href="#" class="cl-view-all">View history &rarr;</a>
-        </div>
-
-        <div class="cl-slider-outer">
-          <div class="cl-slider-track" id="cl-track">
-            {% comment %}── DYNAMIC: uncomment & remove static block below once enrolled_courses is passed ──
-            {% for enrollment in enrolled_courses %}
-              <a href="{{ enrollment.course.get_absolute_url }}" class="cl-card">
-                <div class="cl-card__thumb">
-                  {% if enrollment.course.thumbnail %}
-                    <img src="{{ enrollment.course.thumbnail.url }}" alt="{{ enrollment.course.title }}" />
-                  {% else %}
-                    <div class="cl-card__thumb-placeholder">📚</div>
-                  {% endif %}
-                  <span class="cl-card__badge">{{ enrollment.progress }}% done</span>
-                  <div class="cl-card__progress-overlay">
-                    <div class="cl-card__progress-fill" style="width:{{ enrollment.progress }}%"></div>
-                  </div>
-                </div>
-                <div class="cl-card__body">
-                  <h3 class="cl-card__title">{{ enrollment.course.title }}</h3>
-                  <div class="cl-card__instructor">
-                    <div class="cl-card__avatar">
-                      {% if enrollment.course.instructor.avatar %}
-                        <img src="{{ enrollment.course.instructor.avatar.url }}" alt="{{ enrollment.course.instructor.name }}" />
-                      {% else %}
-                        {{ enrollment.course.instructor.name|slice:':1'|upper }}
-                      {% endif %}
-                    </div>
-                    <div class="cl-card__instructor-info">
-                      <span class="cl-card__instructor-name">{{ enrollment.course.instructor.name }}</span>
-                      <span class="cl-card__lesson-text">Lesson {{ enrollment.current_lesson }} of {{ enrollment.course.total_lessons }}</span>
-                    </div>
-                  </div>
-                </div>
-              </a>
-            {% empty %}
-              <p style="color:var(--text-muted);font-size:0.9rem;padding:24px 0;">You haven't enrolled in any courses yet.</p>
-            {% endfor %}
-            {% endcomment %}
-
-            {# ── STATIC DEMO — delete this block once enrolled_courses is wired ── #}
-            <a href="#" class="cl-card">
-              <div class="cl-card__thumb">
-                <img src="https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?w=500&q=80" alt="AWS" />
-                <span class="cl-card__badge">71% done</span>
-                <div class="cl-card__progress-overlay">
-                  <div class="cl-card__progress-fill" style="width:71%"></div>
-                </div>
-              </div>
-              <div class="cl-card__body">
-                <h3 class="cl-card__title">AWS Certified Solutions Architect</h3>
-                <div class="cl-card__instructor">
-                  <div class="cl-card__avatar">L</div>
-                  <div class="cl-card__instructor-info">
-                    <span class="cl-card__instructor-name">Lina Harrington</span>
-                    <span class="cl-card__lesson-text">Lesson 5 of 7</span>
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            <a href="#" class="cl-card">
-              <div class="cl-card__thumb">
-                <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500&q=80" alt="React" />
-                <span class="cl-card__badge">30% done</span>
-                <div class="cl-card__progress-overlay">
-                  <div class="cl-card__progress-fill" style="width:30%"></div>
-                </div>
-              </div>
-              <div class="cl-card__body">
-                <h3 class="cl-card__title">React &amp; TypeScript Masterclass</h3>
-                <div class="cl-card__instructor">
-                  <div class="cl-card__avatar">M</div>
-                  <div class="cl-card__instructor-info">
-                    <span class="cl-card__instructor-name">Marco Silva</span>
-                    <span class="cl-card__lesson-text">Lesson 3 of 10</span>
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            <a href="#" class="cl-card">
-              <div class="cl-card__thumb">
-                <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=500&q=80" alt="UI/UX" />
-                <span class="cl-card__badge">75% done</span>
-                <div class="cl-card__progress-overlay">
-                  <div class="cl-card__progress-fill" style="width:75%"></div>
-                </div>
-              </div>
-              <div class="cl-card__body">
-                <h3 class="cl-card__title">UI/UX Design Fundamentals</h3>
-                <div class="cl-card__instructor">
-                  <div class="cl-card__avatar">S</div>
-                  <div class="cl-card__instructor-info">
-                    <span class="cl-card__instructor-name">Sana Karimi</span>
-                    <span class="cl-card__lesson-text">Lesson 6 of 8</span>
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            <a href="#" class="cl-card">
-              <div class="cl-card__thumb">
-                <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&q=80" alt="Python" />
-                <span class="cl-card__badge">17% done</span>
-                <div class="cl-card__progress-overlay">
-                  <div class="cl-card__progress-fill" style="width:17%"></div>
-                </div>
-              </div>
-              <div class="cl-card__body">
-                <h3 class="cl-card__title">Python for Data Science</h3>
-                <div class="cl-card__instructor">
-                  <div class="cl-card__avatar">J</div>
-                  <div class="cl-card__instructor-info">
-                    <span class="cl-card__instructor-name">James Okafor</span>
-                    <span class="cl-card__lesson-text">Lesson 2 of 12</span>
-                  </div>
-                </div>
-              </div>
-            </a>
-
-            <a href="#" class="cl-card">
-              <div class="cl-card__thumb">
-                <img src="https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=500&q=80" alt="Marketing" />
-                <span class="cl-card__badge">67% done</span>
-                <div class="cl-card__progress-overlay">
-                  <div class="cl-card__progress-fill" style="width:67%"></div>
-                </div>
-              </div>
-              <div class="cl-card__body">
-                <h3 class="cl-card__title">Digital Marketing Strategy</h3>
-                <div class="cl-card__instructor">
-                  <div class="cl-card__avatar">A</div>
-                  <div class="cl-card__instructor-info">
-                    <span class="cl-card__instructor-name">Aisha Ndiaye</span>
-                    <span class="cl-card__lesson-text">Lesson 4 of 6</span>
-                  </div>
-                </div>
-              </div>
-            </a>
-            {# ── END STATIC DEMO ── #}
+  /* ── RESULTS BAR ── */
+  .results-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .results-count {
+    font-size: 0.9rem;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .sort-select {
+    padding: 0.45rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 9999px;
+    font-family: "Nunito", sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    background: #fff;
+  }
+  .sort-select:focus {
+    border-color: var(--teal);
+  }
+</style>
+{% endblock %} {% block content %}
+<body>
+  <!-- ════════ PAGE HERO ════════ -->
+  <section class="page-hero">
+    <div class="page-hero__bg"></div>
+    <div class="container">
+      <div class="page-hero__content">
+        <span class="page-hero__eyebrow">🚀 Innovate Tech · I-code</span>
+        <h1 class="page-hero__title">
+          Explore Our <span>Programs</span> &amp;<br />Find Your Path
+        </h1>
+        <p class="page-hero__sub">
+          Hands-on in-person classes in Coding, Robotics, AI, Cybersecurity, and
+          Drone Training — for young innovators aged 7–18.
+        </p>
+        <div class="page-hero__stats" id="heroStats">
+          <div class="page-hero__stat">
+            <div class="page-hero__stat-val">{{students}}+</div>
+            <div class="page-hero__stat-lab">Students Enrolled</div>
+          </div>
+          <div class="page-hero__stat">
+            <div class="page-hero__stat-val" id="heroProgCount">{{courses.count}}</div>
+            <div class="page-hero__stat-lab">Programs</div>
+          </div>
+          <div class="page-hero__stat">
+            <div class="page-hero__stat-val">98%</div>
+            <div class="page-hero__stat-lab">Parent Satisfaction</div>
+          </div>
+          <div class="page-hero__stat">
+            <div class="page-hero__stat-val">7–18</div>
+            <div class="page-hero__stat-lab">Age Range</div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
 
-        <div class="cl-nav">
-          <div class="cl-nav-dots" id="cl-dots"></div>
-          <button class="cl-nav-btn" id="cl-prev" aria-label="Previous" disabled><i class="fa-solid fa-angles-left"></i></button>
-          <button class="cl-nav-btn" id="cl-next" aria-label="Next"><i class="fa-solid fa-angles-right"></i></button>
+  <!-- ════════ FILTER BAR ════════ -->
+  <section class="filter-section">
+    <div class="container">
+      <div class="filter-bar" id="filterBar">
+        <div class="search-wrap">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input type="text" id="searchInput" placeholder="Search classes…" />
         </div>
+        <!-- filter buttons injected by JS after data loads -->
+        <button class="filter-btn active" data-filter="all">
+          <span class="dot" style="background: var(--teal)"></span> All Programs
+        </button>
+      </div>
+    </div>
+  </section>
 
-      </div><!-- /.container -->
-    </section>
+  <!-- ════════ COURSES GRID ════════ -->
+  {% comment %} {% endcomment %}
+  <section class="courses-section">
+    <div class="container">
+      <div class="results-bar">
+        <span class="results-count">
+          Showing {{ courses|length }} classes
+        </span>
 
-    <!--   ═══════════════════════════════════════════════════════
-     SECTION 2: TOP CATEGORIES
-     ── Django wiring ──────────────────────────────────────
-     View: pass `categories` — Category queryset
-     Model fields:
-       category.name
-       category.description
-       category.icon              (emoji string or icon tag)
-       category.icon_bg_color     (hex / rgba, optional)
-       category.course_count      (annotated int, optional)
-       category.get_absolute_url
-═══════════════════════════════════════════════════════   -->
-    <section class="cat-section">
-      <div class="container">
+        <select class="sort-select">
+          <option>Sort: Featured</option>
+          <option>Price: Low to High</option>
+          <option>Price: High to Low</option>
+          <option>Highest Rated</option>
+        </select>
+      </div>
 
-        <div class="cat-header">
-          <h2 class="cat-title">Choose your favourite course from <span>top categories</span></h2>
-          <p class="cat-subtitle">Explore skills across every domain</p>
+      <div class="courses-grid">
+        {% if courses %} {% for c in courses %}
+        <div class="course-card">
+          <div class="course-card__thumb">
+            {% if c.thumbnail %}
+            <img src="{{ c.thumbnail.url }}" alt="{{ c.title }}" />
+            {% else %}
+            <div
+              class="thumb-fallback"
+              style="background: linear-gradient(135deg, #3b82f6, #1d4ed8)"
+            >
+              <span>{{ c.type|title }}</span>
+            </div>
+            {% endif %}
+
+            <span class="course-card__badge">{{ c.type|title }}</span>
+
+            <span class="course-card__price">
+              KSh {{ c.price|floatformat:0 }}
+            </span>
+
+            <div class="course-card__level">
+              <span class="level-pill">All Levels</span>
+              <span class="level-pill">Ages 7–18</span>
+            </div>
+          </div>
+
+          <div class="course-card__body">
+            <h3 class="course-card__title">{{ c.title }}</h3>
+
+            <p class="course-card__desc">
+              {{ c.description|truncatewords:20 }}
+            </p>
+
+            <p class="course-card__instructor">
+              By <a href="#">{{ c.instructor }}</a>
+            </p>
+
+            <div class="course-card__meta">
+              <span>{{ c.duration }}</span>
+              <span>{{ c.enrolled }}</span>
+              <span>{{ c.rating }}</span>
+            </div>
+
+            <a href="#" class="btn-enroll">View Details →</a>
+          </div>
         </div>
-
-        <div class="cat-grid">
-          {% comment %}── DYNAMIC: uncomment & remove static block once categories is passed ──
-          {% for category in categories %}
-            <a href="{{ category.get_absolute_url }}" class="cat-card">
-              <div class="cat-card__icon-wrap" style="background:{{ category.icon_bg_color|default:'rgba(73,187,189,0.12)' }}">
-                <span>{{ category.icon }}</span>
-              </div>
-              <div class="cat-card__name">{{ category.name }}</div>
-              {% if category.course_count is not None %}
-                <div class="cat-card__count">{{ category.course_count }} courses</div>
-              {% endif %}
-              <div class="cat-card__desc">{{ category.description }}</div>
-            </a>
-          {% empty %}
-            <p style="color:var(--text-muted);font-size:0.9rem;">No categories available yet.</p>
-          {% endfor %}
-          {% endcomment %}
-
-          {# ── STATIC DEMO — delete once categories is wired ── #}
-          <a href="#" class="cat-card">
-            <div class="cat-card__icon-wrap" style="background:rgba(73,187,189,0.12)">✏️</div>
-            <div class="cat-card__name">Design</div>
-            <div class="cat-card__count">48 courses</div>
-            <div class="cat-card__desc">UI/UX, Graphic Design, Motion &amp; Visual Arts</div>
-          </a>
-
-          <a href="#" class="cat-card">
-            <div class="cat-card__icon-wrap" style="background:rgba(124,92,191,0.12)">🖥️</div>
-            <div class="cat-card__name">Development</div>
-            <div class="cat-card__count">120 courses</div>
-            <div class="cat-card__desc">Web, Mobile, Cloud &amp; Backend Engineering</div>
-          </a>
-
-          <a href="#" class="cat-card">
-            <div class="cat-card__icon-wrap" style="background:rgba(45,130,227,0.12)">🗄️</div>
-            <div class="cat-card__name">Data Science</div>
-            <div class="cat-card__count">64 courses</div>
-            <div class="cat-card__desc">ML, AI, Analytics &amp; Data Engineering</div>
-          </a>
-
-          <a href="#" class="cat-card">
-            <div class="cat-card__icon-wrap" style="background:rgba(244,140,6,0.12)">💼</div>
-            <div class="cat-card__name">Business</div>
-            <div class="cat-card__count">37 courses</div>
-            <div class="cat-card__desc">Strategy, Management &amp; Entrepreneurship</div>
-          </a>
-
-          <a href="#" class="cat-card">
-            <div class="cat-card__icon-wrap" style="background:rgba(233,75,127,0.12)">📣</div>
-            <div class="cat-card__name">Marketing</div>
-            <div class="cat-card__count">52 courses</div>
-            <div class="cat-card__desc">SEO, Social Media, Ads &amp; Branding</div>
-          </a>
-
-          <a href="#" class="cat-card">
-            <div class="cat-card__icon-wrap" style="background:rgba(39,174,120,0.12)">📷</div>
-            <div class="cat-card__name">Photography</div>
-            <div class="cat-card__count">29 courses</div>
-            <div class="cat-card__desc">Landscape, Portrait &amp; Product Photography</div>
-          </a>
-
-          <a href="#" class="cat-card">
-            <div class="cat-card__icon-wrap" style="background:rgba(73,187,189,0.12)">🎬</div>
-            <div class="cat-card__name">Acting</div>
-            <div class="cat-card__count">18 courses</div>
-            <div class="cat-card__desc">Film, Stage, Voice &amp; Performance Arts</div>
-          </a>
-
-          <a href="#" class="cat-card">
-            <div class="cat-card__icon-wrap" style="background:rgba(124,92,191,0.12)">📊</div>
-            <div class="cat-card__name">Finance</div>
-            <div class="cat-card__count">41 courses</div>
-            <div class="cat-card__desc">Accounting, Investing &amp; Financial Modelling</div>
-          </a>
-          {# ── END STATIC DEMO ── #}
+        {% endfor %} {% else %} {% for i in "123" %}
+        <div class="skeleton-card">
+          <div class="skeleton-thumb"></div>
+          <div class="skeleton-body">
+            <div class="skeleton-line wide"></div>
+            <div class="skeleton-line medium"></div>
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line btn"></div>
+          </div>
         </div>
+        {% endfor %} {% endif %}
+      </div>
+    </div>
+  </section>
 
-      </div><!-- /.container -->
-    </section>
+  <!-- ════════ CTA BANNER ════════ -->
+  <section class="cta-banner">
+    <div class="container">
+      <div class="cta-banner__content">
+        <h2>Ready to Start Learning?</h2>
+        <p>
+          Join hundreds of young innovators already building their future at
+          I-code. Enroll today or contact us to find the right program for your
+          child.
+        </p>
+        <div class="cta-banner__btns">
+          <button
+            class="btn-teal"
+            onclick="
+              document
+                .querySelector('.filter-section')
+                .scrollIntoView({ behavior: 'smooth' })
+            "
+          >
+            Browse All Programs
+          </button>
+          <button class="btn-ghost">Contact Us</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  </div><!-- /.icode-programs -->
+  <!-- ════════ FOOTER ════════ -->
+  
 
-  <script>
-    ;(function () {
-      const track = document.getElementById('cl-track')
-      const prevBtn = document.getElementById('cl-prev')
-      const nextBtn = document.getElementById('cl-next')
-      const dotsEl = document.getElementById('cl-dots')
-      let idx = 0
-    
-      function cardW() {
-        const c = track.children[0]
-        return c ? c.offsetWidth + 20 : 0 /* gap = 20px */
-      }
-    
-      function visibleCount() {
-        return Math.max(1, Math.floor(track.parentElement.offsetWidth / cardW()))
-      }
-    
-      function maxIdx() {
-        return Math.max(0, track.children.length - visibleCount())
-      }
-    
-      function buildDots() {
-        dotsEl.innerHTML = ''
-        for (let i = 0, pages = maxIdx() + 1; i < pages; i++) {
-          const d = document.createElement('span')
-          d.className = 'cl-nav-dot' + (i === idx ? ' active' : '')
-          d.addEventListener('click', () => {
-            idx = i
-            update()
-          })
-          dotsEl.appendChild(d)
-        }
-      }
-    
-      function update() {
-        track.style.transform = `translateX(-${idx * cardW()}px)`
-        prevBtn.disabled = idx === 0
-        nextBtn.disabled = idx >= maxIdx()
-        document.querySelectorAll('.cl-nav-dot').forEach((d, i) => d.classList.toggle('active', i === idx))
-      }
-    
-      prevBtn.addEventListener('click', () => {
-        if (idx > 0) { idx--; update() }
-      })
-      nextBtn.addEventListener('click', () => {
-        if (idx < maxIdx()) { idx++; update() }
-      })
-    
-      window.addEventListener('resize', () => {
-        idx = Math.min(idx, maxIdx())
-        buildDots()
-        update()
-      })
-    
-      buildDots()
-      update()
-    })()
-  </script>
+  <!-- ════════ MODAL ════════ -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <div class="modal__hero" id="modalHero"></div>
+      <div class="modal__body">
+        <span class="modal__program-tag" id="modalTag"></span>
+        <h2 class="modal__title" id="modalTitle"></h2>
+        <p class="modal__instructor" id="modalInstructor"></p>
+        <div class="modal__meta-row" id="modalMeta"></div>
+        <p class="modal__desc" id="modalDesc"></p>
+        <div class="modal__what-learn" id="modalLearn"></div>
+        <div class="modal__footer">
+          <div class="modal__price" id="modalPrice"></div>
+          <button class="modal__enroll-btn">Enroll Now →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
 {% endblock %}
