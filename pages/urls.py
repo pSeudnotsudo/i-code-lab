@@ -30,7 +30,7 @@ urlpatterns = [
     #  AUTH
     # ─────────────────────────────────────────────
     path("icode/login/",  authentication_views.icode_login,  name="login"),
-    path("icode/logout/", authentication_views.admin_logout, name="admin_logout"),
+    path("icode/logout/", authentication_views.admin_logout, name="logout"),
 
     # ─────────────────────────────────────────────
     #  ADMIN DASHBOARD  (protect with login_required / staff_required)
@@ -57,6 +57,9 @@ urlpatterns = [
 
     # ── Enrollments ───────────────────────────────
     path("admin-ajax/enrollments/", admin_views.enrollment_list, name="admin_enrollment_list"),
+    
+    # Enroll to course
+    path('courses/<int:course_pk>/enroll/', views.enroll_ajax, name='enroll_ajax'),
 
     # ── Reviews ───────────────────────────────────
     path("admin-ajax/reviews/", admin_views.review_list, name="admin_review_list"),

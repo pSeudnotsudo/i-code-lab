@@ -8,7 +8,7 @@
     padding: 1rem 0;
     /*background: rgba(73, 187, 189, 0.85);*/
     background: #49bbbd;
-    backdrop-filter: blur(12px);
+    /*backdrop-filter: blur(12px);*/
     
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
@@ -98,7 +98,7 @@
 
       <div class="navbar__auth" data-aos="fade-left" data-aos-delay="200">
         {% if user.is_authenticated %}
-          <a href="{% url 'icode' %}" class="btn btn-white">Dashboard</a>
+          <a href="{% url 'icode_dashboard' %}" class="btn btn-white">Dashboard</a>
           <a href="{% url 'logout' %}" class="btn btn-outline">Logout</a>
         {% else %}
           <a href="{% url 'login' %}" class="btn btn-white">Login</a>

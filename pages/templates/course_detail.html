@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}{{ course.title }} — I-code{% endblock %}
 
@@ -120,6 +121,50 @@
 
   .form-error { color: #dc2626; font-size: 0.82rem; margin-top: 0.3rem; }
 
+  /* ── Enroll trigger card ── */
+  .enroll-trigger-card {
+    background: #fff;
+    border-radius: 1.25rem;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  .enroll-trigger-card h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+  }
+  .enroll-trigger-card p {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+  .btn-enroll-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #1a1a2e;
+    color: #fff;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    width: 100%;
+    font-family: "Nunito", sans-serif;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-enroll-trigger:hover {
+    background: #16213e;
+    transform: translateY(-1px);
+  }
+
   /* ── Reviews ── */
   .reviews-section { margin-top: 3rem; }
   .reviews-section h2 { font-size: 1.5rem; font-weight: 700; color: #1f2937; margin-bottom: 1.5rem; }
@@ -145,6 +190,291 @@
   }
   .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
   .alert-error   { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+  /* ══════════════════════════════════════
+     ENROLLMENT MODAL
+  ══════════════════════════════════════ */
+
+  /* Overlay */
+  .enroll-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 10, 20, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .enroll-overlay.active { display: flex; }
+
+  /* Modal card */
+  .enroll-modal {
+    background: #fff;
+    border-radius: 22px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 32px 72px rgba(0,0,0,0.22), 0 8px 24px rgba(0,0,0,0.1);
+    animation: modalIn 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.91) translateY(16px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  /* Modal header */
+  .modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 28px 28px 22px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+    border-radius: 22px 22px 0 0;
+    position: relative;
+    overflow: hidden;
+  }
+  /* subtle decorative circle */
+  .modal-header::after {
+    content: '';
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border: 32px solid rgba(255,255,255,0.05);
+    right: -40px;
+    top: -60px;
+    pointer-events: none;
+  }
+  .modal-eyebrow {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #49bbbd;
+    background: rgba(73,187,189,0.15);
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+  }
+  .modal-header h2 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.35;
+    max-width: 380px;
+  }
+  .modal-close {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7);
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: background 0.2s, color 0.2s;
+    line-height: 1;
+  }
+  .modal-close:hover {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+  }
+
+  /* Form inside modal */
+  .modal-body {
+    padding: 24px 28px 0;
+  }
+  .modal-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .modal-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .modal-form-group.full-width {
+    grid-column: 1 / -1;
+  }
+  .modal-form-group label {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .modal-req { color: #e53e3e; font-weight: 800; }
+  .modal-optional {
+    font-size: 10.5px;
+    font-weight: 500;
+    color: #9ca3af;
+    background: #f3f4f6;
+    padding: 1px 7px;
+    border-radius: 20px;
+  }
+  .modal-form-group input,
+  .modal-form-group textarea {
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 10px 13px;
+    font-size: 13.5px;
+    color: #111827;
+    background: #fafafa;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: "Nunito", sans-serif;
+  }
+  .modal-form-group input:focus,
+  .modal-form-group textarea:focus {
+    border-color: #49bbbd;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(73,187,189,0.15);
+  }
+  .modal-form-group input::placeholder,
+  .modal-form-group textarea::placeholder { color: #c4c9d4; }
+  .modal-form-group textarea { resize: vertical; min-height: 78px; }
+
+  /* Modal errors */
+  .modal-field-error {
+    font-size: 11.5px;
+    color: #e53e3e;
+    min-height: 15px;
+    font-weight: 600;
+  }
+  .modal-general-error {
+    font-size: 13px;
+    color: #e53e3e;
+    font-weight: 600;
+    text-align: center;
+    min-height: 18px;
+    margin-top: 6px;
+  }
+
+  /* Modal footer */
+  .modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 20px 28px 28px;
+    margin-top: 18px;
+  }
+  .modal-btn-cancel {
+    background: none;
+    border: 1.5px solid #e5e7eb;
+    color: #6b7280;
+    padding: 10px 22px;
+    border-radius: 50px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: "Nunito", sans-serif;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .modal-btn-cancel:hover { border-color: #9ca3af; color: #374151; }
+  .modal-btn-submit {
+    background: #1a1a2e;
+    color: #fff;
+    border: none;
+    padding: 11px 28px;
+    border-radius: 50px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "Nunito", sans-serif;
+    transition: background 0.2s, transform 0.15s, opacity 0.2s;
+  }
+  .modal-btn-submit:hover:not(:disabled) {
+    background: #0f3460;
+    transform: translateY(-1px);
+  }
+  .modal-btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  /* Spinner */
+  .modal-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Success state */
+  .modal-success {
+    display: none;
+    padding: 52px 28px;
+    text-align: center;
+  }
+  .modal-success-icon {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    color: #065f46;
+    font-size: 30px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+  }
+  .modal-success h3 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #111827;
+    margin: 0 0 10px;
+  }
+  .modal-success p {
+    font-size: 15px;
+    color: #6b7280;
+    margin: 0 0 24px;
+    line-height: 1.65;
+  }
+  .modal-success-close {
+    background: #1a1a2e;
+    color: #fff;
+    border: none;
+    padding: 11px 28px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: "Nunito", sans-serif;
+    transition: background 0.2s;
+  }
+  .modal-success-close:hover { background: #0f3460; }
+
+  /* Responsive */
+  @media (max-width: 520px) {
+    .enroll-modal { border-radius: 18px; }
+    .modal-header { padding: 22px 20px 18px; border-radius: 18px 18px 0 0; }
+    .modal-header h2 { font-size: 16px; }
+    .modal-body { padding: 18px 20px 0; }
+    .modal-form-grid { grid-template-columns: 1fr; }
+    .modal-form-group.full-width { grid-column: 1; }
+    .modal-footer { padding: 16px 20px 24px; }
+  }
 </style>
 {% endblock %}
 
@@ -161,17 +491,15 @@
 <!-- Hero -->
 <section class="detail-hero">
   <div class="container">
-    <a href="{% url 'index' %}" class="detail-hero__back">
-      ← Back to Home
-    </a>
+    <a href="{% url 'index' %}" class="detail-hero__back">← Back to Home</a>
     <h1 class="detail-hero__title">{{ course.title }}</h1>
     <div class="detail-hero__meta">
       <span class="detail-badge">{{ course.get_program_type_display }}</span>
       <span class="detail-badge">{{ course.get_level_display }}</span>
       <span class="detail-badge">Ages {{ course.age_min }}–{{ course.age_max }}</span>
-      <span class="detail-badge">{{ course.duration }}</span>
+      <span class="detail-badge">{{ course.duration }} Weeks</span>
       {% if course.price %}
-        <span class="detail-badge">${{ course.price }}</span>
+        <span class="detail-badge">Ksh {{ course.price|intcomma }}</span>
       {% endif %}
     </div>
     <p class="detail-hero__desc">{{ course.description }}</p>
@@ -189,9 +517,7 @@
           <h2>
             Reviews
             {% if course.average_rating %}
-              <span style="color:#facc15;font-size:1rem">
-                ★ {{ course.average_rating }}
-              </span>
+              <span style="color:#facc15;font-size:1rem">★ {{ course.average_rating }}</span>
             {% endif %}
           </h2>
 
@@ -205,9 +531,7 @@
                   {% endfor %}
                 </span>
               </div>
-              <div class="review-card__date">
-                {{ review.created_at|date:"d M Y" }}
-              </div>
+              <div class="review-card__date">{{ review.created_at|date:"d M Y" }}</div>
               <p class="review-card__text">{{ review.comment }}</p>
             </div>
           {% empty %}
@@ -216,60 +540,40 @@
         </div>
       </div>
 
-      <!-- Right: Forms -->
+      <!-- Right: Enroll + Review -->
       <div>
 
-        <!-- Enroll form -->
-        <div class="form-card">
+        <!-- ── Enroll trigger card ── -->
+        <div class="enroll-trigger-card">
           <h2>Enroll in This Class</h2>
-          <form method="POST">
-            {% csrf_token %}
-            {% for field in enroll_form %}
-              <div class="form-group">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-                {% if field.errors %}
-                  {% for error in field.errors %}
-                    <div class="form-error">{{ error }}</div>
-                  {% endfor %}
-                {% endif %}
-              </div>
-            {% endfor %}
-            <button type="submit" name="enroll_submit" class="btn-submit">
-              Request Enrollment
-            </button>
-          </form>
+          <p>Ready to join? Click below to fill in your details and request enrollment.</p>
+          <button id="open-enroll-modal" class="btn-enroll-trigger">
+            ✦ Request Enrollment
+          </button>
         </div>
 
-        <!-- Review form -->
+        <!-- ── Review form ── -->
         <div class="form-card">
           <h2>Leave a Review</h2>
           <form method="POST">
             {% csrf_token %}
 
-            <!-- Name -->
             <div class="form-group">
-              <label for="{{ review_form.full_name.id_for_label }}">
-                {{ review_form.full_name.label }}
-              </label>
+              <label for="{{ review_form.full_name.id_for_label }}">{{ review_form.full_name.label }}</label>
               {{ review_form.full_name }}
               {% for error in review_form.full_name.errors %}
                 <div class="form-error">{{ error }}</div>
               {% endfor %}
             </div>
 
-            <!-- Email -->
             <div class="form-group">
-              <label for="{{ review_form.email.id_for_label }}">
-                {{ review_form.email.label }}
-              </label>
+              <label for="{{ review_form.email.id_for_label }}">{{ review_form.email.label }}</label>
               {{ review_form.email }}
               {% for error in review_form.email.errors %}
                 <div class="form-error">{{ error }}</div>
               {% endfor %}
             </div>
 
-            <!-- Star rating (custom radio) -->
             <div class="form-group">
               <label>Your Rating</label>
               <div class="star-radio-group">
@@ -289,19 +593,15 @@
               {% endfor %}
             </div>
 
-            <!-- Comment -->
             <div class="form-group">
-              <label for="{{ review_form.comment.id_for_label }}">
-                {{ review_form.comment.label }}
-              </label>
+              <label for="{{ review_form.comment.id_for_label }}">{{ review_form.comment.label }}</label>
               {{ review_form.comment }}
               {% for error in review_form.comment.errors %}
                 <div class="form-error">{{ error }}</div>
               {% endfor %}
             </div>
 
-            <button type="submit" name="review_submit" class="btn-submit"
-              style="background:#2f327d">
+            <button type="submit" name="review_submit" class="btn-submit" style="background:#2f327d">
               Submit Review
             </button>
           </form>
@@ -314,5 +614,190 @@
     </div><!-- /.detail-grid -->
   </div><!-- /.container -->
 </section>
+
+
+<!-- ══════════════════════════════════════
+     ENROLLMENT MODAL
+══════════════════════════════════════ -->
+<div id="enroll-overlay" class="enroll-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="enroll-modal">
+
+    <!-- Header -->
+    <div class="modal-header">
+      <div>
+        <span class="modal-eyebrow">Join the class</span>
+        <h2 id="modal-title">{{ course.title }}</h2>
+      </div>
+      <button class="modal-close" id="close-enroll-modal" aria-label="Close">&times;</button>
+    </div>
+
+    <!-- Success state -->
+    <div class="modal-success" id="modal-success">
+      <div class="modal-success-icon">✓</div>
+      <h3>You're on the list!</h3>
+      <p>We've received your enrollment request and will be in touch shortly.</p>
+      <button class="modal-success-close" id="modal-success-close">Close</button>
+    </div>
+
+    <!-- Form -->
+    <form id="enroll-form" novalidate>
+      {% csrf_token %}
+
+      <div class="modal-body">
+        <div class="modal-form-grid">
+
+          <div class="modal-form-group full-width">
+            <label for="enroll_full_name">Full Name <span class="modal-req">*</span></label>
+            <input type="text" id="enroll_full_name" name="full_name" placeholder="Your full name" autocomplete="name">
+            <div class="modal-field-error" id="err-full_name"></div>
+          </div>
+
+          <div class="modal-form-group">
+            <label for="enroll_email">Email <span class="modal-req">*</span></label>
+            <input type="email" id="enroll_email" name="email" placeholder="you@example.com" autocomplete="email">
+            <div class="modal-field-error" id="err-email"></div>
+          </div>
+
+          <div class="modal-form-group">
+            <label for="enroll_phone">Phone <span class="modal-optional">optional</span></label>
+            <input type="tel" id="enroll_phone" name="phone" placeholder="+254 700 000 000" autocomplete="tel">
+            <div class="modal-field-error" id="err-phone"></div>
+          </div>
+
+          <div class="modal-form-group">
+            <label for="enroll_child_name">Child's Name <span class="modal-optional">optional</span></label>
+            <input type="text" id="enroll_child_name" name="child_name" placeholder="If enrolling for a child">
+            <div class="modal-field-error" id="err-child_name"></div>
+          </div>
+
+          <div class="modal-form-group">
+            <label for="enroll_child_age">Child's Age <span class="modal-optional">optional</span></label>
+            <input type="number" id="enroll_child_age" name="child_age" min="1" max="18" placeholder="e.g. 8">
+            <div class="modal-field-error" id="err-child_age"></div>
+          </div>
+
+          <div class="modal-form-group full-width">
+            <label for="enroll_message">Message <span class="modal-optional">optional</span></label>
+            <textarea id="enroll_message" name="message" rows="3" placeholder="Any questions or details we should know..."></textarea>
+            <div class="modal-field-error" id="err-message"></div>
+          </div>
+
+        </div><!-- /.modal-form-grid -->
+
+        <div class="modal-general-error" id="err-general"></div>
+      </div><!-- /.modal-body -->
+
+      <div class="modal-footer">
+        <button type="button" class="modal-btn-cancel" id="cancel-enroll">Cancel</button>
+        <button type="submit" id="enroll-btn" class="modal-btn-submit">
+          <span id="btn-text">Send Request</span>
+          <span class="modal-spinner" id="btn-spinner"></span>
+        </button>
+      </div>
+    </form>
+
+  </div><!-- /.enroll-modal -->
+</div><!-- /.enroll-overlay -->
+
+
+<script>
+  const overlay     = document.getElementById('enroll-overlay');
+  const openBtn     = document.getElementById('open-enroll-modal');
+  const closeBtn    = document.getElementById('close-enroll-modal');
+  const cancelBtn   = document.getElementById('cancel-enroll');
+  const successBox  = document.getElementById('modal-success');
+  const successClose= document.getElementById('modal-success-close');
+  const form        = document.getElementById('enroll-form');
+  const enrollBtn   = document.getElementById('enroll-btn');
+  const btnText     = document.getElementById('btn-text');
+  const btnSpinner  = document.getElementById('btn-spinner');
+
+  function openModal() {
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('enroll_full_name').focus(), 120);
+  }
+
+  function closeModal() {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  openBtn.addEventListener('click', openModal);
+  closeBtn.addEventListener('click', closeModal);
+  cancelBtn.addEventListener('click', closeModal);
+  successClose.addEventListener('click', closeModal);
+
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) closeModal();
+  });
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    // Clear errors
+    document.querySelectorAll('.modal-field-error, .modal-general-error')
+      .forEach(el => el.textContent = '');
+
+    // localStorage duplicate check
+    const enrolledKey = 'enrolled_course_{{ course.pk }}';
+    if (localStorage.getItem(enrolledKey)) {
+      document.getElementById('err-general').textContent =
+        'You have already submitted an enrollment request for this class.';
+      return;
+    }
+
+    const payload = {
+      full_name:  form.full_name.value.trim(),
+      email:      form.email.value.trim(),
+      phone:      form.phone.value.trim(),
+      child_name: form.child_name.value.trim(),
+      child_age:  form.child_age.value || null,
+      message:    form.message.value.trim(),
+    };
+
+    enrollBtn.disabled    = true;
+    btnText.textContent   = 'Sending…';
+    btnSpinner.style.display = 'inline-block';
+
+    try {
+      const response = await fetch("{% url 'enroll_ajax' course.pk %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem(enrolledKey, payload.email);
+        form.style.display      = 'none';
+        successBox.style.display = 'block';
+
+      } else if (response.status === 409) {
+        document.getElementById('err-general').textContent =
+          data.error || 'This email is already enrolled in this class.';
+
+      } else {
+        Object.entries(data.errors || {}).forEach(([field, messages]) => {
+          const el = document.getElementById(`err-${field}`);
+          if (el) el.textContent = Array.isArray(messages) ? messages.join(' ') : messages;
+          else document.getElementById('err-general').textContent = messages;
+        });
+      }
+
+    } catch {
+      document.getElementById('err-general').textContent = 'Network error — please try again.';
+    } finally {
+      enrollBtn.disabled       = false;
+      btnText.textContent      = 'Send Request';
+      btnSpinner.style.display = 'none';
+    }
+  });
+</script>
 
 {% endblock %}

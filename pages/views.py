@@ -4,7 +4,9 @@ from django.utils import timezone
 from django.http import JsonResponse
 from django.shortcuts import render
 from .models import *
-
+import json
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 
 def index(request):
     """
@@ -85,3 +87,64 @@ def course_detail(request, slug):
 def newsletter_subscribe(request):
     
     return render(request, 'course_detail', {})
+
+
+
+
+@require_POST
+def enroll_ajax(request, course_pk):
+    course = get_object_or_404(Course, pk=course_pk)
+
+    try:
+        body = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'errors': {'__all__': ['Invalid request.']}}, status=400)
+
+    # Manual validation
+    errors = {}
+
+    full_name = body.get('full_name', '').strip()
+    email     = body.get('email', '').strip()
+    phone     = body.get('phone', '').strip()
+    child_name = body.get('child_name', '').strip()
+    child_age  = body.get('child_age')
+    message   = body.get('message', '').strip()
+
+    if not full_name:
+        errors['full_name'] = ['Full name is required.']
+
+    if not email:
+        errors['email'] = ['Email is required.']
+    elif '@' not in email:
+        errors['email'] = ['Enter a valid email address.']
+
+    if child_age is not None:
+        try:
+            child_age = int(child_age)
+            if child_age < 1:
+                errors['child_age'] = ['Age must be a positive number.']
+        except (ValueError, TypeError):
+            errors['child_age'] = ['Enter a valid age.']
+    else:
+        child_age = None
+
+    if errors:
+        return JsonResponse({'errors': errors}, status=400)
+    
+    # After validation passes, before saving — add this check:
+    if Enrollment.objects.filter(course=course, email=email).exists():
+        return JsonResponse({'error': 'This email is already enrolled in this class.'}, status=409)
+
+
+
+    Enrollment.objects.create(
+        course     = course,
+        full_name  = full_name,
+        email      = email,
+        phone      = phone,
+        child_name = child_name,
+        child_age  = child_age,
+        message    = message,
+    )
+
+    return JsonResponse({'status': 'ok'}, status=201)
