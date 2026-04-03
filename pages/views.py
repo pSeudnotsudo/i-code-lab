@@ -19,7 +19,7 @@ def index(request):
     - newsletter form for footer
     """
     settings      = SiteSettings.get()
-    courses       = Course.objects.filter(is_active=True, is_featured=True).order_by("order")
+    courses       = Course.objects.filter(is_active=True).order_by("order")
     testimonials  = Testimonial.objects.filter(is_featured=True, is_approved=True)
     stats         = Stat.objects.all()
     # newsletter_form = NewsletterForm()

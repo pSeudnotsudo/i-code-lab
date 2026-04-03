@@ -1,518 +1,21 @@
-{% extends 'base.html' %} 
-{% load static %} 
-{% load humanize %} 
-{% block title%}
-I-code - Innovate Tech | Coding School for Kids Ages 7–18
-{% endblock %} 
-{% block extra_head %}
-<style>
-  .hero {
-    position: relative;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #49bbbd, #3da3a5);
-    overflow: hidden;
-  }
-  .hero__wave {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    line-height: 0;
-  }
-  .hero__wave svg { width: 100%; display: block; }
-  /* Wave matches the dark Programs section — eliminates the white gap */
-  .hero__wave path { fill: #0f1624 !important; }
-  .navbar {
-    position: relative;
-    z-index: 20;
-    padding: 1.5rem 0;
-  }
-  .navbar__inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-  .navbar__logo {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    text-decoration: none;
-  }
-  .navbar__logo-icon {
-    width: 3rem;
-    height: 3rem;
-    background: rgba(255,255,255,0.2);
-    border-radius: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(8px);
-  }
-  .navbar__logo-icon span {
-    display: block;
-    width: 2rem;
-    height: 2rem;
-    border: 2px solid #67e8f9;
-    transform: rotate(45deg);
-  }
-  .navbar__brand {
-    font-family: "Nunito", sans-serif;
-    font-size: 1.875rem;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: 0.05em;
-  }
-  .navbar__links {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    list-style: none;
-  }
-  .navbar__links a {
-    font-family: "Nunito", sans-serif;
-    font-size: 1rem;
-    color: #fff;
-    transition: color 0.2s;
-  }
-  .navbar__links a:hover { color: #a5f3fc; }
-  .navbar__auth { display: flex; align-items: center; gap: 1rem; }
-  .hero__body {
-    position: relative;
-    z-index: 10;
-    padding: 4rem 0 8rem;
-  }
-  .hero__grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-    align-items: center;
-  }
-  @media (max-width: 768px) {
-    .hero__grid { grid-template-columns: 1fr; }
-    .navbar__links { display: none; }
-  }
-  .hero__heading {
-    font-size: clamp(2.5rem, 5vw, 3.75rem);
-    font-weight: 700;
-    line-height: 1.2;
-    margin-bottom: 1.5rem;
-  }
-  .hero__subtext {
-    font-size: 1.25rem;
-    color: rgba(255,255,255,0.9);
-    line-height: 1.7;
-    max-width: 32rem;
-    margin-bottom: 2.5rem;
-  }
-  .hero__cta { display: flex; flex-wrap: wrap; gap: 1rem; }
-  .btn-play {
-    background: #fff;
-    color: #374151;
-    padding: 0.75rem 2rem;
-    border-radius: 9999px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-family: "Nunito", sans-serif;
-    font-weight: 500;
-    transition: background 0.2s;
-  }
-  .btn-play:hover { background: #f5f5f5; }
-  .btn-play__icon {
-    width: 2.5rem;
-    height: 2.5rem;
-    background: #23bdee;
-    border-radius: 9999px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .hero__image-wrap { position: relative; }
-  .hero__img {
-    width: 100%;
-    max-width: 32rem;
-    margin-inline: auto;
-    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.25));
-  }
-  .floating-card {
-    position: absolute;
-    background: rgba(255,255,255,0.9);
-    backdrop-filter: blur(12px);
-    border-radius: 1.25rem;
-    padding: 1.25rem 1.5rem;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-  .floating-card__icon {
-    width: 3rem;
-    height: 3rem;
-    border-radius: 0.625rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .floating-card__icon svg { color: #fff; }
-  .floating-card__title { font-weight: 700; font-size: 1.25rem; color: #595959; }
-  .floating-card__sub { font-size: 0.9rem; color: #6b7280; }
-  .floating-card--students { top: 4rem; left: -1rem; max-width: 18rem; }
-  .floating-card--congrats { top: 8rem; right: -1rem; max-width: 20rem; }
-  .floating-card--class {
-    bottom: 2rem;
-    left: 2rem;
-    max-width: 22rem;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .floating-card--class-inner { display: flex; align-items: center; gap: 1rem; }
-  .floating-icon--analytics {
-    position: absolute;
-    top: 1.5rem;
-    right: 2rem;
-    width: 4rem;
-    height: 4rem;
-    background: #f3627c;
-    border-radius: 0.875rem;
-    box-shadow: 0 8px 24px rgba(210,77,101,0.26);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .floating-icon--analytics svg { color: #fff; }
-  .instructor-avatar { position: relative; }
-  .instructor-avatar img {
-    width: 3.5rem;
-    height: 3.5rem;
-    border-radius: 9999px;
-    object-fit: cover;
-  }
-  .online-dot {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 1rem;
-    height: 1rem;
-    background: #22c55e;
-    border: 2px solid #fff;
-    border-radius: 9999px;
-  }
-  .btn-join {
-    margin-top: 0.5rem;
-    padding: 0.4rem 1.25rem;
-    background: #d8587e;
-    color: #fff;
-    border-radius: 9999px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .btn-join:hover { background: #c24a6d; }
-  /* ── PROGRAMS SECTION ── */
-  .features {
-    padding: 6rem 0;
-    background: #0f1624;
+{% extends 'base.html' %}
+{% load static %}
 
-    /*background:#9DCCFF;*/
-    position: relative;
-    overflow: hidden;
-  }
+{% block title %}
+  Home | i-Code
+{% endblock %}
 
-  /* Subtle animated background blobs */
-  .features::before,
-  .features::after {
-    content: '';
-    position: absolute;
-    border-radius: 9999px;
-    filter: blur(80px);
-    pointer-events: none;
-  }
-  .features::before {
-    width: 28rem;
-    height: 28rem;
-    background: rgba(73,187,189,0.12);
-    top: -6rem;
-    left: -6rem;
-  }
-  .features::after {
-    width: 22rem;
-    height: 22rem;
-    background: rgba(244,140,6,0.08);
-    bottom: -4rem;
-    right: -4rem;
-  }
+{% block content %}
+  <!-- Hero Section -->
 
-  /* Section headings override for dark bg */
-  .features .section-title { color: #fff; }
-  .features .section-subtitle { color: rgba(255,255,255,0.6); }
-
-  .features__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.75rem;
-    margin-top: 4rem;
-    position: relative;
-    z-index: 1;
-  }
-  @media (max-width: 1024px) {
-    .features__grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 640px) {
-    .features__grid { grid-template-columns: 1fr; }
-  }
-
-  .feature-card {
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.13);
-    border-radius: 1.5rem;
-    padding: 2.5rem 2rem;
-    transition: transform 0.3s, background 0.3s, border-color 0.3s, box-shadow 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  /* Subtle top-edge glow that matches icon colour on hover */
-  .feature-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    opacity: 0;
-    transition: opacity 0.3s;
-    background: linear-gradient(160deg, rgba(73,187,189,0.08) 0%, transparent 60%);
-  }
-  .feature-card:hover::before { opacity: 1; }
-
-  .feature-card:hover {
-    transform: translateY(-8px);
-    background: rgba(255,255,255,0.07);
-    border-color: rgba(73,187,189,0.35);
-    box-shadow: 0 20px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(73,187,189,0.15);
-  }
-
-  .feature-card__icon {
-    width: 4.5rem;
-    height: 4.5rem;
-    border-radius: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1.75rem;
-    position: relative;
-  }
-  /* Soft glow behind icon */
-  .feature-card__icon::after {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    border-radius: inherit;
-    opacity: 0.25;
-    filter: blur(10px);
-    background: inherit;
-    z-index: -1;
-  }
-  .feature-card__icon svg { color: #fff; width: 2rem; height: 2rem; }
-
-  .feature-card__title {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 0.875rem;
-    letter-spacing: -0.01em;
-  }
-  .feature-card__text {
-    color: rgba(255,255,255,0.72);
-    line-height: 1.75;
-    font-size: 0.95rem;
-  }
-  .stats {
-    padding: 5rem 0;
-    background: linear-gradient(135deg, #49bbbd, #3da3a5);
-    position: relative;
-    overflow: hidden;
-  }
-  .stats__blob {
-    position: absolute;
-    border-radius: 9999px;
-    background: rgba(255,255,255,0.1);
-    filter: blur(64px);
-  }
-  .stats__blob--1 { width: 16rem; height: 16rem; top: 2rem; left: 2rem; }
-  .stats__blob--2 { width: 24rem; height: 24rem; bottom: 2rem; right: 2rem; }
-  .stats__grid {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
-  }
-  .stat-card {
-    background: rgba(255,255,255,0.12);
-    backdrop-filter: blur(8px);
-    border-radius: 1.25rem;
-    padding: 2rem;
-    text-align: center;
-    transition: background 0.3s, transform 0.3s;
-  }
-  .stat-card:hover { background: rgba(255,255,255,0.22); transform: scale(1.04); }
-  .stat-card__value { font-size: 3rem; font-weight: 800; color: #fff; margin-bottom: 0.25rem; }
-  .stat-card__label { font-size: 1rem; color: rgba(255,255,255,0.85); }
-  .courses { padding: 5rem 0; background: #fff; }
-  .courses__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-top: 4rem;
-  }
-  .course-card {
-    border-radius: 1.25rem;
-    overflow: hidden;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-  .course-card:hover { transform: translateY(-6px); box-shadow: 0 12px 32px rgba(0,0,0,0.14); }
-  .course-card__thumb { position: relative; height: 12rem; overflow: hidden; }
-  .course-card__thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
-  .course-card:hover .course-card__thumb img { transform: scale(1.08); }
-  .course-card__price {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: #f48c06;
-    color: #fff;
-    padding: 0.25rem 0.875rem;
-    border-radius: 9999px;
-    font-weight: 700;
-    font-size: 0.9rem;
-  }
-  .course-card__body { padding: 1.5rem; }
-  .course-card__title { font-size: 1.125rem; font-weight: 700; color: #1f2937; margin-bottom: 0.5rem; transition: color 0.2s; }
-  .course-card:hover .course-card__title { color: #49bbbd; }
-  .course-card__desc {
-    color: #6b7280;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    margin-bottom: 1rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .course-card__instructor { font-size: 0.85rem; color: #9ca3af; margin-bottom: 1rem; }
-  .course-card__instructor a { color: #49bbbd; font-weight: 600; }
-  .course-card__meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 0.85rem;
-    color: #6b7280;
-    padding-top: 1rem;
-    border-top: 1px solid #f3f4f6;
-    margin-bottom: 1rem;
-  }
-  .course-card__meta span { display: flex; align-items: center; gap: 0.25rem; }
-  .course-card__meta svg { width: 1rem; height: 1rem; }
-  .star-filled { color: #facc15; fill: #facc15; }
-  .btn-enroll {
-    display: block;
-    width: 100%;
-    padding: 0.75rem;
-    background: #49bbbd;
-    color: #fff;
-    border: none;
-    border-radius: 0.625rem;
-    font-weight: 700;
-    font-size: 1rem;
-    font-family: "Nunito", sans-serif;
-    cursor: pointer;
-    text-align: center;
-    transition: background 0.2s;
-  }
-  .btn-enroll:hover { background: #3da3a5; }
-  .courses__cta { text-align: center; margin-top: 3rem; }
-  .btn-navy {
-    background: #2f327d;
-    color: #fff;
-    padding: 1rem 2.5rem;
-    border-radius: 9999px;
-    font-weight: 700;
-    font-family: "Nunito", sans-serif;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    border: none;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .btn-navy:hover { background: #252641; }
-  .testimonials { padding: 5rem 0; background: #f9fafb; }
-  .testimonials__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-top: 4rem;
-  }
-  .testimonial-card {
-    background: #fff;
-    border-radius: 1.25rem;
-    padding: 2rem;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
-    position: relative;
-    transition: box-shadow 0.3s;
-  }
-  .testimonial-card:hover { box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
-  .testimonial-card__quote { position: absolute; top: 1.5rem; right: 1.5rem; opacity: 0.1; color: #49bbbd; }
-  .testimonial-card__quote svg { width: 4rem; height: 4rem; }
-  .testimonial-card__stars { display: flex; gap: 0.25rem; margin-bottom: 1rem; }
-  .testimonial-card__stars svg { width: 1.25rem; height: 1.25rem; }
-  .testimonial-card__comment { color: #374151; line-height: 1.7; font-style: italic; margin-bottom: 1.25rem; }
-  .testimonial-card__badge {
-    display: inline-block;
-    padding: 0.25rem 0.875rem;
-    background: rgba(73,187,189,0.12);
-    color: #49bbbd;
-    border-radius: 9999px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    margin-bottom: 1.25rem;
-  }
-  .testimonial-card__footer {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #f3f4f6;
-  }
-  .testimonial-card__avatar { width: 3.5rem; height: 3.5rem; border-radius: 9999px; object-fit: cover; }
-  .testimonial-card__name { font-weight: 700; color: #1f2937; }
-  .testimonial-card__role { font-size: 0.85rem; color: #6b7280; }
-</style>
-{% endblock %} {% block content %}
-
-<!-- ════════════════════════════
-     HERO
-════════════════════════════ -->
-<section class="hero">
-  <div class="hero__wave">
-    <svg viewBox="0 0 1920 200" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-      <path d="M0 100C320 50 640 150 960 100C1280 50 1600 150 1920 100V200H0V100Z" fill="#0f1624"/>
-    </svg>
-  </div>
-
-  
-
-  <div class="hero__body">
-    <div class="container">
-      <div class="hero__grid">
-
-        <!-- Left: copy -->
-        <div>
-          <h1 class="hero__heading" data-aos="fade-up" data-aos-duration="1000">
+  <section class="hero">
+    <div class="hero-container">
+      <div class="hero-content">
+        {% comment %} <h1 class="hero-title">
+          <span class="highlight">Studying</span> at I-code is now<br />
+          much easier
+        </h1> {% endcomment %}
+         <h1 class="hero__heading" data-aos="fade-up" data-aos-duration="1000">
             <span style="color:#f48c06">Inspiring Kids</span>
             <span style="color:#fff"> to Build the Future with Technology</span>
           </h1>
@@ -521,741 +24,526 @@ I-code - Innovate Tech | Coding School for Kids Ages 7–18
             We offer classes in Coding, Robotics, AI, Cybersecurity, and Drone Training —
             from beginner to advanced.
           </p>
-          <div class="hero__cta" data-aos="fade-up" data-aos-delay="400">
-            <a href="" class="btn btn-outline">Enroll Now</a>
-            <a href="#programs" class="btn-play">
-              <span class="btn-play__icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                  viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="0">
-                  <polygon points="5 3 19 12 5 21 5 3"/>
-                </svg>
-              </span>
-              Explore Programs
-            </a>
-          </div>
+        {% comment %} <p class="hero-subtitle">
+          I-Code is an interesting platform that will teach<br />
+          you in more an interactive way
+        </p> {% endcomment %}
+        <div class="hero-buttons" data-aos="fade-up" data-aos-delay="400">
+          <a href="/join" class="btn-primary">Join for free</a>
+          <button class="btn-play">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M8 5v14l11-7L8 5z" fill="currentColor" />
+            </svg>Watch how it works
+          </button>
         </div>
+      </div>
 
-        <!-- Right: hero SVG + floating cards -->
-        <div class="hero__image-wrap" data-aos="fade-left" data-aos-duration="1000">
+      <div class="hero-image" data-aos="fade-left" data-aos-duration="1000">
+        <img src="https://tinyurl.com/3jura2y5" alt="Student" class="student-img" />
 
-          <!-- ═══════════════════════════════════
-               HERO ILLUSTRATION
-               Save as: static/images/hero-student.svg
-               ─ Kid at desk with robot companion
-               ─ Circuit traces, drone, AI nodes
-               ─ I-code teal + orange palette
-          ════════════════════════════════════ -->
-          <svg class="hero__img" viewBox="0 0 520 560" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id="hg1" cx="50%" cy="55%" r="50%">
-                <stop offset="0%" stop-color="#5ecacb" stop-opacity="0.18"/>
-                <stop offset="100%" stop-color="#49bbbd" stop-opacity="0"/>
-              </radialGradient>
-              <linearGradient id="deskG" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#c8a97a"/>
-                <stop offset="100%" stop-color="#9e7a4e"/>
-              </linearGradient>
-              <linearGradient id="bodyG" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#5ecacb"/>
-                <stop offset="100%" stop-color="#3da3a5"/>
-              </linearGradient>
-              <linearGradient id="screenG" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#1a2340"/>
-                <stop offset="100%" stop-color="#0d1628"/>
-              </linearGradient>
-              <linearGradient id="robotBodyG" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#2f327d"/>
-                <stop offset="100%" stop-color="#1e2050"/>
-              </linearGradient>
-              <linearGradient id="skinG" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#f4c98d"/>
-                <stop offset="100%" stop-color="#e8b070"/>
-              </linearGradient>
-            </defs>
-
-            <!-- Glow -->
-            <ellipse cx="260" cy="310" rx="220" ry="210" fill="url(#hg1)"/>
-
-            <!-- Circuit traces (bg) -->
-            <g opacity="0.18" stroke="#fff" stroke-width="1.2" fill="none">
-              <polyline points="30,80 30,140 80,140 80,200"/>
-              <circle cx="80" cy="200" r="4" fill="#fff"/>
-              <polyline points="30,300 80,300 80,360 140,360"/>
-              <circle cx="140" cy="360" r="4" fill="#fff"/>
-              <polyline points="480,100 440,100 440,160 390,160"/>
-              <circle cx="390" cy="160" r="4" fill="#fff"/>
-              <polyline points="490,320 450,320 450,380"/>
-              <circle cx="450" cy="380" r="4" fill="#fff"/>
-            </g>
-
-            <!-- Desk -->
-            <rect x="85" y="340" width="360" height="22" rx="8" fill="url(#deskG)"/>
-            <rect x="93" y="362" width="12" height="60" rx="4" fill="#9e7a4e"/>
-            <rect x="425" y="362" width="12" height="60" rx="4" fill="#9e7a4e"/>
-
-            <!-- Laptop screen -->
-            <rect x="175" y="215" width="170" height="126" rx="10" fill="#1a2340"/>
-            <rect x="183" y="222" width="154" height="112" rx="6" fill="url(#screenG)"/>
-            <rect x="193" y="233" width="55" height="6" rx="2" fill="#49bbbd" opacity="0.9"/>
-            <rect x="201" y="245" width="85" height="5" rx="2" fill="#f48c06" opacity="0.75"/>
-            <rect x="201" y="256" width="65" height="5" rx="2" fill="#fff" opacity="0.3"/>
-            <rect x="201" y="267" width="95" height="5" rx="2" fill="#f48c06" opacity="0.55"/>
-            <rect x="201" y="278" width="50" height="5" rx="2" fill="#49bbbd" opacity="0.7"/>
-            <rect x="201" y="289" width="75" height="5" rx="2" fill="#fff" opacity="0.25"/>
-            <rect x="201" y="300" width="60" height="5" rx="2" fill="#f48c06" opacity="0.6"/>
-            <rect x="193" y="311" width="4" height="10" rx="1" fill="#49bbbd" opacity="0.95"/>
-            <rect x="183" y="323" width="154" height="10" rx="0" fill="#0d1628"/>
-            <rect x="187" y="326" width="28" height="4" rx="1" fill="#49bbbd" opacity="0.5"/>
-            <rect x="280" y="326" width="18" height="4" rx="1" fill="#f48c06" opacity="0.4"/>
-            <rect x="175" y="339" width="170" height="7" rx="3" fill="#0d1628"/>
-            <rect x="175" y="342" width="170" height="14" rx="5" fill="#15193a"/>
-            <rect x="183" y="344" width="13" height="7" rx="2" fill="#1e2460"/>
-            <rect x="199" y="344" width="13" height="7" rx="2" fill="#1e2460"/>
-            <rect x="215" y="344" width="13" height="7" rx="2" fill="#1e2460"/>
-            <rect x="231" y="344" width="13" height="7" rx="2" fill="#1e2460"/>
-            <rect x="247" y="344" width="13" height="7" rx="2" fill="#1e2460"/>
-            <rect x="263" y="344" width="13" height="7" rx="2" fill="#1e2460"/>
-            <rect x="279" y="344" width="13" height="7" rx="2" fill="#1e2460"/>
-            <rect x="295" y="344" width="13" height="7" rx="2" fill="#1e2460"/>
-            <rect x="311" y="344" width="21" height="7" rx="2" fill="#1e2460"/>
-
-            <!-- Robot -->
-            <rect x="90" y="270" width="62" height="70" rx="10" fill="url(#robotBodyG)"/>
-            <rect x="100" y="282" width="42" height="30" rx="4" fill="#0d1628"/>
-            <rect x="104" y="286" width="34" height="5" rx="1" fill="#49bbbd" opacity="0.8"/>
-            <rect x="104" y="294" width="20" height="5" rx="1" fill="#f48c06" opacity="0.7"/>
-            <rect x="104" y="302" width="28" height="5" rx="1" fill="#49bbbd" opacity="0.5"/>
-            <rect x="80" y="270" width="14" height="10" rx="4" fill="#252660"/>
-            <rect x="148" y="270" width="14" height="10" rx="4" fill="#252660"/>
-            <rect x="74" y="278" width="12" height="40" rx="5" fill="#252660"/>
-            <rect x="156" y="278" width="12" height="40" rx="5" fill="#252660"/>
-            <ellipse cx="80" cy="322" rx="9" ry="7" fill="#2f327d"/>
-            <ellipse cx="162" cy="322" rx="9" ry="7" fill="#2f327d"/>
-            <rect x="108" y="255" width="26" height="16" rx="5" fill="#252660"/>
-            <rect x="88" y="215" width="66" height="52" rx="14" fill="url(#robotBodyG)"/>
-            <ellipse cx="107" cy="236" rx="9" ry="9" fill="#49bbbd" opacity="0.9"/>
-            <ellipse cx="135" cy="236" rx="9" ry="9" fill="#49bbbd" opacity="0.9"/>
-            <ellipse cx="107" cy="236" rx="5" ry="5" fill="#0d1628"/>
-            <ellipse cx="135" cy="236" rx="5" ry="5" fill="#0d1628"/>
-            <ellipse cx="109" cy="234" rx="2" ry="2" fill="#fff" opacity="0.7"/>
-            <ellipse cx="137" cy="234" rx="2" ry="2" fill="#fff" opacity="0.7"/>
-            <rect x="104" y="250" width="34" height="8" rx="4" fill="#0d1628"/>
-            <rect x="107" y="252" width="6" height="4" rx="1" fill="#49bbbd" opacity="0.7"/>
-            <rect x="116" y="252" width="6" height="4" rx="1" fill="#f48c06" opacity="0.7"/>
-            <rect x="125" y="252" width="6" height="4" rx="1" fill="#49bbbd" opacity="0.7"/>
-            <rect x="119" y="204" width="4" height="14" rx="2" fill="#49bbbd"/>
-            <circle cx="121" cy="202" r="5" fill="#f48c06"/>
-            <rect x="83" y="228" width="8" height="16" rx="4" fill="#1e2050"/>
-            <rect x="151" y="228" width="8" height="16" rx="4" fill="#1e2050"/>
-
-            <!-- Student -->
-            <rect x="195" y="272" width="132" height="118" rx="12" fill="#2f327d"/>
-            <rect x="182" y="368" width="158" height="26" rx="10" fill="#252660"/>
-            <rect x="196" y="394" width="12" height="68" rx="5" fill="#1e2050"/>
-            <rect x="314" y="394" width="12" height="68" rx="5" fill="#1e2050"/>
-            <ellipse cx="260" cy="466" rx="68" ry="9" fill="#1a1c45" opacity="0.45"/>
-            <rect x="180" y="320" width="18" height="48" rx="6" fill="#252660"/>
-            <rect x="326" y="320" width="18" height="48" rx="6" fill="#252660"/>
-            <path d="M203 300 Q198 342 194 384 L326 384 Q322 342 317 300 Q290 284 260 282 Q230 284 203 300Z" fill="url(#bodyG)"/>
-            <rect x="238" y="340" width="44" height="30" rx="8" fill="#3da3a5" opacity="0.5"/>
-            <path d="M243 298 Q260 312 277 298" stroke="#3da3a5" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-            <path d="M203 306 Q182 322 180 352 Q192 358 202 354 Q207 334 213 316Z" fill="url(#bodyG)"/>
-            <path d="M317 306 Q338 322 340 352 Q328 358 318 354 Q313 334 307 316Z" fill="url(#bodyG)"/>
-            <ellipse cx="202" cy="354" rx="15" ry="8" fill="url(#skinG)"/>
-            <ellipse cx="318" cy="354" rx="15" ry="8" fill="url(#skinG)"/>
-            <rect x="247" y="256" width="26" height="30" rx="7" fill="url(#skinG)"/>
-            <ellipse cx="260" cy="222" rx="46" ry="50" fill="url(#skinG)"/>
-            <path d="M217 210 Q220 162 260 160 Q300 162 303 210 Q293 185 260 182 Q227 185 217 210Z" fill="#2c1810"/>
-            <ellipse cx="214" cy="226" rx="8" ry="10" fill="#e8b070"/>
-            <ellipse cx="306" cy="226" rx="8" ry="10" fill="#e8b070"/>
-            <ellipse cx="242" cy="222" rx="8" ry="9" fill="#fff"/>
-            <ellipse cx="244" cy="223" rx="5" ry="6" fill="#2c1810"/>
-            <ellipse cx="246" cy="221" rx="2" ry="2" fill="#fff"/>
-            <ellipse cx="278" cy="222" rx="8" ry="9" fill="#fff"/>
-            <ellipse cx="280" cy="223" rx="5" ry="6" fill="#2c1810"/>
-            <ellipse cx="282" cy="221" rx="2" ry="2" fill="#fff"/>
-            <path d="M234 209 Q242 204 251 208" stroke="#2c1810" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-            <path d="M269 208 Q278 204 286 209" stroke="#2c1810" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-            <path d="M258 229 Q255 238 260 240 Q265 238 262 229" stroke="#e8b070" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-            <path d="M252 248 Q260 254 268 248" stroke="#c07040" stroke-width="2" fill="none" stroke-linecap="round"/>
-
-            <!-- Decorations -->
-            <polygon points="430,72 435,88 451,88 438,98 443,114 430,104 417,114 422,98 409,88 425,88" fill="#f48c06" opacity="0.9"/>
-            <polygon points="68,120 72,132 84,132 74,140 78,152 68,144 58,152 62,140 52,132 64,132" fill="#49bbbd" opacity="0.8"/>
-            <circle cx="408" cy="130" r="5" fill="#f48c06" opacity="0.6"/>
-            <circle cx="422" cy="116" r="3.5" fill="#49bbbd" opacity="0.55"/>
-            <circle cx="436" cy="142" r="4" fill="#f48c06" opacity="0.4"/>
-            <circle cx="72" cy="160" r="4" fill="#49bbbd" opacity="0.5"/>
-            <circle cx="58" cy="175" r="3" fill="#f48c06" opacity="0.4"/>
-            <!-- Books -->
-            <rect x="68" y="408" width="68" height="11" rx="4" fill="#f48c06" opacity="0.9"/>
-            <rect x="73" y="397" width="63" height="11" rx="4" fill="#2f327d" opacity="0.9"/>
-            <rect x="66" y="386" width="70" height="11" rx="4" fill="#49bbbd" opacity="0.9"/>
-            <!-- Drone -->
-            <g opacity="0.7" transform="translate(38,65)">
-              <rect x="12" y="12" width="24" height="14" rx="4" fill="#2f327d"/>
-              <line x1="12" y1="14" x2="2" y2="6" stroke="#2f327d" stroke-width="2" stroke-linecap="round"/>
-              <line x1="36" y1="14" x2="46" y2="6" stroke="#2f327d" stroke-width="2" stroke-linecap="round"/>
-              <line x1="12" y1="22" x2="2" y2="30" stroke="#2f327d" stroke-width="2" stroke-linecap="round"/>
-              <line x1="36" y1="22" x2="46" y2="30" stroke="#2f327d" stroke-width="2" stroke-linecap="round"/>
-              <ellipse cx="2" cy="6" rx="7" ry="3" fill="none" stroke="#49bbbd" stroke-width="1.5"/>
-              <ellipse cx="46" cy="6" rx="7" ry="3" fill="none" stroke="#49bbbd" stroke-width="1.5"/>
-              <ellipse cx="2" cy="30" rx="7" ry="3" fill="none" stroke="#49bbbd" stroke-width="1.5"/>
-              <ellipse cx="46" cy="30" rx="7" ry="3" fill="none" stroke="#49bbbd" stroke-width="1.5"/>
-              <circle cx="24" cy="26" r="4" fill="#49bbbd"/>
-              <circle cx="24" cy="26" r="2" fill="#0d1628"/>
-            </g>
-            <!-- AI neural net -->
-            <g opacity="0.6" transform="translate(390,390)">
-              <circle cx="10" cy="10" r="5" fill="#2f327d"/>
-              <circle cx="40" cy="10" r="5" fill="#2f327d"/>
-              <circle cx="70" cy="10" r="5" fill="#2f327d"/>
-              <circle cx="25" cy="35" r="5" fill="#49bbbd"/>
-              <circle cx="55" cy="35" r="5" fill="#49bbbd"/>
-              <circle cx="40" cy="60" r="5" fill="#f48c06"/>
-              <line x1="10" y1="10" x2="25" y2="35" stroke="#49bbbd" stroke-width="1"/>
-              <line x1="40" y1="10" x2="25" y2="35" stroke="#49bbbd" stroke-width="1"/>
-              <line x1="40" y1="10" x2="55" y2="35" stroke="#49bbbd" stroke-width="1"/>
-              <line x1="70" y1="10" x2="55" y2="35" stroke="#49bbbd" stroke-width="1"/>
-              <line x1="25" y1="35" x2="40" y2="60" stroke="#f48c06" stroke-width="1"/>
-              <line x1="55" y1="35" x2="40" y2="60" stroke="#f48c06" stroke-width="1"/>
-            </g>
-
-            <ellipse cx="260" cy="478" rx="145" ry="13" fill="#000" opacity="0.07"/>
-          </svg>
-
-          <!-- Floating: Ages 7–18 -->
-          <div class="floating-card floating-card--students" data-aos="fade-right" data-aos-delay="600">
-            <div class="floating-card__icon" style="background:#23bdee">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-              </svg>
-            </div>
-            <div>
-              <div class="floating-card__title">Ages 7–18</div>
-              <div class="floating-card__sub">Beginner to Advanced</div>
-            </div>
-          </div>
-
-          <!-- Floating: Enrolled -->
-          <div class="floating-card floating-card--congrats" data-aos="fade-left" data-aos-delay="800">
-            <div class="floating-card__icon" style="background:#f88c3d">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="8" r="7"></circle>
-                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-              </svg>
-            </div>
-            <div>
-              <div class="floating-card__title">Congratulations!</div>
-              <div class="floating-card__sub">Enrollment confirmed</div>
-            </div>
-          </div>
-
-          <!-- Floating: Upcoming class -->
-          {% if upcoming_class %}
-<div class="floating-card floating-card--class" data-aos="zoom-in" data-aos-delay="1000">
-    <div class="floating-card--class-inner">
-        <div class="instructor-avatar">
-            {% if upcoming_class.instructor_avatar %}
-                <img src="{{ upcoming_class.instructor_avatar.url }}" alt="{{ upcoming_class.instructor_name }}"/>
-            {% else %}
-                <img src="{% static 'images/instructor-avatar.png' %}" alt="{{ upcoming_class.instructor_name }}"/>
-            {% endif %}
-            <span class="online-dot"></span>
-        </div>
-        <div>
-            <div class="floating-card__title" style="font-size:1rem">{{ upcoming_class.title }}</div>
-            <div class="floating-card__sub">
-                {% if upcoming_class.scheduled_time|date:"Ymd" == today|date:"Ymd" %}
-                    Today at {{ upcoming_class.scheduled_time|time:"H:i" }}
-                {% else %}
-                    {{ upcoming_class.scheduled_time|date:"d M" }} at {{ upcoming_class.scheduled_time|time:"H:i" }}
-                {% endif %}
-            </div>
-        </div>
-    </div>
-    <button class="btn-join">Join Now</button>
-</div>
-{% endif %}
-          {% comment %} <div class="floating-card floating-card--class" data-aos="zoom-in" data-aos-delay="1000">
-            <div class="floating-card--class-inner">
-              <div class="instructor-avatar">
-                <img src="{% static 'images/instructor-avatar.png' %}" alt="Instructor"/>
-                <span class="online-dot"></span>
-              </div>
-              <div>
-                <div class="floating-card__title" style="font-size:1rem">Robotics Class</div>
-                <div class="floating-card__sub">Today at 10.00 AM</div>
-              </div>
-            </div>
-            <button class="btn-join">Join Now</button>
-          </div> {% endcomment %}
-
-          <!-- Floating: Stats icon -->
-          <div class="floating-icon--analytics" data-aos="flip-left" data-aos-delay="1200">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
-              fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="20" x2="18" y2="10"></line>
-              <line x1="12" y1="20" x2="12" y2="4"></line>
-              <line x1="6" y1="20" x2="6" y2="14"></line>
+        <!-- Floating Cards -->
+        <div class="floating-card card-students">
+          <div class="card-icon calendar-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="6" width="18" height="15" rx="2" stroke="white" stroke-width="2" />
+              <path d="M3 10h18M8 3v4M16 3v4" stroke="white" stroke-width="2" />
             </svg>
           </div>
-
-        </div><!-- /.hero__image-wrap -->
-      </div><!-- /.hero__grid -->
-    </div>
-  </div>
-</section>
-
-
-<!-- ════════════════════════════
-     PROGRAMS / FEATURES
-════════════════════════════ -->
-<section class="features" id="programs">
-
-  <!-- Decorative dot-grid overlay -->
-   <div style="
-    position:absolute;inset:0;pointer-events:none;z-index:0;
-    background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
-    background-size: 32px 32px;
-  "></div> 
-  
-   
-  
-
-  <!-- Decorative circuit lines -->
-  <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.06"
-    viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-    <polyline points="0,150 200,150 200,80 600,80" stroke="#49bbbd" stroke-width="1.5" fill="none"/>
-    <circle cx="200" cy="150" r="4" fill="#49bbbd"/>
-    <circle cx="600" cy="80" r="4" fill="#49bbbd"/>
-    <polyline points="1200,400 1000,400 1000,300 700,300" stroke="#f48c06" stroke-width="1.5" fill="none"/>
-    <circle cx="1000" cy="400" r="4" fill="#f48c06"/>
-    <circle cx="700" cy="300" r="4" fill="#f48c06"/>
-    <polyline points="100,600 100,450 400,450 400,350 550,350" stroke="#49bbbd" stroke-width="1.2" fill="none"/>
-    <circle cx="100" cy="450" r="3" fill="#49bbbd"/>
-    <circle cx="550" cy="350" r="3" fill="#49bbbd"/>
-  </svg>
-
-  <div class="container" style="position:relative;z-index:1">
-    <div data-aos="fade-up">
-      <h2 class="section-title">Our <span class="text-teal">Programs</span></h2>
-      <p class="section-subtitle">
-        Hands-on in-person classes designed to spark curiosity and build real tech skills
-      </p>
-    </div>
-
-    <div class="features__grid">
-
-      <!-- Coding -->
-      <div class="feature-card" data-aos="fade-up" data-aos-delay="0">
-        <div class="feature-card__icon" style="background: linear-gradient(135deg,#3b82f6,#1d4ed8)">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
-            fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="16 18 22 12 16 6"></polyline>
-            <polyline points="8 6 2 12 8 18"></polyline>
-          </svg>
-        </div>
-        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem">
-          <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
-            background:rgba(59,130,246,0.18);color:#93c5fd;padding:0.2rem 0.65rem;border-radius:9999px;border:1px solid rgba(59,130,246,0.25)">
-            All Levels
-          </span>
-          <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
-            background:rgba(73,187,189,0.12);color:#5ecacb;padding:0.2rem 0.65rem;border-radius:9999px;border:1px solid rgba(73,187,189,0.2)">
-            Ages 7–18
-          </span>
-        </div>
-        <h3 class="feature-card__title">Coding</h3>
-        <p class="feature-card__text">
-          From Scratch to Python and beyond — kids learn to think like programmers
-          and build their own apps, games, and websites.
-        </p>
-      </div>
-
-      <!-- Robotics -->
-      <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
-        <div class="feature-card__icon" style="background: linear-gradient(135deg,#22c55e,#15803d)">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
-            fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="11" width="18" height="10" rx="2"></rect>
-            <circle cx="12" cy="5" r="2"></circle>
-            <path d="M12 7v4"></path>
-            <line x1="8" y1="16" x2="8" y2="16"></line>
-            <line x1="16" y1="16" x2="16" y2="16"></line>
-          </svg>
-        </div>
-        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem">
-          <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
-            background:rgba(34,197,94,0.15);color:#86efac;padding:0.2rem 0.65rem;border-radius:9999px;border:1px solid rgba(34,197,94,0.25)">
-            Hands-On
-          </span>
-          <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
-            background:rgba(73,187,189,0.12);color:#5ecacb;padding:0.2rem 0.65rem;border-radius:9999px;border:1px solid rgba(73,187,189,0.2)">
-            Ages 8–18
-          </span>
-        </div>
-        <h3 class="feature-card__title">Robotics</h3>
-        <p class="feature-card__text">
-          Design, build, and program real robots. Students develop engineering
-          and problem-solving skills through hands-on projects.
-        </p>
-      </div>
-
-      <!-- Cybersecurity -->
-      <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
-        <div class="feature-card__icon" style="background: linear-gradient(135deg,#a855f7,#7e22ce)">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
-            fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-          </svg>
-        </div>
-        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem">
-          <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
-            background:rgba(168,85,247,0.15);color:#d8b4fe;padding:0.2rem 0.65rem;border-radius:9999px;border:1px solid rgba(168,85,247,0.25)">
-            Intermediate
-          </span>
-          <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
-            background:rgba(73,187,189,0.12);color:#5ecacb;padding:0.2rem 0.65rem;border-radius:9999px;border:1px solid rgba(73,187,189,0.2)">
-            Ages 10–18
-          </span>
-        </div>
-        <h3 class="feature-card__title">Cybersecurity</h3>
-        <p class="feature-card__text">
-          Learn how to stay safe online and understand ethical hacking,
-          networks, and digital defence fundamentals.
-        </p>
-      </div>
-
-      <!-- Drone Training -->
-      <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
-        <div class="feature-card__icon" style="background: linear-gradient(135deg,#f97316,#c2410c)">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
-            fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2L8 6H4l2 4-4 2 4 2-2 4h4l4 4 4-4h4l-2-4 4-2-4-2 2-4h-4z"></path>
-            <circle cx="12" cy="12" r="2"></circle>
-          </svg>
-        </div>
-        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem">
-          <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
-            background:rgba(249,115,22,0.15);color:#fdba74;padding:0.2rem 0.65rem;border-radius:9999px;border:1px solid rgba(249,115,22,0.25)">
-            All Levels
-          </span>
-          <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
-            background:rgba(73,187,189,0.12);color:#5ecacb;padding:0.2rem 0.65rem;border-radius:9999px;border:1px solid rgba(73,187,189,0.2)">
-            Ages 9–18
-          </span>
-        </div>
-        <h3 class="feature-card__title">Drone Training</h3>
-        <p class="feature-card__text">
-          Pilot, program, and build drones. Students explore aeronautics
-          and autonomous systems in a safe, guided environment.
-        </p>
-      </div>
-
-      <!-- AI -->
-      <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
-        <div class="feature-card__icon" style="background: linear-gradient(135deg,#ec4899,#9d174d)">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
-            fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="2"></circle>
-            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
-          </svg>
-        </div>
-        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem">
-          <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
-            background:rgba(236,72,153,0.15);color:#f9a8d4;padding:0.2rem 0.65rem;border-radius:9999px;border:1px solid rgba(236,72,153,0.25)">
-            Advanced
-          </span>
-          <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
-            background:rgba(73,187,189,0.12);color:#5ecacb;padding:0.2rem 0.65rem;border-radius:9999px;border:1px solid rgba(73,187,189,0.2)">
-            Ages 12–18
-          </span>
-        </div>
-        <h3 class="feature-card__title">Artificial Intelligence</h3>
-        <p class="feature-card__text">
-          Explore machine learning, neural networks, and AI tools —
-          demystifying the technology shaping tomorrow's world.
-        </p>
-      </div>
-
-      <!-- Flexible Schedules -->
-      <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
-        <div class="feature-card__icon" style="background: linear-gradient(135deg,#49bbbd,#0f766e)">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
-            fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-          </svg>
-        </div>
-        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem">
-          <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
-            background:rgba(73,187,189,0.15);color:#5ecacb;padding:0.2rem 0.65rem;border-radius:9999px;border:1px solid rgba(73,187,189,0.3)">
-            In-Person
-          </span>
-          <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
-            background:rgba(244,140,6,0.12);color:#fbbf24;padding:0.2rem 0.65rem;border-radius:9999px;border:1px solid rgba(244,140,6,0.25)">
-            Weekdays &amp; Weekends
-          </span>
-        </div>
-        <h3 class="feature-card__title">Flexible Schedules</h3>
-        <p class="feature-card__text">
-          After-school programs, weekend bootcamps, and holiday camps.
-          Open Mon–Fri 8:30am–8:30pm and weekends 8:30am–4pm.
-        </p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-
-<!-- ════════════════════════════
-     STATS
-════════════════════════════ -->
-<section class="stats">
-  <div class="stats__blob stats__blob--1"></div>
-  <div class="stats__blob stats__blob--2"></div>
-  <div class="container">
-    <div data-aos="fade-up">
-      <h2 class="section-title" style="color:#fff">I-code by the Numbers</h2>
-      <p class="section-subtitle" style="color:rgba(255,255,255,0.85)">
-        Growing a generation of young innovators, one class at a time
-      </p>
-    </div>
-    <div class="stats__grid">
-      <div class="stat-card" data-aos="zoom-in" data-aos-delay="0">
-        <div class="stat-card__value">{{students}}+</div>
-        <div class="stat-card__label">Students Enrolled</div>
-      </div>
-      <div class="stat-card" data-aos="zoom-in" data-aos-delay="100">
-        <div class="stat-card__value">{{courses_count}}</div>
-        <div class="stat-card__label">Tech Programs</div>
-      </div>
-      <div class="stat-card" data-aos="zoom-in" data-aos-delay="200">
-        <div class="stat-card__value">7–18</div>
-        <div class="stat-card__label">Age Range</div>
-      </div>
-      <div class="stat-card" data-aos="zoom-in" data-aos-delay="300">
-        <div class="stat-card__value">98%</div>
-        <div class="stat-card__label">Parent Satisfaction</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- ════════════════════════════
-     CLASSES / COURSES
-════════════════════════════ -->
-<section class="courses">
-  <div class="container">
-    <div data-aos="fade-up">
-      <h2 class="section-title">Popular <span class="text-teal">Classes</span></h2>
-      <p class="section-subtitle">
-        Explore our most-enrolled classes and kickstart your child's tech journey today
-      </p>
-    </div>
-    <div class="courses__grid">
-      {% comment %} {% for course in courses %}
-      <div class="course-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}00">
-        <div class="course-card__thumb">
-          <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" loading="lazy"/>
-          <span class="course-card__price">${{ course.price }}</span>
-        </div>
-        <div class="course-card__body">
-          <h3 class="course-card__title">{{ course.title }}</h3>
-          <p class="course-card__desc">{{ course.description }}</p>
-          <p class="course-card__instructor">
-            By <a href="#">{{ course.instructor.get_full_name }}</a>
-          </p>
-          <div class="course-card__meta">
-            <span>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-              </svg>
-              {{ course.duration }}
-            </span>
-            <span>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-              </svg>
-              {{ course.students_enrolled|intcomma }}
-            </span>
-            <span>
-              <svg class="star-filled" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-              </svg>
-              {{ course.rating }}
-            </span>
+          <div class="card-content">
+            <div class="card-number">{{students}}</div>
+            <div class="card-label">Assisted Student</div>
           </div>
-          <a href="{% url 'course_detail' course.slug %}" class="btn-enroll">Enroll Now</a>
         </div>
-      </div>
-      {% empty %}
-      <p style="grid-column:1/-1; text-align:center; color:#6b7280">
-        No classes available yet. Check back soon!
-      </p>
-      {% endfor %} {% endcomment %}
-{% for class in classes %}
-<div class="course-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}00">
-  <div class="course-card__thumb">
 
-    {% if class.course.thumbnail %}
-      <img src="{{ class.course.thumbnail.url }}" alt="{{ class.title }}" loading="lazy"/>
-    {% else %}
-      {# Coloured gradient fallback based on program type #}
-      <div style="
-        width:100%; height:100%;
-        display:flex; align-items:center; justify-content:center; flex-direction:column; gap:0.5rem;
-        background: {% if class.course.program_type == 'coding' %}linear-gradient(135deg,#3b82f6,#1d4ed8)
-          {% elif class.course.program_type == 'robotics' %}linear-gradient(135deg,#22c55e,#15803d)
-          {% elif class.course.program_type == 'cybersecurity' %}linear-gradient(135deg,#a855f7,#7e22ce)
-          {% elif class.course.program_type == 'drone' %}linear-gradient(135deg,#f97316,#c2410c)
-          {% elif class.course.program_type == 'ai' %}linear-gradient(135deg,#ec4899,#9d174d)
-          {% else %}linear-gradient(135deg,#49bbbd,#0f766e){% endif %};
-      ">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
-          fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="16 18 22 12 16 6"></polyline>
-          <polyline points="8 6 2 12 8 18"></polyline>
-        </svg>
-        <span style="color:rgba(255,255,255,0.85);font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
-          {{ class.course.get_program_type_display }}
-        </span>
-      </div>
-    {% endif %}
-
-    {% comment %} <span class="course-card__price">${{ class.course.price }}</span> {% endcomment %}
-    <span class="course-card__price">KSh {{ class.course.price|floatformat:0|intcomma }}</span>
-  </div>
-
-  <div class="course-card__body">
-    <h3 class="course-card__title">{{ class.title }}</h3>
-    <p class="course-card__desc">{{ class.description|default:class.course.description }}</p>
-    <p class="course-card__instructor">
-      By <a href="#">{{ class.instructor_name }}</a>
-    </p>
-    <div class="course-card__meta">
-      <span>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <polyline points="12 6 12 12 16 14"></polyline>
-        </svg>
-        {{ class.scheduled_time|date:"d M" }} · {{ class.scheduled_time|time:"H:i" }}
-      </span>
-      <span>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-          <circle cx="9" cy="7" r="4"></circle>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-        </svg>
-        {{ class.course.students_enrolled }} enrolled
-      </span>
-      <span>
-        <svg class="star-filled" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-        </svg>
-        {{ class.course.average_rating|default:"New" }}
-      </span>
+        <div class="floating-card card-congrats">
+          <div class="card-icon email-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="white" stroke-width="2" />
+              <path d="M22 6l-10 7L2 6" stroke="white" stroke-width="2" />
+            </svg>
+          </div>
+          <div class="card-content">
+            <div class="card-title">Congratulations</div>
+            <div class="card-subtitle">Your admission completed</div>
+          </div>
+        </div>
+        {% for class in classes %}
+  <div class="floating-card card-class">
+    
+    <div class="user-avatar">
+      <img src="{% static 'images/img.jpg' %}" alt="User" />
     </div>
-    <a href="{% url 'course_detail' class.course.slug %}" class="btn-enroll">Enroll Now</a>
+
+    <div class="card-content">
+      <div class="card-title">
+        {{ class.course.title }}
+      </div>
+
+      <div class="card-time">
+        {{ class.scheduled_time|date:"M d, Y - h:i A" }}
+      </div>
+
+      <button class="btn-join-now">
+        Join Now
+      </button>
+    </div>
+
   </div>
-</div>
 {% empty %}
-<p style="grid-column:1/-1; text-align:center; color:#6b7280">
-  No upcoming classes yet — check back soon!
-</p>
+  <p>No upcoming classes available.</p>
 {% endfor %}
-    </div>
-    <div class="courses__cta" data-aos="fade-up">
-      <a href="{% url 'programs' %}" class="btn-navy">View All Programs</a>
-    </div>
-  </div>
-</section>
 
+        {% comment %} <div class="floating-card card-class">
+          <div class="user-avatar">
+            <img src="{% static 'images/img.jpg' %}" alt="Userb" />
+          </div>
+          <div class="card-content">
+            <div class="card-title">User Experience Class</div>
+            <div class="card-time">Today at 12:00 PM</div>
+            <button class="btn-join-now">Join Now</button>
+          </div>
+        </div> {% endcomment %}
 
-<!-- ════════════════════════════
-     TESTIMONIALS
-════════════════════════════ -->
-<section class="testimonials">
-  <div class="container">
-    <div data-aos="fade-up">
-      <h2 class="section-title">
-        What <span class="text-teal">Parents &amp; Students Say</span>
-      </h2>
-      <p class="section-subtitle">
-        Real stories from families who chose I-code to ignite their child's passion for technology
-      </p>
-    </div>
-    <div class="testimonials__grid">
-      {% for testimonial in testimonials %}
-      <div class="testimonial-card" data-aos="flip-up" data-aos-delay="{{ forloop.counter0 }}00">
-        <div class="testimonial-card__quote">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M11.192 15.757c0-.88-.23-1.618-.69-2.217-.326-.412-.768-.683-1.327-.812-.55-.128-1.07-.137-1.54-.028-.16-.95.1-1.956.76-3.022.66-1.065 1.515-1.867 2.558-2.403L9.373 5c-.8.396-1.56.898-2.26 1.505-.71.607-1.34 1.305-1.9 2.094s-.98 1.68-1.25 2.69-.346 2.04-.217 3.1c.168 1.4.62 2.52 1.356 3.35.735.84 1.652 1.26 2.748 1.26.965 0 1.766-.29 2.4-.878.628-.576.94-1.365.94-2.368zm9.124 0c0-.88-.23-1.618-.69-2.217-.326-.42-.77-.692-1.327-.817-.56-.124-1.074-.13-1.54-.022-.16-.94.09-1.95.75-3.02.66-1.06 1.514-1.86 2.557-2.4L18.49 5c-.8.396-1.555.898-2.26 1.505-.708.607-1.34 1.305-1.894 2.094-.556.79-.97 1.68-1.24 2.69-.273 1.01-.345 2.04-.217 3.1.168 1.4.62 2.52 1.356 3.35.735.84 1.652 1.26 2.748 1.26.965 0 1.766-.29 2.4-.878.628-.576.94-1.365.94-2.368z"/>
+        <div class="decorative-icon icon-analytics">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="12" width="4" height="9" fill="white" />
+            <rect x="10" y="6" width="4" height="15" fill="white" />
+            <rect x="17" y="9" width="4" height="12" fill="white" />
           </svg>
         </div>
-        <div class="testimonial-card__stars">
-          {% for i in "12345" %}
-            {% if forloop.counter <= testimonial.rating %}
-              <svg class="star-filled" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-              </svg>
-            {% else %}
-              <svg style="color:#d1d5db;fill:#d1d5db" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-              </svg>
-            {% endif %}
-          {% endfor %}
-        </div>
-        <p class="testimonial-card__comment">"{{ testimonial.comment }}"</p>
-        <span class="testimonial-card__badge">{{ testimonial.course.title }}</span>
-        <div class="testimonial-card__footer">
-  {% if testimonial.avatar %}
-    <img class="testimonial-card__avatar"
-      src="{{ testimonial.avatar.url }}"
-      alt="{{ testimonial.full_name }}" loading="lazy"/>
-  {% else %}
-    {# Initials avatar fallback #}
-    <div style="
-      width:3.5rem; height:3.5rem; border-radius:9999px;
-      background: linear-gradient(135deg,#49bbbd,#2f327d);
-      display:flex; align-items:center; justify-content:center;
-      font-weight:700; font-size:1.1rem; color:#fff; flex-shrink:0;
-    ">
-      {{ testimonial.full_name|slice:":1"|upper }}
-    </div>
-  {% endif %}
-  <div>
-    <div class="testimonial-card__name">{{ testimonial.full_name }}</div>
-    <div class="testimonial-card__role">{{ testimonial.occupation }}</div>
-  </div>
-</div>
       </div>
-      {% empty %}
-      <p style="grid-column:1/-1; text-align:center; color:#6b7280">
-        No testimonials yet — be the first to share your experience!
+    </div>
+
+    <!-- Wave Background -->
+    <div class="wave-background">
+      <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path fill="#ffffff" d="M0,96L48,112C96,128,192,160,288,165.3C384,171,480,149,576,133.3C672,117,768,107,864,122.7C960,139,1056,181,1152,181.3C1248,181,1344,139,1392,117.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Success Section -->
+  <section class="success-section">
+    <div class="success-container">
+      <h2 class="section-title" data-aos="fade-up">Our Success</h2>
+      <p class="section-description" data-aos="fade-up" data-aos-delay="100">
+        Ornare id fames interdum porttitor nulla turpis etiam. Diam vitae sollicitudin at nec<br />
+        nam et pharetra gravida. Adipiscing a quis ultrices eu ornare tristique vel nisl orci.
       </p>
-      {% endfor %}
+
+      <div class="stats-grid">
+        <div class="stat-item" data-aos="zoom-in" data-aos-delay="0">
+          <div class="stat-number">15K+</div>
+          <div class="stat-label">Students</div>
+        </div>
+        <div class="stat-item" data-aos="zoom-in" data-aos-delay="100">
+          <div class="stat-number">75%</div>
+          <div class="stat-label">Total success</div>
+        </div>
+        <div class="stat-item" data-aos="zoom-in" data-aos-delay="200">
+          <div class="stat-number">35</div>
+          <div class="stat-label">Main questions</div>
+        </div>
+        <div class="stat-item" data-aos="zoom-in" data-aos-delay="300">
+          <div class="stat-number">26</div>
+          <div class="stat-label">Chief experts</div>
+        </div>
+        <div class="stat-item" data-aos="zoom-in" data-aos-delay="400">
+          <div class="stat-number">16</div>
+          <div class="stat-label">Years of experience</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cloud Software Section -->
+  {% comment %} ===== Cloud + Features Section ===== {% endcomment %}
+
+<section class="cloud-features-section">
+  <div class="cloud-features__inner">
+
+    <!-- Header -->
+    <div class="cloud-features__header" data-aos="fade-up">
+      <h2 class="cloud-features__title">
+        All-In-One <span class="cloud-features__title--green">Cloud Software.</span>
+      </h2>
+      <p class="cloud-features__subtitle">
+        I-CODE is one powerful online software suite that combines all the tools
+        needed to run a successful school or office.
+      </p>
+    </div>
+
+    <!-- Cards -->
+    <div class="cloud-features__cards">
+
+      <div class="cloud-features__card" data-aos="fade-up" data-aos-delay="0">
+        <div class="cloud-features__icon cloud-features__icon--blue">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 11H15M9 15H15M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L18.7071 8.70711C18.8946 8.89464 19 9.149 19 9.41421V19C19 20.1046 18.1046 21 17 21Z"
+              stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="cloud-features__card-body">
+          <h4 class="cloud-features__card-title">Online Billing,<br>Invoicing, & Contracts</h4>
+          <p class="cloud-features__card-desc">
+            Simple and secure control of your organization's financial and legal
+            transactions. Send customized invoices and contracts
+          </p>
+        </div>
+      </div>
+
+      <div class="cloud-features__card" data-aos="fade-up" data-aos-delay="150">
+        <div class="cloud-features__icon cloud-features__icon--teal">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 7V3M16 7V3M7 11H17M5 21H19C20.1046 21 21 20.1046 21 19V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V19C3 20.1046 3.89543 21 5 21Z"
+              stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="cloud-features__card-body">
+          <h4 class="cloud-features__card-title">Easy Scheduling &<br>Attendance Tracking</h4>
+          <p class="cloud-features__card-desc">
+            Schedule and reserve classrooms at one campus or multiple campuses.
+            Keep detailed records of student attendance
+          </p>
+        </div>
+      </div>
+
+      <div class="cloud-features__card" data-aos="fade-up" data-aos-delay="300">
+        <div class="cloud-features__icon cloud-features__icon--cyan">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17 20H22V18C22 16.3431 20.6569 15 19 15C18.0444 15 17.1931 15.4468 16.6438 16.1429M17 20H7M17 20V18C17 17.3438 16.8736 16.717 16.6438 16.1429M7 20H2V18C2 16.3431 3.34315 15 5 15C5.95561 15 6.80686 15.4468 7.35625 16.1429M7 20V18C7 17.3438 7.12642 16.717 7.35625 16.1429M7.35625 16.1429C8.0935 14.301 9.89482 13 12 13C14.1052 13 15.9065 14.301 16.6438 16.1429M15 7C15 8.65685 13.6569 10 12 10C10.3431 10 9 8.65685 9 7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7ZM21 10C21 11.1046 20.1046 12 19 12C17.8954 12 17 11.1046 17 10C17 8.89543 17.8954 8 19 8C20.1046 8 21 8.89543 21 10ZM7 10C7 11.1046 6.10457 12 5 12C3.89543 12 3 11.1046 3 10C3 8.89543 3.89543 8 5 8C6.10457 8 7 8.89543 7 10Z"
+              stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="cloud-features__card-body">
+          <h4 class="cloud-features__card-title">Customer Tracking</h4>
+          <p class="cloud-features__card-desc">
+            Automate and track emails to individuals or groups. Skilline's built-in
+            system helps organize your organization
+          </p>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
+
+
+
+<section class="ft-what-is">
+    <div class="ft-what-is__container">
+        <!-- Header -->
+        <div class="ft-what-is__header" data-aos="fade-up">
+            <h2 class="ft-what-is__title">What is <span class="ft-what-is__title-highlight">ICODE?</span></h2>
+            <p class="ft-what-is__subtitle">
+                ICODE is a platform that allows educators to create online classes whereby they can 
+                store the course materials online; manage assignments, quizzes and exams; monitor 
+                due dates; grade results and provide students with feedback all in one place.
+            </p>
+        </div>
+
+        <!-- For Instructors/Students Cards -->
+        <div class="ft-what-is__cards">
+            <div class="ft-what-is__card" data-aos="fade-right" data-aos-delay="100">
+                <div class="ft-what-is__card-overlay">
+                    <h3 class="ft-what-is__card-title">FOR INSTRUCTORS</h3>
+                    <button class="ft-what-is__card-button">Start a class today</button>
+                </div>
+            </div>
+            <div class="ft-what-is__card ft-what-is__card--students" data-aos="fade-left" data-aos-delay="100">
+                <div class="ft-what-is__card-overlay">
+                    <h3 class="ft-what-is__card-title">FOR STUDENTS</h3>
+                    <button class="ft-what-is__card-button ft-what-is__card-button--teal">Enter access code</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Physical Classroom Section -->
+        <div class="ft-what-is__physical">
+            <div class="ft-what-is__physical-content" data-aos="fade-right" data-aos-duration="1000">
+                <div class="ft-what-is__physical-badge">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="10" cy="10" r="10" fill="currentColor"/>
+                    </svg>
+                </div>
+                <h3 class="ft-what-is__physical-title">
+                    Everything you can do in a physical classroom, 
+                    <span class="ft-what-is__physical-highlight">you can do with ICODE</span>
+                </h3>
+                <p class="ft-what-is__physical-desc">
+                    ICODE's school management software helps traditional and online schools manage 
+                    scheduling, attendance, payments and virtual classrooms all in one secure cloud-based system.
+                </p>
+                <a href="#" class="ft-what-is__physical-link">Learn more</a>
+            </div>
+            <div class="ft-what-is__physical-image" data-aos="fade-left" data-aos-duration="1000">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop" alt="Students in classroom">
+                <div class="ft-what-is__physical-decoration ft-what-is__physical-decoration--1"></div>
+                <div class="ft-what-is__physical-decoration ft-what-is__physical-decoration--2"></div>
+            </div>
+        </div>
+
+        <!-- Our Features Section -->
+        <div class="ft-what-is__features-section">
+            <h2 class="ft-what-is__features-title" data-aos="fade-up">
+                Our <span class="ft-what-is__features-highlight">Features</span>
+            </h2>
+            <p class="ft-what-is__features-subtitle" data-aos="fade-up" data-aos-delay="100">
+                This very extraordinary feature, can make learning activities more efficient
+            </p>
+
+            <!-- User Interface Feature -->
+            <div class="ft-what-is__feature-block">
+                <div class="ft-what-is__feature-visual" data-aos="fade-right" data-aos-duration="1000">
+                    <div class="ft-what-is__avatars">
+                        <div class="ft-what-is__avatar-grid">
+                            <div class="ft-what-is__avatar-item">
+                                <img src="https://i.pravatar.cc/150?img=1" alt="Student 1">
+                            </div>
+                            <div class="ft-what-is__avatar-item">
+                                <img src="https://i.pravatar.cc/150?img=5" alt="Student 2">
+                            </div>
+                            <div class="ft-what-is__avatar-item">
+                                <img src="https://i.pravatar.cc/150?img=3" alt="Student 3">
+                            </div>
+                            <div class="ft-what-is__avatar-item">
+                                <img src="https://i.pravatar.cc/150?img=8" alt="Student 4">
+                            </div>
+                            <div class="ft-what-is__avatar-item">
+                                <img src="https://i.pravatar.cc/150?img=9" alt="Student 5">
+                            </div>
+                        </div>
+                        <div class="ft-what-is__status-badges">
+                            <span class="ft-what-is__badge ft-what-is__badge--present">Present</span>
+                            <span class="ft-what-is__badge ft-what-is__badge--call">+ Call</span>
+                            <span class="ft-what-is__badge ft-what-is__badge--message">Message</span>
+                        </div>
+                    </div>
+                    <div class="ft-what-is__decoration-blob ft-what-is__decoration-blob--1"></div>
+                    <div class="ft-what-is__decoration-blob ft-what-is__decoration-blob--2"></div>
+                    <div class="ft-what-is__decoration-circle ft-what-is__decoration-circle--1"></div>
+                </div>
+
+                <div class="ft-what-is__feature-content" data-aos="fade-left" data-aos-duration="1000">
+                    <h3 class="ft-what-is__feature-title">
+                        A <span class="ft-what-is__feature-title-highlight">user interface</span> designed for the classroom
+                    </h3>
+                    <div class="ft-what-is__feature-list">
+                        <div class="ft-what-is__feature-item" data-aos="fade-up" data-aos-delay="100">
+                            <div class="ft-what-is__feature-icon">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="20" height="20" rx="4" fill="currentColor"/>
+                                </svg>
+                            </div>
+                            <p class="ft-what-is__feature-text">
+                                Teachers don't get lost in the grid view and have a dedicated Podium space.
+                            </p>
+                        </div>
+                        <div class="ft-what-is__feature-item" data-aos="fade-up" data-aos-delay="200">
+                            <div class="ft-what-is__feature-icon">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="20" height="20" rx="4" fill="currentColor"/>
+                                </svg>
+                            </div>
+                            <p class="ft-what-is__feature-text">
+                                TA's and presenters can be moved to the front of the class.
+                            </p>
+                        </div>
+                        <div class="ft-what-is__feature-item" data-aos="fade-up" data-aos-delay="300">
+                            <div class="ft-what-is__feature-icon">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="20" height="20" rx="4" fill="currentColor"/>
+                                </svg>
+                            </div>
+                            <p class="ft-what-is__feature-text">
+                                Teachers can easily see all students and class data at one time.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tools For Teachers Section -->
+            <div class="ft-what-is__feature-block ft-what-is__feature-block--reverse">
+                <div class="ft-what-is__feature-content" data-aos="fade-right" data-aos-duration="1000">
+                    <h3 class="ft-what-is__feature-title">
+                        <span class="ft-what-is__feature-title-highlight">Tools</span> For Teachers And Learners
+                    </h3>
+                    <p class="ft-what-is__feature-desc">
+                        Class has a dynamic set of teaching tools built to be deployed and used during class. 
+                        Teachers can handout assignments in real-time for students to complete and submit.
+                    </p>
+                </div>
+
+                <div class="ft-what-is__feature-visual" data-aos="fade-left" data-aos-duration="1000">
+                    <div class="ft-what-is__teacher-image">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop" alt="Teacher with tablet">
+                        <div class="ft-what-is__decoration-circle ft-what-is__decoration-circle--2"></div>
+                        <div class="ft-what-is__decoration-circle ft-what-is__decoration-circle--3"></div>
+                        <div class="ft-what-is__decoration-dot ft-what-is__decoration-dot--1"></div>
+                        <div class="ft-what-is__decoration-dot ft-what-is__decoration-dot--2"></div>
+                        <div class="ft-what-is__decoration-icon ft-what-is__decoration-icon--1">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="24" height="24" rx="8" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <div class="ft-what-is__decoration-icon ft-what-is__decoration-icon--2">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="24" height="24" rx="8" fill="currentColor"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{% comment %} COURSES {% endcomment %}
+<section class="ft-explore" data-aos="fade-up">
+    <div class="ft-explore__container">
+        <div class="ft-explore__header" data-aos="fade-up">
+            <h2 class="ft-explore__title">Explore Course</h2>
+            <p class="ft-explore__subtitle">Ut sed eros finibus, placerat orci id, dapibus.</p>
+        </div>
+
+        <!-- Course Category 1 -->
+        <div class="ft-explore__category">
+            <div class="ft-explore__category-header" data-aos="fade-up" data-aos-delay="100">
+                <div class="ft-explore__category-title">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 2L2 7L10 12L18 7L10 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L10 17L18 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Lorem Ipsum</span>
+                </div>
+                <a href="{% url 'programs' %}" class="ft-explore__see-all">
+                    SEE ALL
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            </div>
+
+            <div class="ft-explore__scroll-container">
+            
+                {% for course in courses %}
+                  {% cycle 'ft-explore__pill--orange' 'ft-explore__pill--coral' 'ft-explore__pill--brown' 'ft-explore__pill--yellow' 'ft-explore__pill--purple' 'ft-explore__pill--blue' 'ft-explore__pill--green' as pill_color silent %}
+                  
+                  <div class="ft-explore__pill-wrapper" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0 }}00">
+                    
+                    <div class="ft-explore__pill {{ pill_color }}">
+                      
+                      <span class="ft-explore__pill-text">
+                        {{ course.title }}
+                      </span>
+
+                    </div>
+
+                  </div>
+                {% endfor %}
+              
+                <div class="ft-explore__card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="ft-explore__card-image">
+                        <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=400&h=200&fit=crop" alt="Course">
+                        <div class="ft-explore__card-badge">LOREM IPSUM</div>
+                    </div>
+                    <div class="ft-explore__card-content">
+                        <h3 class="ft-explore__card-title">Integer id Orc Sed Ante Tincidunt</h3>
+                        <p class="ft-explore__card-desc">Cras convallis lacus orci, tristique tincidunt magna fringilla at faucibus vel.</p>
+                        <div class="ft-explore__card-footer">
+                            <div class="ft-explore__card-rating">
+                                <div class="ft-explore__stars">
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#FDB022" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#FDB022" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#FDB022" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#FDB022" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#FDB022" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 0L11.084 6.218L18 7.236L13.5 11.631L14.535 18L9 14.618L3.465 18L4.5 11.631L0 7.236L6.916 6.218L9 0Z"/>
+                                    </svg>
+                                </div>
+                                <span class="ft-explore__price">$ 450</span>
+                            </div>
+                            <button class="ft-explore__card-button">EXPLORE</button>
+                        </div>
+                    </div>
+                </div>
+                  </div>
+            </div>
+        </div>
+
+        <!-- Course Category 2 -->
+        
+</section>
+
+
+{% comment %} Testimonial {% endcomment %}
+<section class="ft-testimonial-section">
+    <div class="ft-testimonial-left" data-aos="fade-right" data-aos-duration="1000">
+        <div class="ft-testimonial-label">TESTIMONIAL</div>
+        <h2 class="ft-testimonial-title">What They Say?</h2>
+        <p class="ft-testimonial-description">
+            I-CODE has got more than 100k positive ratings from our users around the world.
+        </p>
+        <p class="ft-testimonial-description">
+            Some of the students and teachers were greatly helped by the Skilline.
+        </p>
+        <p class="ft-testimonial-description">
+            Are you too? Please give your assessment
+        </p>
+        <a href="#" class="ft-testimonial-cta">
+            Write your assessment
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+        </a>
+    </div>
+
+    <div class="ft-testimonial-right" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="150">
+        <div class="ft-testimonial-card-container">
+            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300&h=350&fit=crop" alt="Student" class="ft-student-image">
+            
+            <div class="ft-testimonial-card" data-aos="zoom-in" data-aos-delay="300">
+                <p class="ft-testimonial-quote">
+                    "Thank you so much for your help. It's exactly what I've been looking for. You won't regret it. It really saves me time and effort. I-CODE is exactly what our business has been lacking."
+                </p>
+                <div class="ft-testimonial-author">
+                    <div>
+                        <div class="ft-author-name">Gloria Rose</div>
+                        <div class="ft-rating-source">12 reviews at Yelp</div>
+                    </div>
+                    <div class="ft-testimonial-rating">
+                        <div class="ft-stars">
+                            <span class="ft-star">★</span>
+                            <span class="ft-star">★</span>
+                            <span class="ft-star">★</span>
+                            <span class="ft-star">★</span>
+                            <span class="ft-star">★</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="ft-nav-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 18l6-6-6-6"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</section>
+
+
+
+ 
 {% endblock %}
