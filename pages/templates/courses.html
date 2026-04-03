@@ -968,7 +968,7 @@ Programs & Courses- Innovate Tech | Coding School for Kids Ages 7–18
             <span class="course-card__badge">{{ c.type|title }}</span>
 
             <span class="course-card__price">
-              KSh {{ c.price|floatformat:0 }}
+              KSh {{ c.price|intcomma }}
             </span>
 
             <div class="course-card__level">
@@ -981,7 +981,7 @@ Programs & Courses- Innovate Tech | Coding School for Kids Ages 7–18
             <h3 class="course-card__title">{{ c.title }}</h3>
 
             <p class="course-card__desc">
-              {{ c.description|truncatewords:20 }}
+              {{ c.description|truncatewords:30 }}
             </p>
 
             <p class="course-card__instructor">

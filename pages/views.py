@@ -35,7 +35,10 @@ def index(request):
     .filter(is_active=True, scheduled_time__gte=timezone.now())
     .select_related("course")
     .order_by("scheduled_time")  # all upcoming, soonest first
-)
+    )
+    students = Enrollment.objects.count
+    courses_count = Course.objects.count
+
 
     # Handle newsletter POST (footer form is on every page via the footer partial)
     # if request.method == "POST" and "newsletter_submit" in request.POST:
@@ -49,6 +52,8 @@ def index(request):
     return render(request, "index.html", {
         "settings":        settings,
         "courses":         courses,
+        "courses_count":   courses_count,
+        "students":  students,
         "testimonials":    testimonials,
         "stats":           stats,
         "upcoming_class":  upcoming_class,
@@ -65,17 +70,7 @@ def programs(request):
     All dummy data is hardcoded in programs.html.
     When your models are ready, pass real querysets here.
 
-    Example (when models exist):
-    ─────────────────────────────
-    from .models import Program, Schedule, FAQ
-
-    context = {
-        'programs':  Program.objects.filter(is_active=True).order_by('order'),
-        'schedule':  Schedule.objects.filter(is_active=True).order_by('day_order', 'time'),
-        'faqs':      FAQ.objects.filter(page='programs').order_by('order'),
-    }
-    return render(request, 'programs.html', context)
-    ─────────────────────────────
+   
     """
     return render(request, 'programs.html', {})
 

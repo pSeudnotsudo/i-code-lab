@@ -218,6 +218,8 @@ I-code - Innovate Tech | Coding School for Kids Ages 7–18
   .features {
     padding: 6rem 0;
     background: #0f1624;
+
+    /*background:#9DCCFF;*/
     position: relative;
     overflow: hidden;
   }
@@ -817,11 +819,14 @@ I-code - Innovate Tech | Coding School for Kids Ages 7–18
 <section class="features" id="programs">
 
   <!-- Decorative dot-grid overlay -->
-  <div style="
+   <div style="
     position:absolute;inset:0;pointer-events:none;z-index:0;
     background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
     background-size: 32px 32px;
-  "></div>
+  "></div> 
+  
+   
+  
 
   <!-- Decorative circuit lines -->
   <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.06"
@@ -1027,11 +1032,11 @@ I-code - Innovate Tech | Coding School for Kids Ages 7–18
     </div>
     <div class="stats__grid">
       <div class="stat-card" data-aos="zoom-in" data-aos-delay="0">
-        <div class="stat-card__value">{{ stats.students_count|default:"500" }}+</div>
+        <div class="stat-card__value">{{students}}+</div>
         <div class="stat-card__label">Students Enrolled</div>
       </div>
       <div class="stat-card" data-aos="zoom-in" data-aos-delay="100">
-        <div class="stat-card__value">5</div>
+        <div class="stat-card__value">{{courses_count}}</div>
         <div class="stat-card__label">Tech Programs</div>
       </div>
       <div class="stat-card" data-aos="zoom-in" data-aos-delay="200">
