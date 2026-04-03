@@ -191,6 +191,10 @@
     {% block extra_head %}{% endblock %}
   </head>
   <body>
+    <!-- ═══════
+       FOOTER (included on every page)
+       ═══════ -->
+    {% include 'components/navbar.html' %}
     <!-- ══════════════════════════════
        MAIN CONTENT (per-page block)
        ══════════════════════════════ -->
