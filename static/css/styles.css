@@ -198,7 +198,7 @@
 
 .hero__heading {
     font-size: clamp(2.5rem, 5vw, 3.75rem);
-    font-weight: 700;
+    font-weight: 800;
     line-height: 1.2;
     margin-bottom: 1.5rem;
   }
@@ -569,7 +569,7 @@
 .cloud-features__title {
   font-size: clamp(1.8rem, 3.5vw, 2.6rem);
   font-weight: 800;
-  color: #3b3dbf;          /* deep indigo-blue for "All-In-One" */
+  color: #3b3dbf;          
   margin: 0 0 18px;
   line-height: 1.2;
 }
