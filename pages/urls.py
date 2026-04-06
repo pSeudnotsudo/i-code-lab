@@ -20,6 +20,7 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("courses/<slug:slug>/", views.course_detail, name="course_detail"),
     path("programs/", views.programs, name="programs"),
+    path('testimonials/submit/', views.submit_testimonial, name='submit_testimonial'),
 
     # ─────────────────────────────────────────────
     #  PUBLIC AJAX ENDPOINTS
