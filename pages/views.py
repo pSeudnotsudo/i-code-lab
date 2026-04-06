@@ -7,6 +7,8 @@ from .models import *
 import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.db.models import Avg
+from django.views.decorators.csrf import csrf_exempt  
 
 def index(request):
     """
@@ -19,7 +21,10 @@ def index(request):
     - newsletter form for footer
     """
     settings      = SiteSettings.get()
-    courses       = Course.objects.filter(is_active=True).order_by("order")
+    # courses       = Course.objects.filter(is_active=True).order_by("order")
+    courses = Course.objects.filter(is_active=True).annotate(
+    avg_rating=Avg('testimonials__rating'))
+    select_courses = Course.objects.filter(is_active=True).order_by('title')
     testimonials  = Testimonial.objects.filter(is_featured=True, is_approved=True)
     stats         = Stat.objects.all()
     # newsletter_form = NewsletterForm()
@@ -58,6 +63,7 @@ def index(request):
         "stats":           stats,
         "upcoming_class":  upcoming_class,
         "classes":  classes,
+        "select_courses":select_courses
         # "newsletter_form": newsletter_form,
     })
 
@@ -161,3 +167,41 @@ def enroll_ajax(request, course_pk):
     )
 
     return JsonResponse({'status': 'ok'}, status=201)
+
+
+
+
+
+
+# SUBMIT TESTIMONIAL
+
+@require_POST
+def submit_testimonial(request):
+    try:
+        data       = json.loads(request.body)
+        full_name  = data.get('full_name', '').strip()
+        occupation = data.get('occupation', '').strip()
+        comment    = data.get('comment', '').strip()
+        rating     = int(data.get('rating', 0))
+        course_id  = data.get('course_id')
+
+        if not all([full_name, occupation, comment, course_id]) or not (1 <= rating <= 5):
+            return JsonResponse({'success': False, 'error': 'All fields are required.'}, status=400)
+
+        course = Course.objects.get(pk=course_id)
+
+        Testimonial.objects.create(
+            full_name=full_name,
+            occupation=occupation,
+            rating=rating,
+            comment=comment,
+            course=course,
+            is_featured=False,
+            is_approved=False,
+        )
+        return JsonResponse({'success': True})
+
+    except Course.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Selected course not found.'}, status=400)
+    except (ValueError, KeyError):
+        return JsonResponse({'success': False, 'error': 'Invalid data.'}, status=400)
