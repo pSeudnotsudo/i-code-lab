@@ -18,7 +18,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [icodeailab.com]
 
 
 # Application definition
@@ -189,3 +189,4 @@ SWEETIFY_SWEETALERT_LIBRARY = 'sweetalert2'
 
 # PASSWORD RESET TIMESPAN
 PASSWORD_RESET_TIMEOUT = 259200
+STATIC_ROOT= os.path.join(BASE_DIR, 'staticfiles')

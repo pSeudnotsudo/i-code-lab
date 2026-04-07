@@ -1,22 +1,287 @@
-<!-- LOCATION -->
-<section class="location" id="location">
+<!-- {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}i-CODE Robotics & AI Lab{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Nairobi's leading Robotics, AI, Drone, Coding & STEM Innovation Lab — One-Stop Arcade, Karen.{% endblock %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  {% load static %}
+  <!-- ── NAVBAR ── -->
+  <!-- <nav class="navbar">
+    <a href="{% url 'index' %}" class="nav-logo">i<span>-</span>CODE</a>
+
+    <ul class="nav-links">
+      <li><a href="{% url 'index' %}"     {% if page == 'index'     %}class="active"{% endif %}>Home</a></li>
+      <li><a href="{% url 'about' %}"    {% if page == 'about'    %}class="active"{% endif %}>About Us</a></li>
+      <li><a href="{% url 'courses' %}" {% if page == 'courses' %}class="active"{% endif %}>courses/a></li>
+      <li><a href="{% url 'about' %}"  {% if page == 'about'  %}class="active"{% endif %}>about</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="{% url 'about' %}" class="btn-nav-outline">Login</a>
+      <a href="{% url 'about' %}" class="btn-nav-fill">Enroll Now</a>
+    </div>
+
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">&#9776;</button>
+  </nav> -->
+
+  <!-- Mobile menu -->
+  <!-- <div class="mobile-menu" id="mobileMenu">
+    <a href="{% url 'index' %}">Home</a>
+    <a href="{% url 'about' %}">About Us</a>
+    <a href="{% url 'courses' %}">courses/a>
+    <a href="{% url 'about' %}">About</a>
+    <a href="{% url 'about' %}" class="btn-nav-fill" style="margin-top:8px;text-align:center;">Enroll Now</a>
+  </div> -->
+
+  <!-- Django messages -->
+  <!-- {% if messages %}
+  <div class="messages-container">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+      {{ message }}
+      <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %} -->
+
+  <!-- Page content
+  <main>
+    {% block content %}{% endblock %}
+  </main> -->
+
+  <!-- ── FOOTER ── -->
+  <!-- <div class="newsletter-bar">
+    <p><span>⊕ i-CODE</span> &nbsp;Subscribe to our newsletter</p>
+    <form class="nform" method="post" action="#">
+      {% csrf_token %}
+      <input type="email" name="email" placeholder="Enter your email address" required>
+      <button type="submit">Subscribe</button>
+    </form>
+  </div> -->
+
+  <!-- <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="footer-logo">i<span>-</span>CODE</span>
+        <p>Nairobi's leading Robotics & AI Innovation Lab — empowering learners of all ages with skills that shape Africa's future.</p>
+        <div class="footer-socials">
+          <a href="#" class="fsb" aria-label="Twitter">𝕏</a>
+          <a href="#" class="fsb" aria-label="LinkedIn">in</a>
+          <a href="#" class="fsb" aria-label="Facebook">f</a>
+          <a href="#" class="fsb" aria-label="YouTube">▶</a>
+        </div>
+      </div> -->
+
+      <!-- <div class="footer-col">
+        <h5>courses/h5>
+        <ul class="footer-links">
+          <li><a href="{% url 'courses' %}">Robotics Training</a></li>
+          <li><a href="{% url 'courses' %}">Drone Training</a></li>
+          <li><a href="{% url 'courses' %}">AI Courses</a></li>
+          <li><a href="{% url 'courses' %}">Coding Bootcamp</a></li>
+          <li><a href="{% url 'courses' %}">STEM courses/a></li>
+        </ul>
+      </div> -->
+
+      <!-- <div class="footer-col">
+        <h5>Company</h5>
+        <ul class="footer-links">
+          <li><a href="{% url 'about' %}">About i-CODE</a></li>
+          <li><a href="{% url 'about' %}">about Us</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Partnerships</a></li>
+          <li><a href="#">Careers</a></li>
+        </ul>
+      </div> -->
+
+      <!-- <div class="footer-col">
+        <h5>about</h5>
+        <ul class="footer-links">
+          <li><a href="mailto:info@icode.co.ke">info@icodeailab.com</a></li>
+          <li><a href="tel:+254700000000">+254 748982170</a></li>
+          <li><a href="#">One-Stop Arcade</a></li>
+          <li><a href="#">Langata Rd, Karen</a></li>
+          <li><a href="#">2nd Floor, Nairobi</a></li>
+        </ul>
+      </div>
+    </div> -->
+
+    <!-- <div class="footer-bottom">
+      <p>© 2025 i-CODE Robotics & AI Innovation Lab. All rights reserved.</p>
+      <p>
+        <a href="#">Privacy Policy</a> ·
+        <a href="#">Terms of Service</a>
+      </p>
+    </div>
+  </footer> -->
+
+  <!-- <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body> -->
+<!-- </html> -->
+
+
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}About Us — i-CODE Robotics & AI Lab{% endblock %}
+{% block meta_description %}Learn about i-CODE's mission, vision, and what makes us Nairobi's leading Robotics & AI Innovation Lab.{% endblock %}
+
+{% block content %}
+
+<!-- HERO BANNER -->
+<section class="hero-banner">
+  <div class="hero-eyebrow">About i-CODE</div>
+  <h1><em>Invent the Code.</em><br>Ignite the Future.</h1>
+  <p class="hero-tagline">Nairobi's leading Robotics & AI Innovation Lab — empowering the next generation of African tech leaders from Karen.</p>
+</section>
+
+<!-- TWO-COLUMN ABOUT -->
+<section class="about-section" id="about">
+
+  <!-- LEFT -->
+  <div class="left-col">
+
     <div class="reveal">
-      <span class="stag">Find Us</span>
-      <h2 class="stitle">Visit Our <span>Innovation Lab</span></h2>
-      <p class="ssub">Conveniently located in Karen — easily reachable from across Nairobi.</p>
-      <div class="loc-list">
-        <div class="loc-item"><div class="loc-icon">📍</div><div><h4>Address</h4><p>One-Stop Arcade, Langata Road Karen<br>2nd Floor, Nairobi, Kenya</p></div></div>
-        <div class="loc-item"><div class="loc-icon">🕐</div><div><h4>Hours</h4><p>Mon–Fri: 8:00 AM – 7:00 PM · Saturday: 9:00 AM – 5:00 PM</p></div></div>
-        <div class="loc-item"><div class="loc-icon">📞</div><div><h4>Contact</h4><p>info@icode.co.ke · +254 700 000 000</p></div></div>
-        <div class="loc-item"><div class="loc-icon">🚌</div><div><h4>Getting Here</h4><p>Matatu route 111/126 from CBD to Karen One-Stop. Free parking available.</p></div></div>
+      <span class="section-kicker">Who We Are</span>
+      <h2>What is <span>i-CODE?</span></h2>
+      <p class="intro-text">i-CODE is a tech generation studio that interfaces from a basic to an advanced level — cultivating talent through unique, hands-on learning in Robotics, AI, Drones, Coding and STEM. Based at One-Stop Arcade, Karen, Nairobi, we are a project-based lab built to produce Africa's next wave of innovators.</p>
+    </div>
+
+    <!-- MISSION -->
+    <div class="info-card reveal" style="--accent:#58c7c6;">
+      <div class="card-icon">🎯</div>
+      <h3>Our Mission</h3>
+      <p>To democratise access to world-class technology education in Africa — providing every learner with the practical skills, mentorship and community needed to build real solutions and lead in the digital economy.</p>
+    </div>
+
+    <!-- VISION -->
+    <div class="info-card reveal" style="--accent:#f5a623;">
+      <div class="card-icon icon-orange">🌍</div>
+      <h3>Our Vision</h3>
+      <p>To be Africa's most impactful tech innovation lab — a place where the next generation of engineers, AI researchers, robotics builders and digital entrepreneurs are born, trained and launched into the world.</p>
+    </div>
+
+    <!-- BENEFITS -->
+    <div class="benefits-card reveal">
+      <h3>🎓 Why Students Choose i-CODE</h3>
+      <ul class="benefit-list">
+        <li><span class="chk">✓</span>Hands-on projects using real hardware — robots, drones, dev boards</li>
+        <li><span class="chk">✓</span>Industry-experienced instructors who have built real products</li>
+        <li><span class="chk">✓</span>Recognised certificates upon completion of every program</li>
+        <li><span class="chk">✓</span>Small cohorts for personalised mentorship and attention</li>
+        <li><span class="chk">✓</span>Access to a growing community of innovators and employers</li>
+        <li><span class="chk">✓</span>Flexible schedules — evenings, weekends and holiday camps</li>
+        <li><span class="chk">✓</span>Programs for all ages — from 8-year-olds to working professionals</li>
+      </ul>
+    </div>
+
+  </div><!-- /left-col -->
+
+  <!-- RIGHT -->
+  <div class="right-col">
+
+    <div class="dark-card reveal">
+      <div class="card-badge">📍 Karen, Nairobi</div>
+      <h3>The Lab Where <span>Ideas Become Real</span></h3>
+      <p>A hands-on innovation space equipped with robotics kits, drone simulators, AI workstations and a community of builders ready to collaborate.</p>
+
+      <div class="lab-image">
+        <div class="lab-image-inner">
+          <span class="lab-emoji">🔬</span>
+          <span>i-CODE Innovation Lab · Karen</span>
+        </div>
+      </div>
+
+      <div class="card-stats">
+        <div class="cstat"><strong>500+</strong><span>Students Trained</span></div>
+        <div class="cstat"><strong>5</strong><span>Core Programs</span></div>
+        <div class="cstat"><strong>95%</strong><span>Completion Rate</span></div>
+        <div class="cstat"><strong>2+</strong><span>Years Running</span></div>
+      </div>
+
+      <a href="{% url 'contact' %}" class="btn-enroll-lg">Start Your Journey →</a>
+    </div>
+
+    <!-- Programs chips -->
+    <div class="programs-card reveal">
+      <h4>🚀 Our Core Programs</h4>
+      <div class="prog-chips">
+        {% for program in programs %}
+        <a href="{% url 'program_detail' program.slug %}" class="chip" style="background:#{{ forloop.counter|add:'0' }};">
+          {{ program.emoji }} {{ program.category }}
+        </a>
+        {% empty %}
+        <span class="chip" style="background:#F07D3A;">🤖 Robotics</span>
+        <span class="chip" style="background:#E05A5A;">🚁 Drone Training</span>
+        <span class="chip" style="background:#8B6CC7;">🧠 AI Courses</span>
+        <span class="chip" style="background:#58c7c6;">💻 Coding Bootcamp</span>
+        <span class="chip" style="background:#8B9E5A;">🔬 STEM Programs</span>
+        {% endfor %}
       </div>
     </div>
-    <div class="reveal">
-      <div class="map-box">
-        <span class="mpin">📍</span>
-        <h4>i-CODE Innovation Lab</h4>
-        <p>One-Stop Arcade, Langata Road<br>Karen, 2nd Floor — Nairobi, Kenya</p>
-        <a href="https://maps.google.com/?q=One+Stop+Arcade+Karen+Nairobi" target="_blank" class="map-link">Open in Google Maps →</a>
+
+  </div><!-- /right-col -->
+
+</section>
+
+<!-- VALUES -->
+<section class="values-strip">
+  <div class="values-inner">
+    <span class="stag">Our Values</span>
+    <h2 class="reveal">What Drives Everything We Do</h2>
+    <div class="values-grid">
+      <div class="val-box reveal"><span class="val-icon">🛠️</span><h4>Build First</h4><p>Every concept is backed by a real project. We learn by making.</p></div>
+      <div class="val-box reveal"><span class="val-icon">🌍</span><h4>Africa-Centred</h4><p>Curriculum built for African challenges and opportunities.</p></div>
+      <div class="val-box reveal"><span class="val-icon">🤝</span><h4>Community</h4><p>Learning is social. We build networks alongside technical skills.</p></div>
+      <div class="val-box reveal"><span class="val-icon">🏆</span><h4>Excellence</h4><p>High standards in every program — from beginner camps to advanced AI.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+{% if testimonials %}
+<section class="section-pad bg-offwhite">
+  <div class="section-header reveal">
+    <span class="stag">What They Say</span>
+    <h2 class="stitle">Our Students <span>Love i-CODE</span></h2>
+  </div>
+  <div class="testi-grid">
+    {% for t in testimonials %}
+    <div class="tcard reveal">
+      <div class="tq">"</div>
+      <div class="stars">{% for i in "12345" %}{% if forloop.counter <= t.rating %}★{% else %}☆{% endif %}{% endfor %}</div>
+      <p>{{ t.content }}</p>
+      <div class="tauth">
+        <div class="tavatar">{{ t.name|slice:":2"|upper }}</div>
+        <div><h5>{{ t.name }}</h5><span>{{ t.role }}</span></div>
       </div>
     </div>
-  </section>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Ready to Start Your Tech Journey?</h2>
+  <p>Join hundreds of students already building real robots, flying drones, writing AI and coding the future — right here in Karen, Nairobi.</p>
+  <div class="cta-btns">
+    <a href="{% url 'contact' %}" class="btn-cw">🎓 Enroll Now</a>
+    <a href="{% url 'contact' %}" class="btn-co">📞 Contact Us</a>
+  </div>
+  <p class="cta-note">📍 One-Stop Arcade, Langata Road Karen · 2nd Floor · Nairobi, Kenya</p>
+</section>
+
+{% endblock %}
+
