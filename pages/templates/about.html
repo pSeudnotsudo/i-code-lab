@@ -1,0 +1,669 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us | i-Code{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* =============================================
+     ft-about: CSS Variables & Base
+     ============================================= */
+  :root {
+    --primary-teal: #49BBBD;
+    --primary-teal-dark: #3DA4A6;
+    --accent-orange: #F48C06;
+    --accent-purple: #9B59B6;
+    --text-dark: #2C3E50;
+    --text-gray: #5D6C7B;
+    --white: #FFFFFF;
+    --bg-light: #F8FAFB;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.13);
+  }
+
+  /* =============================================
+     ft-about: Section Common Styles
+     ============================================= */
+  .ft-about__section {
+    padding: 80px 24px;
+  }
+
+  .ft-about__section--light {
+    background-color: var(--bg-light);
+  }
+
+  .ft-about__container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .ft-about__section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .ft-about__section-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-gray);
+    text-align: center;
+    max-width: 660px;
+    margin: 0 auto 48px;
+    line-height: 1.7;
+  }
+
+  /* =============================================
+     ft-about: Section 1 - Hero
+     ============================================= */
+  .ft-about__hero {
+    background: linear-gradient(135deg, var(--primary-teal) 0%, #6DD5DA 100%);
+    padding-top: 140px;
+    padding-bottom: 64px;
+    padding-left: 24px;
+    padding-right: 24px;
+    text-align: center;
+    color: var(--white);
+  }
+
+  .ft-about__hero-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin-bottom: 16px;
+    color: var(--white);
+  }
+
+  .ft-about__hero-tagline {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    opacity: 0.95;
+    color: var(--white);
+  }
+
+  .ft-about__hero-text {
+    font-size: 1.05rem;
+    max-width: 640px;
+    margin: 0 auto;
+    opacity: 0.90;
+    line-height: 1.7;
+    color: var(--white);
+  }
+
+  /* =============================================
+     ft-about: Section 2 - Mission
+     ============================================= */
+  .ft-about__mission {
+    background: var(--white);
+  }
+
+  .ft-about__mission-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+
+  .ft-about__mission-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+    text-align: left;
+  }
+
+  .ft-about__mission-text {
+    font-size: 1.05rem;
+    color: var(--text-gray);
+    line-height: 1.8;
+  }
+
+  .ft-about__mission-img-wrap {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .ft-about__mission-img {
+    width: 100%;
+    height: 380px;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* =============================================
+     ft-about: Section 3 - What We Offer
+     ============================================= */
+  .ft-about__offers {
+    background: var(--bg-light);
+  }
+
+  .ft-about__offer-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin-bottom: 48px;
+  }
+
+  .ft-about__offer-card {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    padding: 36px 28px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border-top: 4px solid transparent;
+  }
+
+  .ft-about__offer-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .ft-about__offer-card--orange { border-top-color: var(--accent-orange); }
+  .ft-about__offer-card--teal   { border-top-color: var(--primary-teal); }
+  .ft-about__offer-card--purple { border-top-color: var(--accent-purple); }
+
+  .ft-about__offer-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-size: 1.6rem;
+  }
+
+  .ft-about__offer-icon--orange { background: rgba(244, 140, 6, 0.12); }
+  .ft-about__offer-icon--teal   { background: rgba(73, 187, 189, 0.12); }
+  .ft-about__offer-icon--purple { background: rgba(155, 89, 182, 0.12); }
+
+  .ft-about__offer-age {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+
+  .ft-about__offer-age--orange { color: var(--accent-orange); }
+  .ft-about__offer-age--teal   { color: var(--primary-teal-dark); }
+  .ft-about__offer-age--purple { color: var(--accent-purple); }
+
+  .ft-about__offer-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 12px;
+  }
+
+  .ft-about__offer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ft-about__offer-list li {
+    font-size: 0.95rem;
+    color: var(--text-gray);
+    padding: 5px 0 5px 18px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .ft-about__offer-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 11px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--primary-teal);
+  }
+
+  .ft-about__offer-card--orange .ft-about__offer-list li::before { background: var(--accent-orange); }
+  .ft-about__offer-card--purple .ft-about__offer-list li::before { background: var(--accent-purple); }
+
+  .ft-about__offer-cta {
+    text-align: center;
+  }
+
+  /* =============================================
+     ft-about: Shared Button Styles
+     ============================================= */
+  .ft-about__btn {
+    display: inline-block;
+    padding: 14px 36px;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    border: none;
+  }
+
+  .ft-about__btn--primary {
+    background: var(--primary-teal);
+    color: var(--white);
+    box-shadow: 0 4px 14px rgba(73, 187, 189, 0.35);
+  }
+
+  .ft-about__btn--primary:hover {
+    background: var(--primary-teal-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(73, 187, 189, 0.45);
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .ft-about__btn--outline-white {
+    background: transparent;
+    color: var(--white);
+    border: 2px solid rgba(255, 255, 255, 0.75);
+  }
+
+  .ft-about__btn--outline-white:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  /* =============================================
+     ft-about: Section 4 - Contact & Location
+     ============================================= */
+  .ft-about__location {
+    background: var(--white);
+  }
+
+  .ft-about__location-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+
+  .ft-about__location-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+    text-align: left;
+  }
+
+  .ft-about__location-lead {
+    font-size: 1rem;
+    color: var(--text-gray);
+    margin-bottom: 36px;
+    line-height: 1.6;
+  }
+
+  .ft-about__contact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .ft-about__contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .ft-about__contact-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(73, 187, 189, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .ft-about__contact-icon svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--primary-teal-dark);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .ft-about__contact-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--primary-teal-dark);
+    margin-bottom: 3px;
+  }
+
+  .ft-about__contact-value {
+    font-size: 1rem;
+    color: var(--text-dark);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .ft-about__contact-value:hover {
+    color: var(--primary-teal-dark);
+    text-decoration: none;
+  }
+
+  .ft-about__map-wrap {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* =============================================
+     ft-about: Section 5 - CTA
+     ============================================= */
+  .ft-about__cta {
+    background: linear-gradient(135deg, var(--primary-teal) 0%, #6DD5DA 100%);
+    padding: 80px 24px;
+    text-align: center;
+    color: var(--white);
+  }
+
+  .ft-about__cta-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 16px;
+    color: var(--white);
+  }
+
+  .ft-about__cta-text {
+    font-size: 1.05rem;
+    max-width: 540px;
+    margin: 0 auto 36px;
+    opacity: 0.92;
+    line-height: 1.6;
+    color: var(--white);
+  }
+
+  .ft-about__cta-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  /* =============================================
+     ft-about: Responsive — 768px
+     ============================================= */
+  @media (max-width: 768px) {
+    .ft-about__hero-title {
+      font-size: 2rem;
+    }
+
+    .ft-about__mission-grid,
+    .ft-about__location-grid {
+      grid-template-columns: 1fr;
+      gap: 36px;
+    }
+
+    .ft-about__mission-img-wrap {
+      order: -1;
+    }
+
+    .ft-about__mission-title,
+    .ft-about__location-title {
+      text-align: center;
+    }
+
+    .ft-about__location-lead {
+      text-align: center;
+    }
+
+    .ft-about__offer-cards {
+      grid-template-columns: 1fr;
+    }
+
+    .ft-about__cta-title {
+      font-size: 1.7rem;
+    }
+  }
+
+  /* =============================================
+     ft-about: Responsive — 480px
+     ============================================= */
+  @media (max-width: 480px) {
+    .ft-about__hero {
+      padding-top: 120px;
+      padding-bottom: 48px;
+    }
+
+    .ft-about__hero-title {
+      font-size: 1.7rem;
+    }
+
+    .ft-about__hero-tagline {
+      font-size: 1rem;
+    }
+
+    .ft-about__section {
+      padding: 56px 16px;
+    }
+
+    .ft-about__section-title {
+      font-size: 1.6rem;
+    }
+
+    .ft-about__btn {
+      padding: 12px 28px;
+      font-size: 0.95rem;
+    }
+
+    .ft-about__cta-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- =============================================
+     ft-about: Section 1 - Hero
+     ============================================= -->
+<section class="ft-about__hero">
+  <div class="ft-about__container">
+    <h1 class="ft-about__hero-title">About I-Code</h1>
+    <p class="ft-about__hero-tagline">I-Code Robotics &amp; AI Lab — Invent the Code, Ignite the Future.</p>
+    <p class="ft-about__hero-text">
+      We are a next-generation tech education lab training students from childhood to career level through
+      hands-on coding, robotics, AI, drones, and cybersecurity programs.
+    </p>
+  </div>
+</section>
+
+<!-- =============================================
+     ft-about: Section 2 - Our Mission
+     ============================================= -->
+<section class="ft-about__section ft-about__mission">
+  <div class="ft-about__container">
+    <div class="ft-about__mission-grid">
+      <div class="ft-about__mission-content">
+        <h2 class="ft-about__mission-title">Our Mission</h2>
+        <p class="ft-about__mission-text">
+          To empower the next generation with future-ready tech skills through hands-on, project-based
+          learning. We believe every student — from age 9 to professional — deserves access to quality
+          technology education that opens doors to real career opportunities.
+        </p>
+      </div>
+      <div class="ft-about__mission-img-wrap">
+        <img
+          src="https://images.unsplash.com/photo-1588072432836-e10032774350?w=800&q=80"
+          alt="Students learning technology at I-Code Lab"
+          class="ft-about__mission-img"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     ft-about: Section 3 - What We Offer
+     ============================================= -->
+<section class="ft-about__section ft-about__offers">
+  <div class="ft-about__container">
+    <h2 class="ft-about__section-title">What We Offer</h2>
+    <p class="ft-about__section-subtitle">
+      Structured programs designed for every stage of the learning journey — from curious kids to
+      working professionals.
+    </p>
+
+    <div class="ft-about__offer-cards">
+
+      <!-- Kids (9-12) -->
+      <div class="ft-about__offer-card ft-about__offer-card--orange">
+        <div class="ft-about__offer-icon ft-about__offer-icon--orange">&#129302;</div>
+        <p class="ft-about__offer-age ft-about__offer-age--orange">Ages 9 – 12</p>
+        <h3 class="ft-about__offer-title">Kids</h3>
+        <ul class="ft-about__offer-list">
+          <li>Scratch Coding</li>
+          <li>Beginner Robotics</li>
+          <li>Creative Problem Solving</li>
+        </ul>
+      </div>
+
+      <!-- Teens (12-17) -->
+      <div class="ft-about__offer-card ft-about__offer-card--teal">
+        <div class="ft-about__offer-icon ft-about__offer-icon--teal">&#128187;</div>
+        <p class="ft-about__offer-age ft-about__offer-age--teal">Ages 12 – 17</p>
+        <h3 class="ft-about__offer-title">Teens</h3>
+        <ul class="ft-about__offer-list">
+          <li>Python Programming</li>
+          <li>Web Development</li>
+          <li>Arduino &amp; Electronics</li>
+          <li>AI &amp; Drones</li>
+        </ul>
+      </div>
+
+      <!-- Adults & Professionals -->
+      <div class="ft-about__offer-card ft-about__offer-card--purple">
+        <div class="ft-about__offer-icon ft-about__offer-icon--purple">&#127891;</div>
+        <p class="ft-about__offer-age ft-about__offer-age--purple">Adults &amp; Professionals</p>
+        <h3 class="ft-about__offer-title">Career Track</h3>
+        <ul class="ft-about__offer-list">
+          <li>AI for Business</li>
+          <li>Data Analytics</li>
+          <li>Cybersecurity</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="ft-about__offer-cta">
+      <a href="{% url 'programs' %}" class="ft-about__btn ft-about__btn--primary">View All Programs</a>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     ft-about: Section 4 - Contact & Location
+     ============================================= -->
+<section class="ft-about__section ft-about__location">
+  <div class="ft-about__container">
+    <div class="ft-about__location-grid">
+
+      <!-- Left: Contact Details -->
+      <div class="ft-about__location-info">
+        <h2 class="ft-about__location-title">Find Us</h2>
+        <p class="ft-about__location-lead">
+          Come visit us at our lab in Karen, Nairobi. We would love to show you around and answer
+          any questions you have about our programs.
+        </p>
+        <ul class="ft-about__contact-list">
+
+          <!-- Location -->
+          <li class="ft-about__contact-item">
+            <div class="ft-about__contact-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <div>
+              <p class="ft-about__contact-label">Location</p>
+              <span class="ft-about__contact-value">OneStop Arcade Karen, Nairobi</span>
+            </div>
+          </li>
+
+          <!-- Phone -->
+          <li class="ft-about__contact-item">
+            <div class="ft-about__contact-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="ft-about__contact-label">Phone</p>
+              <a href="tel:+254748982170" class="ft-about__contact-value">+2547 48 982 170</a>
+            </div>
+          </li>
+
+          <!-- Email -->
+          <li class="ft-about__contact-item">
+            <div class="ft-about__contact-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </div>
+            <div>
+              <p class="ft-about__contact-label">Email</p>
+              <a href="mailto:info@icodeaillab.com" class="ft-about__contact-value">info@icodeaillab.com</a>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+
+      <!-- Right: Map Embed -->
+      <div class="ft-about__map-wrap">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15955.27!2d36.7!3d-1.32!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f1b0000000001%3A0x0!2zMcKwMTknMTIuMCJTIDM2wrA0MicwMC4wIkU!5e0!3m2!1sen!2ske!4v1"
+          width="100%"
+          height="350"
+          style="border:0; border-radius:16px;"
+          allowfullscreen
+          loading="lazy"
+          title="I-Code Lab location — OneStop Arcade Karen, Nairobi"
+        ></iframe>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     ft-about: Section 5 - CTA
+     ============================================= -->
+<section class="ft-about__cta">
+  <div class="ft-about__container">
+    <h2 class="ft-about__cta-title">Ready to Join I-Code?</h2>
+    <p class="ft-about__cta-text">
+      Take the first step toward a tech-powered future. Reach out to us or explore our full range
+      of programs for all ages and skill levels.
+    </p>
+    <div class="ft-about__cta-buttons">
+      <a href="mailto:info@icodeaillab.com" class="ft-about__btn ft-about__btn--outline-white">Get in Touch</a>
+      <a href="{% url 'programs' %}" class="ft-about__btn ft-about__btn--outline-white">View Programs</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
