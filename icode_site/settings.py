@@ -79,14 +79,11 @@ if MODE == "dev":
     }
 else:
     DATABASES = {
-        'default': dj_database_url.config(
-            default=config('DATABASE_URL')
+        'default': dj_database_url.parse(
+            config('DATABASE_URL'),
+            conn_max_age=500,
         )
     }
-
-if MODE != "dev":
-    db_from_env = dj_database_url.config(conn_max_age=500)
-    DATABASES['default'].update(db_from_env)
 
 
 # Password validation
