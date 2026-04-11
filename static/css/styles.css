@@ -2,6 +2,7 @@
 /* CSS Variables for theming */
 :root {
     --primary-teal: #49BBBD;
+    --secondary-teal: #a4dcdd;
     /* #626381
     #9DCCFF  */
 
@@ -40,7 +41,8 @@
     top: 0;
     left: 0;
     right: 0;
-    background: var(--primary-teal);
+    /* background: var(--primary-teal); */
+    background: white;
     z-index: 1000;
     padding: 1rem 0;
     box-shadow: var(--shadow-sm);
@@ -76,7 +78,7 @@
 }
 
 .nav-links a {
-    color: var(--white);
+    color: var(--primary-teal);
     text-decoration: none;
     font-weight: 500;
     font-size: 0.95rem;
@@ -106,7 +108,7 @@
 }
 
 .nav-greeting {
-    color: var(--white);
+    color: var(--primary-teal);
     font-weight: 500;
     font-size: 0.95rem;
 }
@@ -116,6 +118,7 @@
     background: var(--white);
     color: var(--primary-teal);
     text-decoration: none;
+    border: 2px solid var(--primary-teal);
     border-radius: 50px;
     font-weight: 600;
     font-size: 0.9rem;
@@ -126,11 +129,12 @@
 .btn-login:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
+    border: none;
 }
 
 .btn-signup {
     padding: 0.6rem 1.75rem;
-    background: transparent;
+    background: var(--primary-teal);
     color: var(--white);
     text-decoration: none;
     border: 2px solid var(--white);

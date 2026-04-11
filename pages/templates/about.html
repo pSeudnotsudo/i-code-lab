@@ -153,17 +153,12 @@
     box-shadow: var(--shadow-md);
     padding: 36px 28px;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
-    border-top: 4px solid transparent;
   }
 
   .ft-about__offer-card:hover {
     transform: translateY(-6px);
     box-shadow: var(--shadow-lg);
   }
-
-  .ft-about__offer-card--orange { border-top-color: var(--accent-orange); }
-  .ft-about__offer-card--teal   { border-top-color: var(--primary-teal); }
-  .ft-about__offer-card--purple { border-top-color: var(--accent-purple); }
 
   .ft-about__offer-icon {
     width: 52px;
@@ -173,12 +168,11 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 20px;
-    font-size: 1.6rem;
   }
 
-  .ft-about__offer-icon--orange { background: rgba(244, 140, 6, 0.12); }
-  .ft-about__offer-icon--teal   { background: rgba(73, 187, 189, 0.12); }
-  .ft-about__offer-icon--purple { background: rgba(155, 89, 182, 0.12); }
+  .ft-about__offer-icon--orange { background: rgba(244, 140, 6, 0.12); color: var(--accent-orange); }
+  .ft-about__offer-icon--teal   { background: rgba(73, 187, 189, 0.12); color: var(--primary-teal); }
+  .ft-about__offer-icon--purple { background: rgba(155, 89, 182, 0.12); color: var(--accent-purple); }
 
   .ft-about__offer-age {
     font-size: 0.8rem;
@@ -529,7 +523,9 @@
 
       <!-- Kids (9-12) -->
       <div class="ft-about__offer-card ft-about__offer-card--orange">
-        <div class="ft-about__offer-icon ft-about__offer-icon--orange">&#129302;</div>
+        <div class="ft-about__offer-icon ft-about__offer-icon--orange">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
         <p class="ft-about__offer-age ft-about__offer-age--orange">Ages 9 – 12</p>
         <h3 class="ft-about__offer-title">Kids</h3>
         <ul class="ft-about__offer-list">
@@ -541,7 +537,9 @@
 
       <!-- Teens (12-17) -->
       <div class="ft-about__offer-card ft-about__offer-card--teal">
-        <div class="ft-about__offer-icon ft-about__offer-icon--teal">&#128187;</div>
+        <div class="ft-about__offer-icon ft-about__offer-icon--teal">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/></svg>
+        </div>
         <p class="ft-about__offer-age ft-about__offer-age--teal">Ages 12 – 17</p>
         <h3 class="ft-about__offer-title">Teens</h3>
         <ul class="ft-about__offer-list">
@@ -554,7 +552,9 @@
 
       <!-- Adults & Professionals -->
       <div class="ft-about__offer-card ft-about__offer-card--purple">
-        <div class="ft-about__offer-icon ft-about__offer-icon--purple">&#127891;</div>
+        <div class="ft-about__offer-icon ft-about__offer-icon--purple">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </div>
         <p class="ft-about__offer-age ft-about__offer-age--purple">Adults &amp; Professionals</p>
         <h3 class="ft-about__offer-title">Career Track</h3>
         <ul class="ft-about__offer-list">
