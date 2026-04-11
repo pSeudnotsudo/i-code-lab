@@ -261,6 +261,15 @@
     <div class="ft-auth-form-panel">
       <p class="ft-auth-title">Welcome to I-code!</p>
 
+      <!-- Messages -->
+      {% if messages %}
+      <div style="margin-bottom: 14px;">
+        {% for message in messages %}
+        <p style="color: #e74c3c; font-size: 0.82rem; background: #fdf0ef; padding: 8px 14px; border-radius: 8px; margin-bottom: 6px;">{{ message }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
       <!-- Tabs -->
       <div class="ft-auth-tabs">
         <button class="ft-auth-tab active" id="tabLogin" onclick="switchTab('login')">Login</button>
@@ -269,7 +278,7 @@
 
       <!-- LOGIN PANEL -->
       <div class="ft-auth-panel active" id="panelLogin">
-        <p class="ft-auth-subtitle">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+        <p class="ft-auth-subtitle">Sign in to access your I-Code student dashboard and learning resources.</p>
 
         <form method="post" action="{% url 'login' %}">
           {% csrf_token %}
@@ -309,7 +318,7 @@
 
       <!-- REGISTER PANEL -->
       <div class="ft-auth-panel" id="panelRegister">
-        <p class="ft-auth-subtitle">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+        <p class="ft-auth-subtitle">Create your account to start learning coding, robotics, AI, and more.</p>
 
         <form method="post" action="{% url 'register' %}">
           {% csrf_token %}
@@ -343,6 +352,14 @@
                   <circle cx="12" cy="12" r="3"/>
                 </svg>
               </button>
+            </div>
+          </div>
+
+          <div class="ft-auth-form-group">
+            <label for="reg-password2">Confirm Password</label>
+            <div class="ft-auth-input-wrap">
+              <input type="password" id="reg-password2" name="password2"
+                     placeholder="Confirm your Password" required>
             </div>
           </div>
 

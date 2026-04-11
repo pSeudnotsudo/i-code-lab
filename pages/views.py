@@ -1,10 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('index')
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -18,10 +22,17 @@ def login_view(request):
 
 
 def register_view(request):
+    if request.user.is_authenticated:
+        return redirect('index')
     if request.method == 'POST':
         email = request.POST.get('email')
         username = request.POST.get('username')
-        password = request.POST.get('password1')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+
+        if password1 != password2:
+            messages.error(request, 'Passwords do not match.')
+            return render(request, 'authentication/auth_page.html', {'active_tab': 'register'})
 
         if User.objects.filter(username=username).exists():
             messages.error(request, 'Username already taken.')
@@ -31,7 +42,14 @@ def register_view(request):
             messages.error(request, 'Email already registered.')
             return render(request, 'authentication/auth_page.html', {'active_tab': 'register'})
 
-        user = User.objects.create_user(username=username, email=email, password=password)
+        try:
+            validate_password(password1)
+        except ValidationError as e:
+            for error in e.messages:
+                messages.error(request, error)
+            return render(request, 'authentication/auth_page.html', {'active_tab': 'register'})
+
+        user = User.objects.create_user(username=username, email=email, password=password1)
         login(request, user)
         return redirect('index')
 
