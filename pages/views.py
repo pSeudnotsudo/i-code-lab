@@ -50,5 +50,5 @@ def about(request):
     return render(request, 'about.html')
 
 
-def membership(request):
+def pricing(request):
     return render(request, 'membership.html')
