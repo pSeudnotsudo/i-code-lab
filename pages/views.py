@@ -56,6 +56,11 @@ def register_view(request):
     return render(request, 'authentication/auth_page.html', {'active_tab': 'register'})
 
 
+def logout_view(request):
+    logout(request)
+    return redirect('index')
+
+
 def index(request):
     return render(request, 'index.html')
 

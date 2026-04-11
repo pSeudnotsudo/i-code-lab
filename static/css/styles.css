@@ -105,6 +105,12 @@
     align-items: center;
 }
 
+.nav-greeting {
+    color: var(--white);
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
 .btn-login {
     padding: 0.6rem 1.75rem;
     background: var(--white);
