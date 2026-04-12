@@ -225,65 +225,6 @@
   </div>
 </section>
 
-<!-- ft-membership: Testimonials Carousel Section -->
-<section class="ft-membership-testimonials">
-  <h2 class="ft-membership-testimonials__title">What our students have to say</h2>
-
-  <div class="ft-membership-testimonials__wrapper">
-    <button class="ft-membership-testimonials__nav ft-membership-testimonials__nav--prev" aria-label="Previous">
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11 4L6 9l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-
-    <div class="ft-membership-testimonials__track-outer">
-      <div class="ft-membership-testimonials__track">
-
-        <div class="ft-membership-testimonial-card">
-          <img class="ft-membership-testimonial-card__avatar" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Mwangi">
-          <h4 class="ft-membership-testimonial-card__name">Sarah Mwangi</h4>
-          <p class="ft-membership-testimonial-card__text">My son started with zero coding knowledge and now builds his own Scratch games. The instructors are patient and really connect with the kids.</p>
-        </div>
-
-        <div class="ft-membership-testimonial-card">
-          <img class="ft-membership-testimonial-card__avatar" src="https://randomuser.me/api/portraits/women/68.jpg" alt="James Otieno">
-          <h4 class="ft-membership-testimonial-card__name">James Otieno</h4>
-          <p class="ft-membership-testimonial-card__text">The robotics program gave my daughter confidence in STEM. She now wants to study engineering — I-Code made that possible.</p>
-        </div>
-
-        <div class="ft-membership-testimonial-card">
-          <img class="ft-membership-testimonial-card__avatar" src="https://randomuser.me/api/portraits/women/65.jpg" alt="Grace Wanjiku">
-          <h4 class="ft-membership-testimonial-card__name">Grace Wanjiku</h4>
-          <p class="ft-membership-testimonial-card__text">As an adult learner, I was nervous about starting. The AI for Business program was practical and directly applicable to my work.</p>
-        </div>
-
-        <div class="ft-membership-testimonial-card">
-          <img class="ft-membership-testimonial-card__avatar" src="https://randomuser.me/api/portraits/women/12.jpg" alt="David Kimani">
-          <h4 class="ft-membership-testimonial-card__name">David Kimani</h4>
-          <p class="ft-membership-testimonial-card__text">The weekend sessions are perfect for our busy schedule. Both my kids attend and they absolutely love the drone projects.</p>
-        </div>
-
-        <div class="ft-membership-testimonial-card">
-          <img class="ft-membership-testimonial-card__avatar" src="https://randomuser.me/api/portraits/women/22.jpg" alt="Amina Hassan">
-          <h4 class="ft-membership-testimonial-card__name">Amina Hassan</h4>
-          <p class="ft-membership-testimonial-card__text">I-Code's Python programming class prepared my teen for a coding competition. He placed second nationally!</p>
-        </div>
-
-        <div class="ft-membership-testimonial-card">
-          <img class="ft-membership-testimonial-card__avatar" src="https://randomuser.me/api/portraits/women/33.jpg" alt="Peter Njoroge">
-          <h4 class="ft-membership-testimonial-card__name">Peter Njoroge</h4>
-          <p class="ft-membership-testimonial-card__text">The cybersecurity program helped me transition careers. The mentors provided real industry guidance beyond just coursework.</p>
-        </div>
-
-      </div>
-    </div>
-
-    <button class="ft-membership-testimonials__nav ft-membership-testimonials__nav--next" aria-label="Next">
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M7 4l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-  </div>
-</section>
-
-
-
 <script>
   /* ===========================
      ft-membership: FAQ Accordion
@@ -310,52 +251,6 @@
       }
     });
   });
-
-  /* ===========================
-     ft-membership: Testimonials Carousel
-     =========================== */
-  (function () {
-    const track = document.querySelector('.ft-membership-testimonials__track');
-    const cards = track.querySelectorAll('.ft-membership-testimonial-card');
-    const prevBtn = document.querySelector('.ft-membership-testimonials__nav--prev');
-    const nextBtn = document.querySelector('.ft-membership-testimonials__nav--next');
-
-    let current = 0;
-
-    function getVisibleCount() {
-      const w = window.innerWidth;
-      if (w < 600) return 1;
-      if (w < 900) return 2;
-      return 4;
-    }
-
-    function getCardWidth() {
-      const gap = 20;
-      const visible = getVisibleCount();
-      const outer = document.querySelector('.ft-membership-testimonials__track-outer');
-      return (outer.offsetWidth / visible) - (gap * (visible - 1) / visible);
-    }
-
-    function update() {
-      const cardWidth = getCardWidth();
-      const gap = 20;
-      track.style.transform = `translateX(-${current * (cardWidth + gap)}px)`;
-    }
-
-    function maxIndex() {
-      return Math.max(0, cards.length - getVisibleCount());
-    }
-
-    nextBtn.addEventListener('click', () => {
-      if (current < maxIndex()) { current++; update(); }
-    });
-
-    prevBtn.addEventListener('click', () => {
-      if (current > 0) { current--; update(); }
-    });
-
-    window.addEventListener('resize', () => { current = Math.min(current, maxIndex()); update(); });
-  })();
 </script>
 
 

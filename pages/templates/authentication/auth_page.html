@@ -4,12 +4,12 @@
 {% block extra_css %}
 <style>
   .ft-auth-wrapper {
-    min-height: 100vh;
+    min-height: 70vh;
     display: flex;
     align-items: center;
     justify-content: center;
     background: #f0f4f4;
-    padding: 40px 16px;
+    padding: 100px 16px;
     font-family: 'Segoe UI', sans-serif;
   }
 
@@ -244,11 +244,11 @@
     <div class="ft-auth-image" id="authImage">
       <!-- Login image -->
       <img class="ft-auth-img-login"
-           src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&q=80"
+           src="{% static 'images/robotic_signage_portrait.JPG' %}"
            alt="Students in classroom">
       <!-- Register image -->
       <img class="ft-auth-img-register"
-           src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&q=80"
+           src="{% static 'images/robotic_signage_portrait.JPG' %}"
            alt="Students learning">
       <div class="ft-auth-image-overlay"></div>
       <div class="ft-auth-image-text">
