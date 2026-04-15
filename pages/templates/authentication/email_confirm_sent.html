@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="max-width:480px;margin:80px auto;padding:40px 24px;font-family:'Segoe UI',sans-serif;text-align:center;">
+  <h2 style="color:#3ecfcf;">Check your inbox!</h2>
+  <p style="color:#555;margin-top:12px;">
+    We sent a confirmation link to your email.<br>
+    Click it to activate your account, then log in.
+  </p>
+  <a href="{% url 'login' %}" style="display:inline-block;margin-top:24px;padding:10px 28px;
+     background:#3ecfcf;color:#fff;border-radius:10px;text-decoration:none;font-weight:600;">
+    Back to Login
+  </a>
+</div>
+{% endblock %}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0; padding:0; background:#f0f4f4; font-family:'Segoe UI', sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="padding: 40px 16px;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0"
+               style="background:#ffffff; border-radius:16px;
+                      box-shadow:0 8px 32px rgba(0,0,0,0.08); overflow:hidden;
+                      max-width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:#3ecfcf; padding:32px; text-align:center;">
+              <h1 style="margin:0; color:#fff; font-size:1.6rem; font-weight:700;
+                         letter-spacing:0.5px;">I-Code</h1>
+              <p style="margin:6px 0 0; color:rgba(255,255,255,0.85);
+                        font-size:0.88rem;">Learn Without Limits</p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:36px 40px 28px;">
+              <p style="margin:0 0 12px; font-size:1rem; color:#333; font-weight:600;">
+                Hi {{ first_name }} {{ last_name }},
+              </p>
+              <p style="margin:0 0 20px; font-size:0.9rem; color:#555; line-height:1.6;">
+                Thanks for registering as a <strong>{{ role|capfirst }}</strong> on I-Code!
+                Click the button below to confirm your email address and activate your account.
+              </p>
+
+              <!-- Button -->
+              <table cellpadding="0" cellspacing="0" style="margin: 28px auto;">
+                <tr>
+                  <td align="center" style="border-radius:10px;
+                                            background:#3ecfcf;
+                                            box-shadow:0 4px 14px rgba(62,207,207,0.4);">
+                    <a href="{{ confirm_url }}"
+                       style="display:inline-block; padding:14px 36px;
+                              color:#fff; font-size:0.95rem; font-weight:600;
+                              text-decoration:none; border-radius:10px;
+                              font-family:'Segoe UI', sans-serif;
+                              letter-spacing:0.3px;">
+                      Confirm Email Address
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:24px 0 8px; font-size:0.82rem; color:#888; line-height:1.5;">
+                Or copy and paste this link into your browser:
+              </p>
+              <p style="margin:0; font-size:0.78rem; word-break:break-all;">
+                <a href="{{ confirm_url }}" style="color:#3ecfcf;">{{ confirm_url }}</a>
+              </p>
+
+              <hr style="border:none; border-top:1px solid #eee; margin:28px 0;">
+
+              <p style="margin:0; font-size:0.8rem; color:#aaa; line-height:1.5;">
+                This link expires in <strong>7 days</strong>.
+                If you didn't create an I-Code account, you can safely ignore this email.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#f8fafa; padding:20px 40px; text-align:center;
+                       border-top:1px solid #eee;">
+              <p style="margin:0; font-size:0.78rem; color:#bbb;">
+                © I-Code Team &nbsp;·&nbsp; Empowering students every step of the way.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
