@@ -12,7 +12,7 @@
         </ul>
         <div class="nav-auth">
             {% if user.is_authenticated %}
-                <span class="nav-greeting">Hi, {{ user.username }}</span>
+                <span class="nav-greeting">Hi, {{ user.first_name }}</span>
                 <a href="{% url 'logout' %}" class="btn-signup">Logout</a>
             {% else %}
                 <a href="{% url 'login' %}" class="btn-login">Login</a>
