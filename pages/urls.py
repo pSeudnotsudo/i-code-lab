@@ -32,6 +32,10 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('logout/', views.logout_view, name='logout'),
     path('pricing/', views.pricing, name='pricing'),
+    path('socials/', views.socials, name='socials'),
+    
+    # UPLOAD IMAGES $ VIDEOS.
+    path('gallery/upload/', views.gallery_upload, name='gallery_upload'),
     
     path('password-reset/', auth_views.PasswordResetView.as_view(
         template_name='authentication/password_reset_form.html',
@@ -53,3 +57,6 @@ urlpatterns = [
     ), name='password_reset_complete'),
 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

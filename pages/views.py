@@ -14,6 +14,12 @@ from django.conf import settings
 from .tokens import email_confirmation_token
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from .models import *
+import os
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt  
 
 User = get_user_model()
 
@@ -174,3 +180,72 @@ def about(request):
 
 def pricing(request):
     return render(request, 'membership.html')
+
+def socials(request):
+    items = GalleryItem.objects.all()
+
+    return render (request, 'socials.html',{'items': items})
+
+
+
+
+# @login_required
+def gallery_upload(request):
+    if request.method == 'POST':
+        # --- pull raw fields from request.POST / request.FILES ---
+        title    = request.POST.get('title', '').strip()
+        category = request.POST.get('category', '').strip()
+        date     = request.POST.get('date', '').strip()
+        caption  = request.POST.get('caption', '').strip()
+        media    = request.FILES.get('media')
+
+        # --- validation ---
+        errors = {}
+        if not title:
+            errors['title'] = 'Title is required.'
+        if category not in ('event', 'workshop', 'community'):
+            errors['category'] = 'Select a valid category.'
+        if not date:
+            errors['date'] = 'Date is required.'
+        if not media:
+            errors['media'] = 'Please choose a file.'
+        else:
+            if media.size > 50 * 1024 * 1024:
+                errors['media'] = 'File too large — maximum 50 MB.'
+            else:
+                allowed_images = {'.jpg', '.jpeg', '.png', '.webp', '.gif'}
+                allowed_videos = {'.mp4', '.mov', '.webm', '.avi', '.mkv'}
+                ext = os.path.splitext(media.name)[1].lower()
+                if ext not in (allowed_images | allowed_videos):
+                    errors['media'] = 'Unsupported file type.'
+
+        if errors:
+            return JsonResponse({'success': False, 'errors': errors}, status=400)
+
+        # --- save ---
+        ext = os.path.splitext(media.name)[1].lower()
+        media_type = 'video' if ext in {'.mp4', '.mov', '.webm', '.avi', '.mkv'} else 'image'
+
+        item = GalleryItem.objects.create(
+            title    = title,
+            media    = media,
+            type     = media_type,
+            category = category,
+            date     = date,
+            caption  = caption,
+        )
+
+        return JsonResponse({
+            'success': True,
+            'message': f'"{item.title}" uploaded successfully!',
+            'item': {
+                'id':       item.id,
+                'title':    item.title,
+                'type':     item.type,
+                'category': item.category,
+                'date':     str(item.date),
+            }
+        })
+
+    recent_items = GalleryItem.objects.order_by('-uploaded_at')[:8]
+    return render(request, 'gallery_upload.html', {'recent_items': recent_items})

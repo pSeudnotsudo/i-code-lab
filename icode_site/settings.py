@@ -154,11 +154,8 @@ DEFAULT_FROM_EMAIL  = f'I-Code <{config("EMAIL_HOST_USER")}>'
 
 
 
-
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
-
 
 
 # Static files (CSS, JavaScript, Images)
@@ -173,8 +170,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Production-specific settings
 # Uncomment after adding 'whitenoise' to requirements.txt:
-# if not DEBUG:
-#     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # Default primary key field type
@@ -191,6 +188,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 PASSWORD_RESET_TIMEOUT = 259200
 
 # AUTH-MODEL
-AUTH_USER_MODEL = 'pages.CustomUser'
-SITE_DOMAIN     = 'localhost:8000'
+# AUTH_USER_MODEL = 'pages.CustomUser'
+# SITE_DOMAIN     = 'localhost:8000'
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
