@@ -1,0 +1,370 @@
+{% extends "icode-admin/base_admin.html" %} 
+
+{% block admin_content %}
+
+<div class="page-header">
+
+    <div>
+        <h2 class="page-title">Age Brackets</h2>
+        <p class="page-subtitle">
+            Manage student enrollment age groups
+        </p>
+    </div>
+
+    <button
+        class="btn-primary"
+        onclick="openModal()"
+    >
+        <i class="ti ti-plus"></i>
+        Add Bracket
+    </button>
+
+</div>
+
+
+<div class="card table-card">
+
+    <table class="custom-table">
+
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Code</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody id="bracketTable">
+
+            {% for bracket in brackets %}
+
+            <tr>
+
+                <td>{{ bracket.title }}</td>
+
+                <td>{{ bracket.code }}</td>
+
+                <td>
+
+                    {% if bracket.is_active %}
+                        <span class="badge badge-active">
+                            Active
+                        </span>
+                    {% else %}
+                        <span class="badge badge-pending">
+                            Inactive
+                        </span>
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+
+<!-- MODAL -->
+
+<div class="modal-overlay" id="modalOverlay">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h3>Add Age Bracket</h3>
+
+            <button
+                class="close-btn"
+                onclick="closeModal()"
+            >
+                <i class="ti ti-x"></i>
+            </button>
+
+        </div>
+
+
+        <form id="ageBracketForm">
+
+            <div class="form-group">
+                <label>Title</label>
+
+                <input
+                    type="text"
+                    name="title"
+                    placeholder="Example: Kids 7-10"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Code</label>
+
+                <input
+                    type="text"
+                    name="code"
+                    placeholder="Example: KIDS_7_10"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Display Order</label>
+
+                <input
+                    type="number"
+                    name="order"
+                    value="0"
+                >
+            </div>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    onclick="closeModal()"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn-primary"
+                >
+                    Save Bracket
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+
+{% block extra_css %}
+
+<style>
+
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:24px;
+}
+
+.page-title{
+    font-size:26px;
+    font-weight:700;
+}
+
+.page-subtitle{
+    color:var(--text-gray);
+    margin-top:4px;
+}
+
+.table-card{
+    overflow:hidden;
+}
+
+.custom-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.custom-table th{
+    background:#f8fafb;
+    padding:16px;
+    text-align:left;
+    border-bottom:1px solid var(--border);
+}
+
+.custom-table td{
+    padding:16px;
+    border-bottom:1px solid var(--border);
+}
+
+
+/* MODAL */
+
+.modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.45);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+}
+
+.modal-overlay.show{
+    display:flex;
+}
+
+.modal-box{
+    width:100%;
+    max-width:500px;
+    background:#fff;
+    border-radius:14px;
+    padding:24px;
+    animation:modalFade .2s ease;
+}
+
+@keyframes modalFade{
+
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:24px;
+}
+
+.close-btn{
+    border:none;
+    background:none;
+    font-size:22px;
+    cursor:pointer;
+}
+
+.form-group{
+    margin-bottom:18px;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+}
+
+.form-group input{
+    width:100%;
+    height:46px;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:0 14px;
+    outline:none;
+    font-family:"Poppins", sans-serif;
+}
+
+.form-group input:focus{
+    border-color:var(--primary);
+}
+
+.modal-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:12px;
+    margin-top:24px;
+}
+
+.btn-secondary{
+    border:none;
+    background:#eef2f5;
+    padding:10px 16px;
+    border-radius:var(--radius);
+    cursor:pointer;
+}
+
+</style>
+
+{% endblock %}
+
+
+
+{% block extra_js %}
+
+<script>
+
+const modal = document.getElementById("modalOverlay");
+
+function openModal(){
+
+    modal.classList.add("show");
+
+}
+
+function closeModal(){
+
+    modal.classList.remove("show");
+
+}
+
+
+document
+.getElementById("ageBracketForm")
+.addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    const form = e.target;
+
+    const payload = {
+        title: form.title.value,
+        code: form.code.value,
+        order: form.order.value
+    };
+
+    ajaxPost(
+        "{% url 'age_bracket_store' %}",
+        payload,
+        function(res){
+
+            const bracket = res.bracket;
+
+            document
+            .getElementById("bracketTable")
+            .insertAdjacentHTML(
+                "afterbegin",
+
+                `
+                <tr>
+
+                    <td>${bracket.title}</td>
+
+                    <td>${bracket.code}</td>
+
+                    <td>
+                        <span class="badge badge-active">
+                            Active
+                        </span>
+                    </td>
+
+                </tr>
+                `
+            );
+
+            form.reset();
+
+            closeModal();
+
+        }
+    );
+
+});
+
+</script>
+
+{% endblock %}

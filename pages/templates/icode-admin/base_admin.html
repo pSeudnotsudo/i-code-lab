@@ -1,0 +1,622 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>i-Code Admin | {% block page_title %}Dashboard{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #49bbbd;
+        --primary-dark: #3da4a6;
+        --primary-light: #e6f7f7;
+        --accent-orange: #f48c06;
+        --accent-purple: #9b59b6;
+        --text-dark: #2c3e50;
+        --text-gray: #5d6c7b;
+        --white: #fff;
+        --bg-light: #f8fafb;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+        --sidebar-bg: #0f2535;
+        --sidebar-w: 240px;
+        --border: #e8ecef;
+        --radius: 8px;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Poppins", sans-serif;
+        background: var(--bg-light);
+        color: var(--text-dark);
+        font-size: 14px;
+      }
+
+      .layout {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* ── SIDEBAR ── */
+      .sidebar {
+        width: var(--sidebar-w);
+        background: var(--sidebar-bg);
+        display: flex;
+        flex-direction: column;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        flex-shrink: 0;
+      }
+      .sidebar-logo {
+        padding: 22px 20px 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      }
+      .logo-icon {
+        
+        background: var( --primary-light);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+        
+      }
+      .logo-text {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 15px;
+        color: #fff;
+      }
+      .logo-text span {
+        color: var(--primary);
+      }
+
+      .nav-section {
+        padding: 16px 12px 4px;
+      }
+      .nav-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        color: rgba(255, 255, 255, 0.3);
+        text-transform: uppercase;
+        padding: 0 8px;
+        margin-bottom: 6px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 10px;
+        border-radius: 8px;
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 13px;
+        text-decoration: none;
+        transition: all 0.15s;
+        margin-bottom: 2px;
+      }
+      .nav-item:hover,
+      .nav-item.active {
+        background: var(--primary);
+        color: #fff;
+      }
+      .nav-item i {
+        font-size: 16px;
+        width: 18px;
+        text-align: center;
+      }
+      .nav-badge {
+        margin-left: auto;
+        background: var(--accent-orange);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: 10px;
+      }
+
+      /* Collapsible nav groups */
+      .nav-group {
+        margin-bottom: 2px;
+      }
+      .nav-group-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 10px;
+        border-radius: 8px;
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .nav-group-header:hover {
+        background: rgba(255, 255, 255, 0.07);
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .nav-group-header i.ti-chevron-down {
+        margin-left: auto;
+        font-size: 13px;
+        transition: transform 0.2s;
+      }
+      .nav-group-header.open i.ti-chevron-down {
+        transform: rotate(180deg);
+      }
+      .nav-sub {
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height 0.25s ease;
+      }
+      .nav-sub.open {
+        max-height: 200px;
+      }
+      .nav-sub .nav-item {
+        padding-left: 36px;
+        font-size: 12.5px;
+      }
+
+      .sidebar-footer {
+        margin-top: auto;
+        padding: 12px;
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
+      }
+      .user-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .user-row:hover {
+        background: rgba(255, 255, 255, 0.07);
+      }
+      .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+      .user-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .user-name {
+        color: #fff;
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .user-role {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 11px;
+      }
+
+      /* ── MAIN ── */
+      .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .topbar {
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        padding: 0 24px;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .topbar-title {
+        font-family: "Poppins", sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .search-box {
+        flex: 1;
+        max-width: 320px;
+        position: relative;
+      }
+      .search-box input {
+        width: 100%;
+        background: #f1f4f6;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 8px 12px 8px 34px;
+        font-size: 13px;
+        outline: none;
+      }
+      .search-box i {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-gray);
+        font-size: 15px;
+      }
+      .topbar-right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .icon-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: var(--radius);
+        background: #f1f4f6;
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--text-gray);
+        font-size: 16px;
+        transition: all 0.15s;
+        text-decoration: none;
+      }
+      .icon-btn:hover {
+        background: var(--primary-light);
+        color: var(--primary-dark);
+        border-color: var(--primary);
+      }
+      .notif-dot {
+        position: relative;
+      }
+      .notif-dot::after {
+        content: "";
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 7px;
+        height: 7px;
+        background: var(--accent-orange);
+        border-radius: 50%;
+        border: 1.5px solid #f1f4f6;
+      }
+
+      .content {
+        flex: 1;
+        padding: 24px;
+      }
+
+      /* ── SHARED COMPONENTS ── */
+      .section-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-gray);
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        margin-bottom: 12px;
+      }
+      .card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+      }
+      .btn-primary {
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius);
+        padding: 8px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: background 0.15s;
+      }
+      .btn-primary:hover {
+        background: var(--primary-dark);
+      }
+      .badge {
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        display: inline-block;
+      }
+      .badge-pending {
+        background: #fff4e3;
+        color: #b86800;
+      }
+      .badge-active {
+        background: #edf7f1;
+        color: #1a7a4a;
+      }
+      .badge-new {
+        background: var(--primary-light);
+        color: var(--primary-dark);
+      }
+
+      /* AJAX feedback */
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--text-dark);
+        color: #fff;
+        padding: 12px 20px;
+        border-radius: var(--radius);
+        font-size: 13px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+        z-index: 999;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+      .toast.success {
+        background: #1a7a4a;
+      }
+      .toast.error {
+        background: #c0392b;
+      }
+
+      /* Active nav highlight via data-url matching */
+      .nav-item[data-url="{{ request.path }}"]:not(.nav-group-header) {
+        background: var(--primary) !important;
+        color: #fff !important;
+      }
+    </style>
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body>
+    <div class="layout">
+      <!-- ════ SIDEBAR ════ -->
+      <aside class="sidebar">
+        <div class="sidebar-logo">
+          <div class="logo-icon"> 
+            <img src="{% static 'images/i-code_logo_v2.png' %}" alt="I-CODE Logo" style="height: 50px; width: 120px;" />
+          </div>
+          
+          <div class="logo-text">i-<span>Code</span> Admin</div>
+        </div>
+
+        <!-- Main Nav -->
+        <div class="nav-section">
+          <div class="nav-label">Main</div>
+          <a
+            href="{% url 'admin_dashboard' %}"
+            class="nav-item"
+            data-url="{% url 'admin_dashboard' %}"
+          >
+            <i class="ti ti-layout-dashboard"></i> Dashboard
+          </a>
+          <a
+            href="{% url 'enrollments_list' %}"
+            class="nav-item"
+            data-url="{% url 'enrollments_list' %}"
+          >
+            <i class="ti ti-users"></i> Enrollments {% if pending_count %}<span
+              class="nav-badge"
+              >{{ pending_count }}</span
+            >{% endif %}
+          </a>
+        </div>
+
+        <!-- Settings Nav -->
+        <div class="nav-section">
+          <div class="nav-label">Settings</div>
+
+          <!-- Programs -->
+          <div class="nav-group">
+            <div class="nav-group-header" onclick="toggleGroup(this)">
+              <i class="ti ti-category"></i> Programs
+              <i class="ti ti-chevron-down"></i>
+            </div>
+            <div class="nav-sub">
+              <a href="{% url 'programs_list' %}" class="nav-item"
+                ><i class="ti ti-list"></i> All Programs</a
+              >
+              {% comment %}
+              <a href="{% url 'program_add' %}" class="nav-item"
+                ><i class="ti ti-plus"></i> Add Program</a
+              >
+              {% endcomment %}
+            </div>
+          </div>
+
+          <!-- Age Brackets -->
+          <div class="nav-group">
+            <div class="nav-group-header" onclick="toggleGroup(this)">
+              <i class="ti ti-users-group"></i> Age Brackets
+              <i class="ti ti-chevron-down"></i>
+            </div>
+            <div class="nav-sub">
+              
+              <a href="{% url 'age_brackets' %}" class="nav-item"
+                ><i class="ti ti-list"></i> View Brackets</a
+              >
+              
+              
+            </div>
+          </div>
+
+          <!-- Enrollment Status -->
+          <div class="nav-group">
+            <div class="nav-group-header" onclick="toggleGroup(this)">
+              <i class="ti ti-flag"></i> Enrollment Status
+              <i class="ti ti-chevron-down"></i>
+            </div>
+            <div class="nav-sub">
+              
+              <a href="{% url 'status_list' %}" class="nav-item"
+                ><i class="ti ti-list"></i> All Statuses</a
+              >
+             
+              
+            </div>
+          </div>
+
+          <!-- Timelines -->
+          <div class="nav-group">
+            <div class="nav-group-header" onclick="toggleGroup(this)">
+              <i class="ti ti-calendar-time"></i> Timelines
+              <i class="ti ti-chevron-down"></i>
+            </div>
+            <div class="nav-sub">
+              {% comment %}
+              <a href="{% url 'timeline_list' %}" class="nav-item"
+                ><i class="ti ti-list"></i> All Timelines</a
+              >
+              <a href="{% url 'timeline_add' %}" class="nav-item"
+                ><i class="ti ti-plus"></i> Add Timeline</a
+              >
+              {% endcomment %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer / User -->
+        <div class="sidebar-footer">
+          <div class="user-row">
+            <div class="user-avatar">
+              {{ request.user.first_name.0|upper }}{{
+              request.user.last_name.0|upper }}
+            </div>
+            <div class="user-info">
+              <div class="user-name">
+                {{ request.user.get_full_name|default:request.user.username }}
+              </div>
+              <div class="user-role">Administrator</div>
+            </div>
+            <a href="{% url 'admin:logout' %}" title="Logout"
+              ><i
+                class="ti ti-logout"
+                style="color: rgba(255, 255, 255, 0.3); font-size: 16px"
+              ></i
+            ></a>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ════ MAIN ════ -->
+      <div class="main">
+        <!-- Topbar -->
+        <div class="topbar">
+          {% comment %}
+          <div class="topbar-title">
+            {% block page_title %}Dashboard{% endblock %}
+          </div>
+          {% endcomment %}
+          <div class="search-box">
+            <i class="ti ti-search"></i>
+            <input
+              type="text"
+              id="global-search"
+              placeholder="Search enrollments..."
+              autocomplete="off"
+            />
+          </div>
+          <div class="topbar-right">
+            <a
+              href="{% url 'enrollments_list' %}"
+              class="icon-btn notif-dot"
+              title="Pending enrollments"
+              ><i class="ti ti-bell"></i
+            ></a>
+            <a href="#" class="icon-btn" title="Settings"
+              ><i class="ti ti-settings"></i
+            ></a>
+          </div>
+        </div>
+
+        <!-- Page Content -->
+        <div class="content">
+          {% if messages %} {% for msg in messages %}
+          <div class="toast show {{ msg.tags }}" id="django-msg">{{ msg }}</div>
+          {% endfor %} {% endif %} {% block admin_content %}{% endblock %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast for AJAX -->
+    <div class="toast" id="ajax-toast"></div>
+
+    <script>
+      /* ── Active nav link ── */
+      document.querySelectorAll(".nav-item[href]").forEach((link) => {
+        if (link.getAttribute("href") === window.location.pathname) {
+          link.classList.add("active");
+          const sub = link.closest(".nav-sub");
+          if (sub) {
+            sub.classList.add("open");
+            sub.previousElementSibling.classList.add("open");
+          }
+        }
+      });
+
+      /* ── Collapsible groups ── */
+      function toggleGroup(header) {
+        header.classList.toggle("open");
+        header.nextElementSibling.classList.toggle("open");
+      }
+
+      /* ── Auto-dismiss django messages ── */
+      const djangoMsg = document.getElementById("django-msg");
+      if (djangoMsg) setTimeout(() => djangoMsg.classList.remove("show"), 3500);
+
+      /* ── AJAX toast helper (call from child pages) ── */
+      function showToast(msg, type = "") {
+        const t = document.getElementById("ajax-toast");
+        t.textContent = msg;
+        t.className = "toast show " + type;
+        setTimeout(() => t.classList.remove("show"), 3000);
+      }
+
+      /* ── AJAX helper for settings forms ── */
+      function ajaxPost(url, data, onSuccess) {
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "X-Requested-With": "XMLHttpRequest",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((r) => r.json())
+          .then((res) => {
+            if (res.success) {
+              showToast(res.message || "Saved!", "success");
+              if (onSuccess) onSuccess(res);
+            } else {
+              showToast(res.error || "Something went wrong", "error");
+            }
+          })
+          .catch(() => showToast("Network error", "error"));
+      }
+    </script>
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

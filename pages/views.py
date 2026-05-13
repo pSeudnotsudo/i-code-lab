@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
@@ -20,6 +20,10 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt  
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+import json
+
 
 User = get_user_model()
 
@@ -249,3 +253,234 @@ def gallery_upload(request):
 
     recent_items = GalleryItem.objects.order_by('-uploaded_at')[:8]
     return render(request, 'gallery_upload.html', {'recent_items': recent_items})
+
+
+
+# ADMIN LAYOUT AND EVERYTHING ADMIN
+def icode_admin(request):
+    items = GalleryItem.objects.all()
+    # print(items)
+
+    return render (request, 'icode-admin/admin_dash.html',{'items': items})
+
+
+def icode_enrollments(request):
+    enrollments = Enrollment.objects.all()
+
+    return render (request, 'icode-admin/enrollment_list.html',{'enrollments': enrollments})
+ 
+ 
+def icode_programs(request):
+    programs = Program.objects.all()
+
+    return render (request, 'icode-admin/enrollment_list.html',{'programs': programs})
+
+
+# AGE BRACKETS
+def age_brackets(request):
+
+    brackets = AgeBracket.objects.all().order_by("order")
+
+    context = {
+        "brackets": brackets
+    }
+
+    return render(
+        request,
+        "icode-admin/age_brackets.html",
+        context
+    )
+    
+
+@require_POST
+def age_bracket_store(request):
+
+    try:
+
+        data = json.loads(request.body)
+
+        title = data.get("title")
+        code = data.get("code")
+        order = data.get("order", 0)
+
+        if not title:
+            return JsonResponse({
+                "success": False,
+                "error": "Title is required"
+            })
+
+        if not code:
+            return JsonResponse({
+                "success": False,
+                "error": "Code is required"
+            })
+
+        if AgeBracket.objects.filter(code=code).exists():
+            return JsonResponse({
+                "success": False,
+                "error": "Code already exists"
+            })
+
+        bracket = AgeBracket.objects.create(
+            title=title,
+            code=code,
+            order=order,
+            is_active=True
+        )
+
+        return JsonResponse({
+            "success": True,
+            "message": "Bracket added successfully",
+            "bracket": {
+                "id": bracket.id,
+                "title": bracket.title,
+                "code": bracket.code,
+                "status": "Active"
+            }
+        })
+
+    except Exception as e:
+
+        return JsonResponse({
+            "success": False,
+            "error": str(e)
+        })
+
+
+# Status List
+def status_list(request):
+
+    statuses = EnrollmentStatus.objects.all().order_by("order")
+
+    context = {
+        "statuses": statuses
+    }
+
+    return render(
+        request,
+        "icode-admin/enrollment_status.html",
+        context
+    )
+    
+@require_POST
+def status_store(request):
+
+    try:
+
+        data = json.loads(request.body)
+
+        name = data.get("name")
+        code = data.get("code")
+        order = data.get("order", 0)
+
+        if not name:
+            return JsonResponse({
+                "success": False,
+                "error": "Status name is required"
+            })
+
+        if not code:
+            return JsonResponse({
+                "success": False,
+                "error": "Status code is required"
+            })
+
+        if EnrollmentStatus.objects.filter(code=code).exists():
+
+            return JsonResponse({
+                "success": False,
+                "error": "Status code already exists"
+            })
+
+        status = EnrollmentStatus.objects.create(
+            name=name,
+            code=code,
+            order=order,
+            is_active=True
+        )
+
+        return JsonResponse({
+
+            "success": True,
+            "message": "Status added successfully",
+
+            "status": {
+                "id": status.id,
+                "name": status.name,
+                "code": status.code,
+                "order": status.order,
+                "active": status.is_active
+            }
+
+        })
+
+    except Exception as e:
+
+        return JsonResponse({
+            "success": False,
+            "error": str(e)
+        })
+
+
+@require_POST
+def status_update(request, pk):
+
+    try:
+
+        status = get_object_or_404(
+            EnrollmentStatus,
+            pk=pk
+        )
+
+        data = json.loads(request.body)
+
+        name = data.get("name")
+        code = data.get("code")
+        order = data.get("order", 0)
+        is_active = data.get("is_active", True)
+
+        if not name:
+
+            return JsonResponse({
+                "success": False,
+                "error": "Status name is required"
+            })
+
+        if not code:
+
+            return JsonResponse({
+                "success": False,
+                "error": "Status code is required"
+            })
+
+        exists = EnrollmentStatus.objects.exclude(
+            id=status.id
+        ).filter(
+            code=code
+        ).exists()
+
+        if exists:
+
+            return JsonResponse({
+                "success": False,
+                "error": "Status code already exists"
+            })
+
+        status.name = name
+        status.code = code
+        status.order = order
+        status.is_active = is_active
+
+        status.save()
+
+        return JsonResponse({
+            "success": True,
+            "message": "Status updated successfully"
+        })
+
+    except Exception as e:
+
+        return JsonResponse({
+            "success": False,
+            "error": str(e)
+        })

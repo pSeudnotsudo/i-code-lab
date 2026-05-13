@@ -21,6 +21,18 @@ urlpatterns = [
     path('auth/confirm-email/<uidb64>/<token>/',views.confirm_email,name='confirm_email'),
     path('auth/confirm-sent/', lambda r: render(r, 'authentication/email_confirm_sent.html'),name='email_confirm_sent'),
     
+    # ADMIN
+    path('secure-control-9x7a2k-panel/',  views.icode_admin,  name='admin_dashboard'),
+    path('enrollment-list',  views.icode_enrollments,  name='enrollments_list'),
+    path('icode-programs',  views.icode_programs,  name='programs_list'),
+    path('age-brackets/',views.age_brackets,name='age_brackets'),
+
+    path("age-brackets/store/",views.age_bracket_store,name="age_bracket_store"),
+    
+    path("statuses/",views.status_list,name="status_list"),
+    path("statuses/store/",views.status_store,name="status_store"),
+    path("statuses/<int:pk>/update/",views.status_update,name="status_update"),
+    
     # DASHBOARDS
     # path('dashboard/student/', views.student_dashboard, name='student_dashboard'),
     path('dashboard/parent/',  views.parent_dashboard,  name='parent_dashboard'),
