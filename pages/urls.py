@@ -24,7 +24,6 @@ urlpatterns = [
     # ADMIN
     path('secure-control-9x7a2k-panel/',  views.icode_admin,  name='admin_dashboard'),
     path('enrollment-list',  views.icode_enrollments,  name='enrollments_list'),
-    path('icode-programs',  views.icode_programs,  name='programs_list'),
     path('age-brackets/',views.age_brackets,name='age_brackets'),
 
     path("age-brackets/store/",views.age_bracket_store,name="age_bracket_store"),
@@ -32,6 +31,15 @@ urlpatterns = [
     path("statuses/",views.status_list,name="status_list"),
     path("statuses/store/",views.status_store,name="status_store"),
     path("statuses/<int:pk>/update/",views.status_update,name="status_update"),
+    
+    path("programs/",views.programs_list,name="programs_list"),
+    path("programs/store/",views.program_store,name="program_store"),
+    path("programs/<int:pk>/update/",views.program_update,name="program_update"),
+    
+    
+    path("timelines/",views.timeline_list,name="timeline_list"),
+    path("timelines/store/",views.timeline_store,name="timeline_store"),
+    path("timelines/<int:pk>/update/",views.timeline_update,name="timeline_update"),
     
     # DASHBOARDS
     # path('dashboard/student/', views.student_dashboard, name='student_dashboard'),

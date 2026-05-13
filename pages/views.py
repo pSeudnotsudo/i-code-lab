@@ -23,6 +23,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 import json
+from django.db.models import Count
+from django.utils import timezone
+from datetime import timedelta
 
 
 User = get_user_model()
@@ -257,11 +260,72 @@ def gallery_upload(request):
 
 
 # ADMIN LAYOUT AND EVERYTHING ADMIN
-def icode_admin(request):
-    items = GalleryItem.objects.all()
-    # print(items)
 
-    return render (request, 'icode-admin/admin_dash.html',{'items': items})
+def icode_admin(request):
+    today = timezone.now().date()
+    last_month = today - timedelta(days=30)
+
+    total = Enrollment.objects.count()
+    last_month_total = Enrollment.objects.filter(created_at__date__lt=last_month).count()
+    growth = round(((total - last_month_total) / last_month_total * 100) if last_month_total else 0)
+
+    pending_status = EnrollmentStatus.objects.filter(code='pending').first()
+    confirmed_status = EnrollmentStatus.objects.filter(code='confirmed').first()
+    pending_count = Enrollment.objects.filter(status=pending_status).count() if pending_status else 0
+    confirmed_count = Enrollment.objects.filter(status=confirmed_status).count() if confirmed_status else 0
+    conversion_rate = round((confirmed_count / total * 100) if total else 0)
+
+    # Program stats with % of max
+    program_colors = ['#49BBBD','#9B59B6','#F48C06','#3DA4A6','#5D6C7B','#1a7a4a']
+    prog_qs = (Program.objects.filter(is_active=True)
+               .annotate(count=Count('enrollment'))
+               .order_by('-count')[:6])
+    # max_count = prog_qs[0].count if prog_qs else 1
+    max_count = max((p.count for p in prog_qs), default=0) or 1
+    program_stats = [
+        {'name': p.name, 'count': p.count,
+         'pct': round(p.count / max_count * 100),
+         'color': program_colors[i % len(program_colors)]}
+        for i, p in enumerate(prog_qs)
+    ]
+
+    
+    week_labels, week_data = [], []
+    for i in range(6, -1, -1):
+        day = today - timedelta(days=i)
+        week_labels.append(day.strftime('%a'))
+        week_data.append(Enrollment.objects.filter(created_at__date=day).count())
+
+    # Monthly chart data (last 12 months)
+    month_labels, month_data = [], []
+    for i in range(11, -1, -1):
+        d = today.replace(day=1) - timedelta(days=i*28)
+        month_labels.append(d.strftime('%b'))
+        month_data.append(Enrollment.objects.filter(
+            created_at__year=d.year, created_at__month=d.month).count())
+
+    return render(request, 'icode-admin/admin_dash.html', {
+        'total_enrollments': total,
+        'enrollment_growth': growth,
+        'pending_count': pending_count,
+        'confirmed_count': confirmed_count,
+        'conversion_rate': conversion_rate,
+        'active_programs': Program.objects.filter(is_active=True).count(),
+        'age_brackets': AgeBracket.objects.filter(is_active=True).count(),
+        'program_stats': program_stats,
+        'recent_enrollments': Enrollment.objects.select_related('status').prefetch_related('programs').order_by('-created_at')[:8],
+        'week_labels': json.dumps(week_labels),
+        'week_data': json.dumps(week_data),
+        'month_labels': json.dumps(month_labels),
+        'month_data': json.dumps(month_data),
+        'new_today': Enrollment.objects.filter(created_at__date=today).count(),
+    })
+    
+# def icode_admin(request):
+#     items = GalleryItem.objects.all()
+#     # print(items)
+
+#     return render (request, 'icode-admin/admin_dash.html',{'items': items})
 
 
 def icode_enrollments(request):
@@ -270,10 +334,155 @@ def icode_enrollments(request):
     return render (request, 'icode-admin/enrollment_list.html',{'enrollments': enrollments})
  
  
-def icode_programs(request):
-    programs = Program.objects.all()
+ # PROGRAMS
 
-    return render (request, 'icode-admin/enrollment_list.html',{'programs': programs})
+
+def programs_list(request):
+
+    programs = Program.objects.all().order_by("order")
+
+    context = {
+        "programs": programs
+    }
+
+    return render(
+        request,
+        "icode-admin/program_list.html",
+        context
+    )
+
+
+@require_POST
+def program_store(request):
+
+    try:
+
+        data = json.loads(request.body)
+
+        name = data.get("name")
+        code = data.get("code")
+        description = data.get("description")
+        order = data.get("order", 0)
+
+        if not name:
+
+            return JsonResponse({
+                "success": False,
+                "error": "Program name is required"
+            })
+
+        if not code:
+
+            return JsonResponse({
+                "success": False,
+                "error": "Program code is required"
+            })
+
+        if Program.objects.filter(code=code).exists():
+
+            return JsonResponse({
+                "success": False,
+                "error": "Program code already exists"
+            })
+
+        program = Program.objects.create(
+            name=name,
+            code=code,
+            description=description,
+            order=order,
+            is_active=True
+        )
+
+        return JsonResponse({
+
+            "success": True,
+            "message": "Program added successfully",
+
+            "program": {
+                "id": program.id,
+                "name": program.name,
+                "code": program.code,
+                "description": program.description or "",
+                "order": program.order,
+                "active": program.is_active
+            }
+
+        })
+
+    except Exception as e:
+
+        return JsonResponse({
+            "success": False,
+            "error": str(e)
+        })
+
+
+@require_POST
+def program_update(request, pk):
+
+    try:
+
+        program = get_object_or_404(
+            Program,
+            pk=pk
+        )
+
+        data = json.loads(request.body)
+
+        name = data.get("name")
+        code = data.get("code")
+        description = data.get("description")
+        order = data.get("order", 0)
+        is_active = data.get("is_active", True)
+
+        if not name:
+
+            return JsonResponse({
+                "success": False,
+                "error": "Program name is required"
+            })
+
+        if not code:
+
+            return JsonResponse({
+                "success": False,
+                "error": "Program code is required"
+            })
+
+        exists = Program.objects.exclude(
+            id=program.id
+        ).filter(
+            code=code
+        ).exists()
+
+        if exists:
+
+            return JsonResponse({
+                "success": False,
+                "error": "Program code already exists"
+            })
+
+        program.name = name
+        program.code = code
+        program.description = description
+        program.order = order
+        program.is_active = is_active
+
+        program.save()
+
+        return JsonResponse({
+            "success": True,
+            "message": "Program updated successfully"
+        })
+
+    except Exception as e:
+
+        return JsonResponse({
+            "success": False,
+            "error": str(e)
+        })
+
+
 
 
 # AGE BRACKETS
@@ -480,6 +689,129 @@ def status_update(request, pk):
 
     except Exception as e:
 
+        return JsonResponse({
+            "success": False,
+            "error": str(e)
+        })
+        
+        
+
+# REGISTRATION TIMELINES
+def timeline_list(request):
+
+    timelines = RegistrationTimeline.objects.all().order_by("order")
+
+    return render(
+        request,
+        "icode-admin/timelines.html",
+        {"timelines": timelines}
+    )
+    
+@require_POST
+def timeline_store(request):
+
+    try:
+
+        data = json.loads(request.body)
+
+        title = data.get("title")
+        code = data.get("code")
+        order = data.get("order", 0)
+
+        if not title:
+            return JsonResponse({
+                "success": False,
+                "error": "Title is required"
+            })
+
+        if not code:
+            return JsonResponse({
+                "success": False,
+                "error": "Code is required"
+            })
+
+        if RegistrationTimeline.objects.filter(code=code).exists():
+            return JsonResponse({
+                "success": False,
+                "error": "Code already exists"
+            })
+
+        timeline = RegistrationTimeline.objects.create(
+            title=title,
+            code=code,
+            order=order,
+            is_active=True
+        )
+
+        return JsonResponse({
+            "success": True,
+            "message": "Timeline added successfully",
+            "timeline": {
+                "id": timeline.id,
+                "title": timeline.title,
+                "code": timeline.code,
+                "order": timeline.order,
+                "active": timeline.is_active
+            }
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            "success": False,
+            "error": str(e)
+        })
+
+
+@require_POST
+def timeline_update(request, pk):
+
+    try:
+
+        timeline = get_object_or_404(RegistrationTimeline, pk=pk)
+
+        data = json.loads(request.body)
+
+        title = data.get("title")
+        code = data.get("code")
+        order = data.get("order", 0)
+        is_active = data.get("is_active", True)
+
+        if not title:
+            return JsonResponse({
+                "success": False,
+                "error": "Title is required"
+            })
+
+        if not code:
+            return JsonResponse({
+                "success": False,
+                "error": "Code is required"
+            })
+
+        exists = RegistrationTimeline.objects.exclude(
+            id=timeline.id
+        ).filter(
+            code=code
+        ).exists()
+
+        if exists:
+            return JsonResponse({
+                "success": False,
+                "error": "Code already exists"
+            })
+
+        timeline.title = title
+        timeline.code = code
+        timeline.order = order
+        timeline.is_active = is_active
+        timeline.save()
+
+        return JsonResponse({
+            "success": True,
+            "message": "Timeline updated successfully"
+        })
+
+    except Exception as e:
         return JsonResponse({
             "success": False,
             "error": str(e)

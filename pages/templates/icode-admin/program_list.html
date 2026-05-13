@@ -1,0 +1,686 @@
+{% extends "icode-admin/base_admin.html" %}
+
+{% block admin_content %}
+
+<div class="page-header">
+
+    <div>
+        <h2 class="page-title">
+            Programs
+        </h2>
+
+        <p class="page-subtitle">
+            Manage learning programs
+        </p>
+    </div>
+
+    <button
+        class="btn-primary"
+        onclick="openAddModal()"
+    >
+        <i class="ti ti-plus"></i>
+        Add Program
+    </button>
+
+</div>
+
+
+
+<div class="card table-card">
+
+    <table class="custom-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Name</th>
+                <th>Code</th>
+                <th>Description</th>
+                <th>Order</th>
+                <th>Status</th>
+                <th width="120">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="programTable">
+
+            {% for program in programs %}
+
+            <tr
+                id="row-{{ program.id }}"
+                data-id="{{ program.id }}"
+                data-name="{{ program.name }}"
+                data-code="{{ program.code }}"
+                data-description="{{ program.description }}"
+                data-order="{{ program.order }}"
+                data-active="{{ program.is_active|yesno:'true,false' }}"
+            >
+
+                <td class="name">
+                    {{ program.name }}
+                </td>
+
+                <td class="code">
+                    {{ program.code }}
+                </td>
+
+                <td class="description">
+                    {{ program.description|default:"-" }}
+                </td>
+
+                <td class="order">
+                    {{ program.order }}
+                </td>
+
+                <td class="status-badge">
+
+                    {% if program.is_active %}
+
+                        <span class="badge badge-active">
+                            Active
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge badge-pending">
+                            Inactive
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    <button
+                        class="table-btn"
+                        onclick="editProgram({{ program.id }})"
+                    >
+                        <i class="ti ti-edit"></i>
+                    </button>
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+                <td colspan="6">
+                    No programs found
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+
+<!-- ADD MODAL -->
+
+<div class="modal-overlay" id="addModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h3>Add Program</h3>
+
+            <button
+                class="close-btn"
+                onclick="closeAddModal()"
+            >
+                <i class="ti ti-x"></i>
+            </button>
+
+        </div>
+
+
+        <form id="addForm">
+
+            <div class="form-group">
+                <label>Program Name</label>
+
+                <input
+                    type="text"
+                    name="name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Program Code</label>
+
+                <input
+                    type="text"
+                    name="code"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+
+                <textarea
+                    name="description"
+                    rows="4"
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Display Order</label>
+
+                <input
+                    type="number"
+                    name="order"
+                    value="0"
+                >
+            </div>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    onclick="closeAddModal()"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn-primary"
+                >
+                    Save Program
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+
+<!-- EDIT MODAL -->
+
+<div class="modal-overlay" id="editModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h3>Edit Program</h3>
+
+            <button
+                class="close-btn"
+                onclick="closeEditModal()"
+            >
+                <i class="ti ti-x"></i>
+            </button>
+
+        </div>
+
+
+        <form id="editForm">
+
+            <input type="hidden" id="editId">
+
+            <div class="form-group">
+                <label>Program Name</label>
+
+                <input
+                    type="text"
+                    id="editName"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Program Code</label>
+
+                <input
+                    type="text"
+                    id="editCode"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+
+                <textarea
+                    id="editDescription"
+                    rows="4"
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Display Order</label>
+
+                <input
+                    type="number"
+                    id="editOrder"
+                >
+            </div>
+
+            <div class="form-group check-group">
+
+                <input
+                    type="checkbox"
+                    id="editActive"
+                >
+
+                <label for="editActive">
+                    Active
+                </label>
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    onclick="closeEditModal()"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn-primary"
+                >
+                    Update Program
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+
+{% block extra_css %}
+
+<style>
+
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:24px;
+}
+
+.page-title{
+    font-size:26px;
+    font-weight:700;
+}
+
+.page-subtitle{
+    color:var(--text-gray);
+    margin-top:4px;
+}
+
+.table-card{
+    overflow:hidden;
+}
+
+.custom-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.custom-table th{
+    background:#f8fafb;
+    padding:16px;
+    text-align:left;
+    border-bottom:1px solid var(--border);
+}
+
+.custom-table td{
+    padding:16px;
+    border-bottom:1px solid var(--border);
+}
+
+.table-btn{
+    border:none;
+    background:#eef2f5;
+    width:36px;
+    height:36px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.45);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+}
+
+.modal-overlay.show{
+    display:flex;
+}
+
+.modal-box{
+    width:100%;
+    max-width:600px;
+    background:#fff;
+    border-radius:14px;
+    padding:24px;
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:24px;
+}
+
+.close-btn{
+    border:none;
+    background:none;
+    font-size:22px;
+    cursor:pointer;
+}
+
+.form-group{
+    margin-bottom:18px;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group textarea{
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:12px 14px;
+    outline:none;
+    font-family:"Poppins", sans-serif;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"]{
+    height:46px;
+}
+
+.check-group{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.modal-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:12px;
+    margin-top:24px;
+}
+
+.btn-secondary{
+    border:none;
+    background:#eef2f5;
+    padding:10px 16px;
+    border-radius:var(--radius);
+    cursor:pointer;
+}
+
+</style>
+
+{% endblock %}
+
+
+
+{% block extra_js %}
+
+<script>
+
+const addModal = document.getElementById("addModal");
+const editModal = document.getElementById("editModal");
+
+
+function openAddModal(){
+
+    addModal.classList.add("show");
+
+}
+
+function closeAddModal(){
+
+    addModal.classList.remove("show");
+
+}
+
+
+function openEditModal(){
+
+    editModal.classList.add("show");
+
+}
+
+function closeEditModal(){
+
+    editModal.classList.remove("show");
+
+}
+
+
+document
+.getElementById("addForm")
+.addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    const form = e.target;
+
+    const payload = {
+
+        name: form.name.value,
+        code: form.code.value,
+        description: form.description.value,
+        order: form.order.value
+
+    };
+
+    ajaxPost(
+        "{% url 'program_store' %}",
+        payload,
+
+        function(res){
+
+            const program = res.program;
+
+            document
+            .getElementById("programTable")
+            .insertAdjacentHTML(
+
+                "afterbegin",
+
+                `
+                <tr
+                    id="row-${program.id}"
+                    data-id="${program.id}"
+                    data-name="${program.name}"
+                    data-code="${program.code}"
+                    data-description="${program.description}"
+                    data-order="${program.order}"
+                    data-active="true"
+                >
+
+                    <td class="name">
+                        ${program.name}
+                    </td>
+
+                    <td class="code">
+                        ${program.code}
+                    </td>
+
+                    <td class="description">
+                        ${program.description || "-"}
+                    </td>
+
+                    <td class="order">
+                        ${program.order}
+                    </td>
+
+                    <td class="status-badge">
+                        <span class="badge badge-active">
+                            Active
+                        </span>
+                    </td>
+
+                    <td>
+                        <button
+                            class="table-btn"
+                            onclick="editProgram(${program.id})"
+                        >
+                            <i class="ti ti-edit"></i>
+                        </button>
+                    </td>
+
+                </tr>
+                `
+            );
+
+            form.reset();
+
+            closeAddModal();
+
+        }
+    );
+
+});
+
+
+function editProgram(id){
+
+    const row = document.getElementById(`row-${id}`);
+
+    document.getElementById("editId").value = id;
+
+    document.getElementById("editName").value =
+        row.dataset.name;
+
+    document.getElementById("editCode").value =
+        row.dataset.code;
+
+    document.getElementById("editDescription").value =
+        row.dataset.description;
+
+    document.getElementById("editOrder").value =
+        row.dataset.order;
+
+    document.getElementById("editActive").checked =
+        row.dataset.active === "true";
+
+    openEditModal();
+
+}
+
+
+
+document
+.getElementById("editForm")
+.addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    const id =
+        document.getElementById("editId").value;
+
+    const payload = {
+
+        name:
+            document.getElementById("editName").value,
+
+        code:
+            document.getElementById("editCode").value,
+
+        description:
+            document.getElementById("editDescription").value,
+
+        order:
+            document.getElementById("editOrder").value,
+
+        is_active:
+            document.getElementById("editActive").checked
+
+    };
+
+
+    ajaxPost(
+
+        `/programs/${id}/update/`,
+        payload,
+
+        function(){
+
+            const row =
+                document.getElementById(`row-${id}`);
+
+            row.dataset.name = payload.name;
+            row.dataset.code = payload.code;
+            row.dataset.description = payload.description;
+            row.dataset.order = payload.order;
+            row.dataset.active = payload.is_active;
+
+            row.querySelector(".name").innerText =
+                payload.name;
+
+            row.querySelector(".code").innerText =
+                payload.code;
+
+            row.querySelector(".description").innerText =
+                payload.description || "-";
+
+            row.querySelector(".order").innerText =
+                payload.order;
+
+            row.querySelector(".status-badge").innerHTML =
+                payload.is_active
+
+                ? `<span class="badge badge-active">
+                        Active
+                   </span>`
+
+                : `<span class="badge badge-pending">
+                        Inactive
+                   </span>`;
+
+            closeEditModal();
+
+        }
+
+    );
+
+});
+
+</script>
+
+{% endblock %}
