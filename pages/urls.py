@@ -12,17 +12,21 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    # path('login/', views.login_view, name='login'),
-    # path('register/', views.register_view, name='register'),
-    
+   
     # AUTHENTICATION
     path('auth/',views.login_view,   name='login'),
-    path('auth/register/',views.register,name='register'),
+    # path('auth/register/',views.register,name='register'),
     path('auth/confirm-email/<uidb64>/<token>/',views.confirm_email,name='confirm_email'),
     path('auth/confirm-sent/', lambda r: render(r, 'authentication/email_confirm_sent.html'),name='email_confirm_sent'),
     
+
+    
+    
     # ADMIN
+    
     path('secure-control-9x7a2k-panel/',  views.icode_admin,  name='admin_dashboard'),
+    path('admin/create-user/',views.create_user,name='create_user'),
+    path('activate/<uuid:token>/',views.activate_account,name='activate_account'),
     path('enrollment-list',  views.icode_enrollments,  name='enrollments_list'),
     path("enrollments/<int:pk>/update-status/", views.enrollment_update_status, name="enrollment_update_status"),
     path('age-brackets/',views.age_brackets,name='age_brackets'),
@@ -46,7 +50,7 @@ urlpatterns = [
     path("enrollments/store/", views.enrollment_store, name="enrollment_store"),
     
     # DASHBOARDS
-    # path('dashboard/student/', views.student_dashboard, name='student_dashboard'),
+    path('dashboard/student/', views.student_dashboard, name='student_dashboard'),
     path('dashboard/parent/',  views.parent_dashboard,  name='parent_dashboard'),
     # path('dashboard/admin/',   views.admin_dashboard,   name='admin_dashboard'),
     

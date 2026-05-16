@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.exceptions import ValidationError
@@ -28,6 +30,8 @@ from django.utils import timezone
 from datetime import timedelta
 from django.core.mail import send_mail
 from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 
 User = get_user_model()
@@ -51,17 +55,22 @@ def _redirect_by_role(user):
 # ─── LOGIN ───────────────────────────────────────────────────
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST.get('username', '').strip()
+        email    = request.POST.get('username', '').strip()  # field name stays 'username' in form
         password = request.POST.get('password', '')
 
-        user = authenticate(request, username=username, password=password)
+        # look up user by email first
+        try:
+            user_obj = CustomUser.objects.get(email=email)
+            user     = authenticate(request, username=user_obj.username, password=password)
+        except CustomUser.DoesNotExist:
+            user = None
 
         if user is None:
-            messages.error(request, "Invalid username or password.")
+            messages.error(request, "Invalid email or password.")
             return render(request, 'authentication/auth_page.html', {'active_tab': 'login'})
 
         if not user.is_superuser and not user.is_email_verified:
-            messages.error(request, "Please confirm your email before logging in.")
+            messages.error(request, "Your account is not activated yet. Check your email for the invite link.")
             return render(request, 'authentication/auth_page.html', {'active_tab': 'login'})
 
         auth_login(request, user)
@@ -71,76 +80,6 @@ def login_view(request):
 
 
 
-
-def register(request):
-    if request.method == 'POST':
-        email     = request.POST.get('email', '').strip().lower()
-        username  = request.POST.get('username', '').strip()
-        first_name = request.POST.get('first_name', '').strip()
-        last_name  = request.POST.get('last_name', '').strip()
-        password1 = request.POST.get('password1', '')
-        password2 = request.POST.get('password2', '')
-        role      = request.POST.get('role', 'student')
-
-        # Block anyone trying to register as admin via POST manipulation
-        if role not in ('student', 'parent'):
-            role = 'student'
-
-        # ── Validation ──────────────────────────────────────
-        error = None
-
-        if not all([email, username, password1, password2]):
-            error = "All fields are required."
-        elif password1 != password2:
-            error = "Passwords do not match."
-        elif len(password1) < 8:
-            error = "Password must be at least 8 characters."
-        elif User.objects.filter(email=email).exists():
-            error = "An account with this email already exists."
-        elif User.objects.filter(username=username).exists():
-            error = "This username is already taken."
-
-        if error:
-            messages.error(request, error)
-            return render(request, 'authentication/auth_page.html', {'active_tab': 'register'})
-
-         # ── Create inactive user ─────────────────────────────
-        user = User.objects.create_user(
-            username=username,
-            email=email,
-            password=password1,
-            first_name=first_name,
-            last_name=last_name,
-            role=role,
-            is_active=False,
-            is_email_verified=False,
-        )
-
-        # ---------------- Send confirmation email ──────────────────────────
-        uid         = urlsafe_base64_encode(force_bytes(user.pk))
-        token       = email_confirmation_token.make_token(user)
-        confirm_url = f"http://{settings.SITE_DOMAIN}/auth/confirm-email/{uid}/{token}/"
-
-        html_message = render_to_string('emails/confirm_email.html', {
-            'username':    user.username,
-            'first_name':  user.first_name,
-            'last_name':   user.last_name, 
-            'role':        role,
-            'confirm_url': confirm_url,
-        })
-
-        send_mail(
-            subject="Confirm your I-Code email address",
-            message=strip_tags(html_message),   
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[user.email],
-            html_message=html_message,
-            fail_silently=False,
-        )
-
-        return redirect('email_confirm_sent')
-
-    return redirect('login')
 
 
 def confirm_email(request, uidb64, token):
@@ -163,12 +102,124 @@ def confirm_email(request, uidb64, token):
 
     return render(request, 'authentication/email_confirm_failed.html')
 
+# REDIRECT BY USER
+def _redirect_by_role(user):
+    if user.role == CustomUser.ADMIN or user.is_staff:
+        return redirect('admin_dashboard')
+    elif user.role == CustomUser.PARENT:
+        return redirect('parent_dashboard')
+    else:
+        return redirect('student_dashboard')
+
+
+# CREATE USER BY ADMIN 
+@staff_member_required
+def create_user(request):
+    if not request.user.is_staff:
+        raise PermissionDenied
+
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name', '').strip()
+        last_name  = request.POST.get('last_name', '').strip()
+        email      = request.POST.get('email', '').strip()
+        role       = request.POST.get('role', 'student').strip()
+        phone      = request.POST.get('phone', '').strip()
+
+        if CustomUser.objects.filter(email=email).exists():
+            messages.error(request, 'A user with this email already exists.')
+            return redirect('create_user')
+
+        user = CustomUser.objects.create(
+            username   = email,
+            email      = email,
+            first_name = first_name,
+            last_name  = last_name,
+            role       = role,
+            phone      = phone,
+            is_active  = False,
+        )
+        user.set_unusable_password()
+        user.save()
+
+        invite_link  = f"{settings.SITE_URL}/activate/{user.invite_token}/"
+        html_content = render_to_string('emails/invite_email.html', {
+            'first_name' : first_name,
+            'last_name'  : last_name,
+            'role'       : role,
+            'invite_link': invite_link,
+        })
+
+        email_msg = EmailMultiAlternatives(
+            subject    = 'Your I-Code AI Lab Account Invitation',
+            body       = f'Hi {first_name}, set your password here: {invite_link}',
+            from_email = settings.DEFAULT_FROM_EMAIL,
+            to         = [email],
+        )
+        email_msg.attach_alternative(html_content, "text/html")
+        email_msg.send()
+
+        messages.success(request, f'Account created and invite sent to {email}.')
+        return redirect('create_user')
+
+    return render(request, 'icode-admin/create_user.html')
+
+
+
+# 
+#  USER ACCOUNTS
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import login
+def activate_account(request, token):
+    user = get_object_or_404(CustomUser, invite_token=token)
+
+    if user.invite_token_used:
+        return render(request, 'invite_invalid.html', {
+            'message': 'This link has already been used.'
+        })
+
+    if request.method == 'POST':
+        password1 = request.POST.get('password1', '')
+        password2 = request.POST.get('password2', '')
+
+        if not password1:
+            messages.error(request, 'Password cannot be empty.')
+            return redirect('activate_account', token=token)
+
+        if password1 != password2:
+            messages.error(request, 'Passwords do not match.')
+            return redirect('activate_account', token=token)
+
+        if len(password1) < 8:
+            messages.error(request, 'Password must be at least 8 characters.')
+            return redirect('activate_account', token=token)
+
+        user.set_password(password1)
+        user.is_active         = True
+        user.is_email_verified = True
+        user.invite_token_used = True
+        user.save()
+
+        login(request, user)
+        messages.success(request, f'Welcome {user.first_name}! Your account is active.')
+        return _redirect_by_role(user)  
+
+    return render(request, 'activate_account.html', {'user': user})
+
+
+
+
 
 @login_required
 def parent_dashboard(request):
     if request.user.is_authenticated:
         current_username = request.user.username
     return render(request, 'dashboards/parent.html', {'current_username':current_username})
+
+@login_required
+def student_dashboard(request):
+    if request.user.is_authenticated:
+        current_username = request.user.username
+    return render(request, 'dashboards/student.html', {'current_username':current_username})
 
 def logout_view(request):
     logout(request)
@@ -202,7 +253,11 @@ def socials(request):
 
 
 # @login_required
+@staff_member_required(login_url='/login/')
 def gallery_upload(request):
+    if not request.user.is_staff:
+        raise PermissionDenied
+    
     if request.method == 'POST':
         # --- pull raw fields from request.POST / request.FILES ---
         title    = request.POST.get('title', '').strip()
@@ -265,8 +320,11 @@ def gallery_upload(request):
 
 
 # ADMIN LAYOUT AND EVERYTHING ADMIN
-
+@staff_member_required(login_url='/login/')
 def icode_admin(request):
+    if not request.user.is_staff:
+        raise PermissionDenied
+    
     today = timezone.now().date()
     last_month = today - timedelta(days=30)
 
@@ -280,12 +338,11 @@ def icode_admin(request):
     confirmed_count = Enrollment.objects.filter(status=confirmed_status).count() if confirmed_status else 0
     conversion_rate = round((confirmed_count / total * 100) if total else 0)
 
-    # Program stats with % of max
     program_colors = ['#49BBBD','#9B59B6','#F48C06','#3DA4A6','#5D6C7B','#1a7a4a']
     prog_qs = (Program.objects.filter(is_active=True)
                .annotate(count=Count('enrollment'))
                .order_by('-count')[:6])
-    # max_count = prog_qs[0].count if prog_qs else 1
+    
     max_count = max((p.count for p in prog_qs), default=0) or 1
     program_stats = [
         {'name': p.name, 'count': p.count,
@@ -328,11 +385,10 @@ def icode_admin(request):
 
 
 
-# def icode_enrollments(request):
-#     enrollments = Enrollment.objects.all()
-
-#     return render (request, 'icode-admin/enrollment_list.html',{'enrollments': enrollments})
+@staff_member_required(login_url='/login/')
 def icode_enrollments(request):
+    if not request.user.is_staff:
+        raise PermissionDenied
     status_filter = request.GET.get("status", "").strip().lower()
  
     enrollments = Enrollment.objects.select_related(
@@ -342,7 +398,7 @@ def icode_enrollments(request):
     if status_filter:
         enrollments = enrollments.filter(status__code=status_filter)
  
-    # Badge counts (always on full queryset, not filtered)
+    
     all_enrollments = Enrollment.objects.select_related("status")
     total_count     = all_enrollments.count()
     pending_count   = all_enrollments.filter(status__code="pending").count()
@@ -360,7 +416,11 @@ def icode_enrollments(request):
  
  
 #  APPROVE ENROLLMENTS
+@staff_member_required(login_url='/login/')
 def enrollment_update_status(request, pk):
+    if not request.user.is_staff:
+        raise PermissionDenied
+    
     """
     POST-only view.
     Expects: action = "approve" | "reject"
@@ -419,6 +479,7 @@ def enrollment_update_status(request, pk):
     return redirect("icode_enrollments")
 
 #  HELPER FUNCTION TO SEND EMAILS
+
 def _send_status_email(enrollment, action):
     if action == "approve":
         subject = "Enrollment Confirmed — i-Code"
@@ -1010,4 +1071,6 @@ def enrollment_store(request):
         "success": True,
         "message": "Enrollment submitted successfully!"
     })
+ 
+ 
  

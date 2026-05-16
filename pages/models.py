@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
+import uuid
 
 # age Brackets
 class AgeBracket(models.Model):
@@ -61,9 +62,7 @@ class Enrollment(models.Model):
     other_interest = models.CharField(max_length=255, blank=True, null=True)
     comments = models.TextField(blank=True, null=True)
 
-    # =========================
-    # NEW FIELDS (IMPORTANT)
-    # =========================
+    
 
     preferred_registration_date = models.DateField(
         blank=True,
@@ -124,3 +123,39 @@ class GalleryItem(models.Model):
  
     def is_video(self):
         return self.type == 'video'
+    
+    
+# USER MODEL
+class CustomUser(AbstractUser):
+    STUDENT = 'student'
+    PARENT  = 'parent'
+    ADMIN   = 'admin'
+
+    ROLE_CHOICES = [
+        (STUDENT, 'Student'),
+        (PARENT,  'Parent'),
+        (ADMIN,   'Admin'),
+    ]
+
+    email      = models.EmailField(unique=True)
+    role       = models.CharField(max_length=10, choices=ROLE_CHOICES, default=STUDENT)
+    phone      = models.CharField(max_length=20, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    first_name = models.CharField(max_length=150, blank=False)
+    last_name  = models.CharField(max_length=150, blank=False)
+
+    # One-time invite link
+    invite_token      = models.UUIDField(default=uuid.uuid4, unique=True)
+    invite_token_used = models.BooleanField(default=False)
+    is_email_verified = models.BooleanField(default=False)
+
+    groups = models.ManyToManyField(
+        'auth.Group', related_name='customuser_set', blank=True,
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission', related_name='customuser_set', blank=True,
+    )
+
+    def __str__(self):
+        return f"{self.get_full_name()} ({self.username})"

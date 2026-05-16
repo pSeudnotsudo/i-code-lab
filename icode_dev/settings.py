@@ -169,7 +169,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Production-specific settings
-# Uncomment after adding 'whitenoise' to requirements.txt:
 if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
@@ -188,6 +187,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 PASSWORD_RESET_TIMEOUT = 259200
 
 # AUTH-MODEL
-# AUTH_USER_MODEL = 'pages.CustomUser'
+AUTH_USER_MODEL = 'pages.CustomUser'
 # SITE_DOMAIN     = 'localhost:8000'
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

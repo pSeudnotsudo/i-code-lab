@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>403 – Access Denied</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary:       #49BBBD;
+      --primary-dark:  #3DA4A6;
+      --primary-light: #e6f7f7;
+      --accent:        #a4dcdd;
+      --accent-pink:   #E94B7F;
+      --text-dark:     #2C3E50;
+      --text-gray:     #5D6C7B;
+      --text-light:    #8392A5;
+      --border:        #d4eced;
+      --bg-soft:       #F8FAFB;
+      --white:         #FFFFFF;
+      --shadow-lg:     0 8px 32px rgba(73,187,189,.20);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      background: var(--bg-soft);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Poppins', sans-serif;
+      padding: 2rem;
+    }
+    .card {
+      background: var(--white);
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+      padding: 3rem 2.5rem 2.5rem;
+      max-width: 480px; width: 100%;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+    .icon-wrap {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.5rem;
+      position: relative;
+    }
+    .icon-wrap svg { width: 48px; height: 48px; }
+    .badge {
+      position: absolute; top: -4px; right: -4px;
+      background: var(--accent-pink);
+      color: #fff;
+      font-size: 11px; font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+      letter-spacing: .5px;
+    }
+    .code {
+      font-size: 13px; font-weight: 600;
+      color: var(--primary);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: .5rem;
+    }
+    h1 { font-size: 1.7rem; font-weight: 700; color: var(--text-dark); margin-bottom: .75rem; }
+    p  { font-size: .95rem; color: var(--text-gray); line-height: 1.7; margin-bottom: 2rem; }
+    .actions { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 10px;
+      padding: .65rem 1.5rem;
+      font-family: 'Poppins', sans-serif;
+      font-size: .9rem; font-weight: 500;
+      cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: background .2s;
+    }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary {
+      background: var(--primary-light); color: var(--primary-dark);
+      border: 1.5px solid var(--accent); border-radius: 10px;
+      padding: .65rem 1.5rem;
+      font-family: 'Poppins', sans-serif;
+      font-size: .9rem; font-weight: 500;
+      cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-secondary:hover { background: var(--border); }
+    .divider { height: 1px; background: var(--border); margin: 2rem 0 1.5rem; }
+    .hint { font-size: .8rem; color: var(--text-light); }
+    .hint a { color: var(--primary); text-decoration: none; font-weight: 500; }
+    .hint a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon-wrap">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="22" width="28" height="20" rx="5" fill="#e6f7f7" stroke="#49BBBD" stroke-width="2"/>
+        <path d="M16 22v-6a8 8 0 0116 0v6" stroke="#49BBBD" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="24" cy="32" r="3" fill="#49BBBD"/>
+        <line x1="24" y1="35" x2="24" y2="38" stroke="#49BBBD" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="badge">403</span>
+    </div>
+
+    <div class="code">Access Denied</div>
+    <h1>This page is restricted</h1>
+    <p>You don't have permission to view this page. This area is reserved for administrators only. If you believe this is a mistake, please contact your system administrator.</p>
+
+    <div class="actions">
+      <a href="/" class="btn-primary">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24">
+          <path d="M3 12L12 3l9 9"/><path d="M9 21V12h6v9"/>
+        </svg>
+        Go home
+      </a>
+      <a href="javascript:history.back()" class="btn-secondary">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24">
+          <path d="M19 12H5"/><path d="M12 5l-7 7 7 7"/>
+        </svg>
+        Go back
+      </a>
+    </div>
+
+    <div class="divider"></div>
+    <p class="hint">
+      Are you an admin? <a href="{% url 'admin:index' %}">Sign in here</a>
+      &nbsp;·&nbsp;
+      Need help? <a href="{% url 'contact' %}">Contact support</a>
+    </p>
+  </div>
+</body>
+</html>

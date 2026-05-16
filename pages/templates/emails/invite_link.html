@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0; padding:0; background:#f0f4f4; font-family:'Segoe UI', sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="padding: 40px 16px;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0"
+               style="background:#ffffff; border-radius:16px;
+                      box-shadow:0 8px 32px rgba(0,0,0,0.08); overflow:hidden;
+                      max-width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:#3ecfcf; padding:32px; text-align:center;">
+              <h1 style="margin:0; color:#fff; font-size:1.6rem; font-weight:700;
+                         letter-spacing:0.5px;">I-Code</h1>
+              <p style="margin:6px 0 0; color:rgba(255,255,255,0.85);
+                        font-size:0.88rem;">Learn Without Limits</p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:36px 40px 28px;">
+
+              <!-- Icon -->
+              <table cellpadding="0" cellspacing="0" style="margin: 0 auto 24px;">
+                <tr>
+                  <td align="center"
+                      style="width:64px; height:64px; border-radius:50%;
+                             background:#e6f7f7; text-align:center; vertical-align:middle;">
+                    <span style="font-size:28px; line-height:64px;">🔐</span>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0 0 6px; font-size:1rem; color:#333; font-weight:600;">
+                Hi {{ first_name }} {{ last_name }},
+              </p>
+              <p style="margin:0 0 8px; font-size:0.9rem; color:#555; line-height:1.6;">
+                Welcome to <strong>I-Code AI Lab</strong>! Your account has been created
+                by our admin as a <strong>{{ role|capfirst }}</strong>.
+              </p>
+              <p style="margin:0 0 20px; font-size:0.9rem; color:#555; line-height:1.6;">
+                We have sent you this <strong>one-time secure link</strong> to set your
+                password and activate your account. This link can only be used once —
+                keep it safe.
+              </p>
+
+              <!-- Notice Box -->
+              <table cellpadding="0" cellspacing="0" width="100%"
+                     style="margin-bottom:24px;">
+                <tr>
+                  <td style="background:#e6f7f7; border-left:4px solid #3ecfcf;
+                             border-radius:8px; padding:14px 16px;">
+                    <p style="margin:0; font-size:0.85rem; color:#2C3E50; line-height:1.6;">
+                      ⚠️ <strong>Do not share this link</strong> with anyone.
+                      It grants direct access to set your account password.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Button -->
+              <table cellpadding="0" cellspacing="0" style="margin: 28px auto;">
+                <tr>
+                  <td align="center" style="border-radius:10px;
+                                            background:#3ecfcf;
+                                            box-shadow:0 4px 14px rgba(62,207,207,0.4);">
+                    <a href="{{ invite_link }}"
+                       style="display:inline-block; padding:14px 36px;
+                              color:#fff; font-size:0.95rem; font-weight:600;
+                              text-decoration:none; border-radius:10px;
+                              font-family:'Segoe UI', sans-serif;
+                              letter-spacing:0.3px;">
+                      Set My Password &amp; Login
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:24px 0 8px; font-size:0.82rem; color:#888; line-height:1.5;">
+                Or copy and paste this link into your browser:
+              </p>
+              <p style="margin:0; font-size:0.78rem; word-break:break-all;">
+                <a href="{{ invite_link }}" style="color:#3ecfcf;">{{ invite_link }}</a>
+              </p>
+
+              <hr style="border:none; border-top:1px solid #eee; margin:28px 0;">
+
+              <!-- Steps -->
+              <p style="margin:0 0 12px; font-size:0.85rem; color:#555; font-weight:600;">
+                What happens next?
+              </p>
+              <table cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td style="padding:6px 0; font-size:0.83rem; color:#555;">
+                    <span style="color:#3ecfcf; font-weight:700;">1.</span>
+                    &nbsp;Click the button above
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 0; font-size:0.83rem; color:#555;">
+                    <span style="color:#3ecfcf; font-weight:700;">2.</span>
+                    &nbsp;Set a strong password for your account
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 0; font-size:0.83rem; color:#555;">
+                    <span style="color:#3ecfcf; font-weight:700;">3.</span>
+                    &nbsp;Log in and start learning on I-Code AI Lab
+                  </td>
+                </tr>
+              </table>
+
+              <hr style="border:none; border-top:1px solid #eee; margin:28px 0;">
+
+              <p style="margin:0; font-size:0.8rem; color:#aaa; line-height:1.5;">
+                This link expires in <strong>7 days</strong> and can only be used
+                <strong>once</strong>. If you did not expect this email, please ignore it
+                or contact us immediately.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#f8fafa; padding:20px 40px; text-align:center;
+                       border-top:1px solid #eee;">
+              <p style="margin:0 0 6px; font-size:0.78rem; color:#bbb;">
+                © I-Code AI Lab Team &nbsp;·&nbsp; Empowering students every step of the way.
+              </p>
+              <p style="margin:0; font-size:0.75rem; color:#ccc;">
+                This is an automated message — please do not reply to this email.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
