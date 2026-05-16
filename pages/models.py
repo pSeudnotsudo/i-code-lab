@@ -97,6 +97,8 @@ class Enrollment(models.Model):
     def __str__(self):
         return self.full_name
 
+
+
 class GalleryItem(models.Model):
     TYPE_CHOICES = [('image', 'Image'), ('video', 'Video')]
     CATEGORY_CHOICES = [

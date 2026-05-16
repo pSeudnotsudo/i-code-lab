@@ -26,6 +26,8 @@ import json
 from django.db.models import Count
 from django.utils import timezone
 from datetime import timedelta
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 User = get_user_model()
@@ -174,7 +176,10 @@ def logout_view(request):
 
 
 def index(request):
-    return render(request, 'index.html')
+    brackets = AgeBracket.objects.all().order_by("order")
+    programs = Program.objects.all()
+    timelines = RegistrationTimeline.objects.all()
+    return render(request, 'index.html', {'brackets': brackets, 'programs':programs, 'timelines':timelines})
 
 
 def programs(request):
@@ -289,14 +294,13 @@ def icode_admin(request):
         for i, p in enumerate(prog_qs)
     ]
 
-    
     week_labels, week_data = [], []
     for i in range(6, -1, -1):
         day = today - timedelta(days=i)
         week_labels.append(day.strftime('%a'))
         week_data.append(Enrollment.objects.filter(created_at__date=day).count())
 
-    # Monthly chart data (last 12 months)
+   
     month_labels, month_data = [], []
     for i in range(11, -1, -1):
         d = today.replace(day=1) - timedelta(days=i*28)
@@ -321,19 +325,133 @@ def icode_admin(request):
         'new_today': Enrollment.objects.filter(created_at__date=today).count(),
     })
     
-# def icode_admin(request):
-#     items = GalleryItem.objects.all()
-#     # print(items)
-
-#     return render (request, 'icode-admin/admin_dash.html',{'items': items})
 
 
+
+# def icode_enrollments(request):
+#     enrollments = Enrollment.objects.all()
+
+#     return render (request, 'icode-admin/enrollment_list.html',{'enrollments': enrollments})
 def icode_enrollments(request):
-    enrollments = Enrollment.objects.all()
+    status_filter = request.GET.get("status", "").strip().lower()
+ 
+    enrollments = Enrollment.objects.select_related(
+        "status", "age_bracket", "registration_timeline"
+    ).prefetch_related("programs").order_by("-created_at")
+ 
+    if status_filter:
+        enrollments = enrollments.filter(status__code=status_filter)
+ 
+    # Badge counts (always on full queryset, not filtered)
+    all_enrollments = Enrollment.objects.select_related("status")
+    total_count     = all_enrollments.count()
+    pending_count   = all_enrollments.filter(status__code="pending").count()
+    confirmed_count = all_enrollments.filter(status__code="confirmed").count()
+    rejected_count  = all_enrollments.filter(status__code="rejected").count()
+ 
+    return render(request, "icode-admin/enrollment_list.html", {
+        "enrollments":      enrollments,
+        "current_status":   status_filter,
+        "total_count":      total_count,
+        "pending_count":    pending_count,
+        "confirmed_count":  confirmed_count,
+        "rejected_count":   rejected_count,
+    })
+ 
+ 
+#  APPROVE ENROLLMENTS
+def enrollment_update_status(request, pk):
+    """
+    POST-only view.
+    Expects: action = "approve" | "reject"
+    Uses a DB transaction so the status update and email are atomic.
+    (email is sent after commit to avoid holding the transaction open)
+    """
+    if request.method != "POST":
+        return redirect("icode_enrollments")
+ 
+    action     = request.POST.get("action", "").strip().lower()
+    enrollment = get_object_or_404(Enrollment, pk=pk)
+ 
+    if action not in ("approve", "reject"):
+        messages.error(request, "Invalid action.")
+        return redirect("icode_enrollments")
+ 
+    # Map action → status code
+    target_code = "confirmed" if action == "approve" else "rejected"
+ 
+    # Fetch target status
+    target_status = EnrollmentStatus.objects.filter(code=target_code).first()
+    if not target_status:
+        messages.error(
+            request,
+            f"System error: EnrollmentStatus with code='{target_code}' not found."
+        )
+        return redirect("icode_enrollments")
+ 
+    # Prevent double-processing
+    if enrollment.status.code == target_code:
+        messages.warning(
+            request,
+            f"{enrollment.full_name}'s enrollment is already {target_code}."
+        )
+        return redirect("icode_enrollments")
+ 
+    # ── Atomic update ────────────────────────────────────────────────────────
+    try:
+        with transaction.atomic():
+            enrollment.status = target_status
+            enrollment.save(update_fields=["status"])
+ 
+        # Email sent AFTER commit (keeps transaction short)
+        _send_status_email(enrollment, action)
+ 
+        label = "approved" if action == "approve" else "rejected"
+        messages.success(
+            request,
+            f"Enrollment for {enrollment.full_name} has been {label}. "
+            f"An email has been sent to {enrollment.email}."
+        )
+ 
+    except Exception as e:
+        messages.error(request, f"Something went wrong: {str(e)}")
+ 
+    return redirect("icode_enrollments")
 
-    return render (request, 'icode-admin/enrollment_list.html',{'enrollments': enrollments})
+#  HELPER FUNCTION TO SEND EMAILS
+def _send_status_email(enrollment, action):
+    if action == "approve":
+        subject = "Enrollment Confirmed — i-Code"
+        message = (
+            f"Dear {enrollment.full_name},\n\n"
+            "Great news! Your enrollment has been reviewed and confirmed.\n\n"
+            "Our team will be in touch shortly with the next steps and class details.\n\n"
+            "We look forward to having you at i-Code!\n\n"
+            "Warm regards,\n"
+            "The i-Code Team"
+        )
+    else:
+        subject = "Enrollment Update — i-Code"
+        message = (
+            f"Dear {enrollment.full_name},\n\n"
+            "Thank you for your interest in i-Code.\n\n"
+            "After careful review, we regret to inform you that we are unable to "
+            "proceed with your enrollment at this time.\n\n"
+            "If you have any questions or would like to discuss alternative options, "
+            "please don't hesitate to reach out to us.\n\n"
+            "We appreciate your interest and hope to work with you in the future.\n\n"
+            "Kind regards,\n"
+            "The i-Code Team"
+        )
  
- 
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[enrollment.email],
+        fail_silently=False,   # raise errors so the caller can catch them
+    )
+
  # PROGRAMS
 
 
@@ -816,3 +934,80 @@ def timeline_update(request, pk):
             "success": False,
             "error": str(e)
         })
+
+
+
+# ENROLLMENT
+@csrf_exempt
+def enrollment_store(request):
+    if request.method != "POST":
+        return JsonResponse({"success": False, "message": "Invalid request"})
+ 
+    # ── Core fields ──────────────────────────────────────────────────────────
+    full_name   = request.POST.get("full_name", "").strip()
+    phone       = request.POST.get("phone", "").strip()
+    email       = request.POST.get("email", "").strip()
+    comments    = request.POST.get("comments", "").strip()
+    program_ids = request.POST.getlist("programs")
+ 
+    # ── New fields ───────────────────────────────────────────────────────────
+    age_bracket_id              = request.POST.get("age_bracket")
+    preferred_registration_date = request.POST.get("preferred_registration_date")  
+    registration_timeline_id    = request.POST.get("registration_timeline")
+    prospective_start_date      = request.POST.get("preferred_start_date")       
+    customized_course           = request.POST.get("customized_course", "no")      
+ 
+    # ── Lookups ──────────────────────────────────────────────────────────────
+    status = EnrollmentStatus.objects.filter(code="pending").first()
+ 
+    age_bracket = None
+    if age_bracket_id:
+        age_bracket = AgeBracket.objects.filter(id=age_bracket_id, is_active=True).first()
+    
+    if not age_bracket:
+        age_bracket = AgeBracket.objects.filter(is_active=True).first()
+ 
+    registration_timeline = None
+    if registration_timeline_id:
+        registration_timeline = RegistrationTimeline.objects.filter(
+            id=registration_timeline_id
+        ).first()
+ 
+    # ── Create enrollment ────────────────────────────────────────────────────
+    enrollment = Enrollment.objects.create(
+        full_name=full_name,
+        phone=phone,
+        email=email,
+        comments=comments,
+        status=status,
+        age_bracket=age_bracket,
+        preferred_registration_date=preferred_registration_date or None,
+        registration_timeline=registration_timeline,
+        preferred_start_date=prospective_start_date or None,
+        # custom_course_interest=(customized_course == "yes"),
+        custom_course_interest=customized_course if customized_course in ("yes", "no") else None,
+    )
+ 
+    # ── M2M programs ─────────────────────────────────────────────────────────
+    if program_ids:
+        enrollment.programs.set(Program.objects.filter(id__in=program_ids))
+ 
+    # ── Email notification ───────────────────────────────────────────────────
+    send_mail(
+        subject="Enrollment Received - i-Code",
+        message=(
+            f"Hello {full_name},\n\n"
+            "We have received your enrollment successfully.\n\n"
+            "Our team will review your request and get back to you shortly.\n\n"
+            "Thank you for choosing i-Code."
+        ),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[email],
+        fail_silently=True,
+    )
+ 
+    return JsonResponse({
+        "success": True,
+        "message": "Enrollment submitted successfully!"
+    })
+ 

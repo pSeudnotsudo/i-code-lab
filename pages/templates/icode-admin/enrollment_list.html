@@ -1,0 +1,441 @@
+{% extends "icode-admin/base_admin.html" %}
+{% block title %}Enrollments — i-Code Admin{% endblock %}
+
+{% block admin_content %}
+<style>
+  .enroll-wrap { padding: 1.5rem 0; }
+
+  .page-title { font-size: 22px; font-weight: 500; margin: 0; color: var(--color-text-primary); }
+  .page-sub   { font-size: 13px; color: var(--color-text-secondary); margin: 3px 0 0; }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+  .stat-card {
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 1rem 1.25rem;
+    text-decoration: none;
+    display: block;
+    border: 1.5px solid transparent;
+    transition: border-color .15s;
+  }
+  .stat-card:hover { border-color: var(--color-border-secondary); }
+  .stat-card.active-all       { border-color: #888780; }
+  .stat-card.active-pending   { border-color: #BA7517; }
+  .stat-card.active-confirmed { border-color: #3B6D11; }
+  .stat-card.active-rejected  { border-color: #A32D2D; }
+  .stat-label { font-size: 11px; color: var(--color-text-secondary); margin: 0 0 6px; text-transform: uppercase; letter-spacing: .07em; }
+  .stat-value { font-size: 26px; font-weight: 500; margin: 0; line-height: 1; color: var(--color-text-primary); }
+  .stat-icon  { font-size: 18px; margin-bottom: 8px; }
+  .icon-all       { color: #5F5E5A; }
+  .icon-pending   { color: #BA7517; }
+  .icon-confirmed { color: #3B6D11; }
+  .icon-rejected  { color: #A32D2D; }
+
+  .flash-area { margin-bottom: 1rem; }
+  .flash {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border-radius: var(--border-radius-md);
+    font-size: 13px; margin-bottom: 8px; border: 0.5px solid;
+  }
+  .flash.success { background: #EAF3DE; color: #27500A; border-color: #97C459; }
+  .flash.error   { background: #FCEBEB; color: #791F1F; border-color: #F09595; }
+  .flash.warning { background: #FAEEDA; color: #633806; border-color: #EF9F27; }
+  .flash-close { margin-left: auto; background: none; border: none; cursor: pointer; font-size: 18px; color: inherit; opacity:.65; line-height:1; }
+  .flash-close:hover { opacity: 1; }
+
+  .table-card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+  }
+  .table-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 18px; border-bottom: 0.5px solid var(--color-border-tertiary);
+    flex-wrap: wrap; gap: 10px;
+  }
+  .toolbar-left { display: flex; align-items: baseline; gap: 8px; }
+  .toolbar-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .toolbar-count { font-size: 12px; color: var(--color-text-secondary); }
+  .search-wrap { position: relative; }
+  .search-wrap i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 15px; color: var(--color-text-secondary); pointer-events: none; }
+  .search-wrap input { padding-left: 32px; width: 210px; font-size: 13px; }
+
+  .enroll-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .enroll-table thead th {
+    text-align: left; padding: 10px 14px;
+    font-size: 11px; font-weight: 500; text-transform: uppercase;
+    letter-spacing: .07em; color: var(--color-text-secondary);
+    background: var(--color-background-secondary);
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    white-space: nowrap;
+  }
+  .enroll-table tbody tr { border-bottom: 0.5px solid var(--color-border-tertiary); transition: background .1s; }
+  .enroll-table tbody tr:last-child { border-bottom: none; }
+  .enroll-table tbody tr:hover { background: var(--color-background-secondary); }
+  .enroll-table td { padding: 12px 14px; vertical-align: middle; color: var(--color-text-primary); }
+
+  .cell-name { font-weight: 500; }
+  .cell-sub  { font-size: 12px; color: var(--color-text-secondary); margin-top: 1px; }
+  .cell-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #EEEDFE; color: #3C3489;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 500; flex-shrink: 0; letter-spacing: .02em;
+  }
+  .name-cell { display: flex; align-items: center; gap: 10px; }
+
+  .bdg {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px; border-radius: 20px;
+    font-size: 11px; font-weight: 500; white-space: nowrap;
+  }
+  .bdg-pending   { background: #FAEEDA; color: #633806; }
+  .bdg-confirmed { background: #EAF3DE; color: #27500A; }
+  .bdg-rejected  { background: #FCEBEB; color: #791F1F; }
+  .bdg-program {
+    background: var(--color-background-secondary);
+    color: var(--color-text-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    font-size: 11px; padding: 2px 7px;
+    border-radius: 4px; margin: 2px 2px 0 0; display: inline-block;
+  }
+  .bdg-yes { background: #E1F5EE; color: #085041; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+  .bdg-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+  .dot-pending   { background: #BA7517; }
+  .dot-confirmed { background: #3B6D11; }
+  .dot-rejected  { background: #A32D2D; }
+
+  .btn-act {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 5px 10px; border-radius: var(--border-radius-md);
+    font-size: 12px; font-weight: 500; cursor: pointer;
+    border: 0.5px solid; background: none;
+    transition: opacity .15s; white-space: nowrap;
+  }
+  .btn-act:hover { opacity: .8; }
+  .btn-approve { background: #EAF3DE; color: #27500A; border-color: #97C459; }
+  .btn-reject  { background: #FCEBEB; color: #791F1F; border-color: #F09595; }
+  .lbl-done    { font-size: 12px; color: var(--color-text-secondary); display: flex; align-items: center; gap: 4px; }
+
+  .empty-state { text-align: center; padding: 3.5rem 1rem; color: var(--color-text-secondary); }
+  .empty-state i { font-size: 38px; display: block; margin-bottom: 10px; opacity: .35; }
+  .empty-state p { font-size: 14px; margin: 0; }
+
+  @media (max-width: 767px) {
+    .desktop-only { display: none !important; }
+    .mobile-cards { display: block !important; }
+    .search-wrap input { width: 100%; }
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .mobile-cards { display: none; }
+  .m-card { border-bottom: 0.5px solid var(--color-border-tertiary); padding: 14px 18px; }
+  .m-card:last-child { border-bottom: none; }
+  .m-top  { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+  .m-meta { font-size: 12px; color: var(--color-text-secondary); line-height: 1.8; }
+  .m-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 1050;
+    background: rgba(0,0,0,.3);
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    width: 100%; max-width: 400px; margin: 1rem; overflow: hidden;
+  }
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 15px 20px; border-bottom: 2px solid transparent;
+  }
+  .modal-head.approve { border-color: #639922; }
+  .modal-head.reject  { border-color: #E24B4A; }
+  .modal-head-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); margin: 0; }
+  .modal-close-btn { background: none; border: none; cursor: pointer; font-size: 20px; color: var(--color-text-secondary); line-height: 1; padding: 0; }
+  .modal-body-wrap { padding: 18px 20px; }
+  .modal-body-text { font-size: 14px; color: var(--color-text-primary); margin: 0 0 10px; }
+  .modal-body-text strong { font-weight: 500; }
+  .modal-hint { font-size: 12px; color: var(--color-text-secondary); display: flex; align-items: flex-start; gap: 6px; line-height: 1.5; }
+  .modal-foot {
+    display: flex; justify-content: flex-end; gap: 8px;
+    padding: 12px 20px; border-top: 0.5px solid var(--color-border-tertiary);
+  }
+  .btn-cancel {
+    padding: 7px 16px; border-radius: var(--border-radius-md); font-size: 13px;
+    background: none; border: 0.5px solid var(--color-border-secondary);
+    color: var(--color-text-primary); cursor: pointer;
+  }
+  .btn-cancel:hover { background: var(--color-background-secondary); }
+  .btn-confirm-submit {
+    padding: 7px 16px; border-radius: var(--border-radius-md);
+    font-size: 13px; font-weight: 500; cursor: pointer; border: none;
+  }
+  .btn-confirm-submit.approve { background: #EAF3DE; color: #27500A; }
+  .btn-confirm-submit.reject  { background: #FCEBEB; color: #791F1F; }
+</style>
+
+<div class="enroll-wrap">
+
+  <div style="margin-bottom: 1.25rem;">
+    <h1 class="page-title">Enrollments</h1>
+    <p class="page-sub">Review, approve, or reject submitted enrollment requests</p>
+  </div>
+
+  <div class="stat-grid">
+    <a href="{% url 'enrollments_list' %}" class="stat-card {% if not current_status %}active-all{% endif %}">
+      <i class="ti ti-users stat-icon icon-all" aria-hidden="true"></i>
+      <p class="stat-label">Total</p>
+      <p class="stat-value">{{ total_count }}</p>
+    </a>
+    <a href="?status=pending" class="stat-card {% if current_status == 'pending' %}active-pending{% endif %}">
+      <i class="ti ti-clock stat-icon icon-pending" aria-hidden="true"></i>
+      <p class="stat-label">Pending</p>
+      <p class="stat-value">{{ pending_count }}</p>
+    </a>
+    <a href="?status=confirmed" class="stat-card {% if current_status == 'confirmed' %}active-confirmed{% endif %}">
+      <i class="ti ti-circle-check stat-icon icon-confirmed" aria-hidden="true"></i>
+      <p class="stat-label">Confirmed</p>
+      <p class="stat-value">{{ confirmed_count }}</p>
+    </a>
+    <a href="?status=rejected" class="stat-card {% if current_status == 'rejected' %}active-rejected{% endif %}">
+      <i class="ti ti-circle-x stat-icon icon-rejected" aria-hidden="true"></i>
+      <p class="stat-label">Rejected</p>
+      <p class="stat-value">{{ rejected_count }}</p>
+    </a>
+  </div>
+
+  {% if messages %}
+  <div class="flash-area">
+    {% for msg in messages %}
+    <div class="flash {{ msg.tags }}">
+      <i class="ti ti-{% if 'success' in msg.tags %}circle-check{% elif 'error' in msg.tags %}alert-circle{% else %}info-circle{% endif %}" aria-hidden="true"></i>
+      <span>{{ msg }}</span>
+      <button class="flash-close" onclick="this.closest('.flash').remove()" aria-label="Dismiss">&times;</button>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="table-card">
+    <div class="table-toolbar">
+      <div class="toolbar-left">
+        <span class="toolbar-title">{% if current_status %}{{ current_status|capfirst }}{% else %}All{% endif %}</span>
+        <span class="toolbar-count">{{ enrollments|length }} record{{ enrollments|length|pluralize }}</span>
+      </div>
+      <div class="search-wrap">
+        <i class="ti ti-search" aria-hidden="true"></i>
+        <input type="text" id="searchInput" placeholder="Search name or email…" oninput="filterRows(this.value)">
+      </div>
+    </div>
+
+    {# Desktop table #}
+    <div class="desktop-only" style="overflow-x: auto;">
+      <table class="enroll-table" id="enrollTable">
+        <thead>
+          <tr>
+            <th style="width:36px">#</th>
+            <th style="min-width:200px">Applicant</th>
+            <th>Programs</th>
+            <th>Age bracket</th>
+            <th>Reg. date</th>
+            <th>Start date</th>
+            <th>Timeline</th>
+            <th>Custom</th>
+            <th>Status</th>
+            <th>Submitted</th>
+            <th style="min-width:150px">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for e in enrollments %}
+          <tr data-search="{{ e.full_name|lower }} {{ e.email|lower }}">
+            <td style="color:var(--color-text-secondary)">{{ forloop.counter }}</td>
+            <td>
+              <div class="name-cell">
+                <div class="cell-avatar">{{ e.full_name|slice:":2"|upper }}</div>
+                <div>
+                  <div class="cell-name">{{ e.full_name }}</div>
+                  <div class="cell-sub">{{ e.email }}</div>
+                  <div class="cell-sub">{{ e.phone }}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              {% for p in e.programs.all %}
+                <span class="bdg-program">{{ p.name }}</span>
+              {% empty %}
+                <span style="color:var(--color-text-secondary)">—</span>
+              {% endfor %}
+            </td>
+            <td style="color:var(--color-text-secondary)">{{ e.age_bracket|default:"—" }}</td>
+            <td style="white-space:nowrap; color:var(--color-text-secondary)">{{ e.preferred_registration_date|date:"d M Y"|default:"—" }}</td>
+            <td style="white-space:nowrap; color:var(--color-text-secondary)">{{ e.preferred_start_date|date:"d M Y"|default:"—" }}</td>
+            <td style="color:var(--color-text-secondary)">{{ e.registration_timeline|default:"—" }}</td>
+            <td>
+              {% if e.custom_course_interest == "yes" %}
+                <span class="bdg-yes">Yes</span>
+              {% else %}
+                <span style="color:var(--color-text-secondary)">No</span>
+              {% endif %}
+            </td>
+            <td>
+              <span class="bdg bdg-{{ e.status.code|default:'pending' }}">
+                <span class="bdg-dot dot-{{ e.status.code|default:'pending' }}"></span>
+                {{ e.status.name }}
+              </span>
+            </td>
+            <td style="white-space:nowrap; color:var(--color-text-secondary)">{{ e.created_at|date:"d M Y" }}</td>
+            <td>
+              {% if e.status.code == 'pending' %}
+              <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                <button class="btn-act btn-approve" onclick="openModal('approve', {{ e.id }}, '{{ e.full_name|escapejs }}', '{{ e.email|escapejs }}')">
+                  <i class="ti ti-check" aria-hidden="true"></i> Approve
+                </button>
+                <button class="btn-act btn-reject" onclick="openModal('reject', {{ e.id }}, '{{ e.full_name|escapejs }}', '{{ e.email|escapejs }}')">
+                  <i class="ti ti-x" aria-hidden="true"></i> Reject
+                </button>
+              </div>
+              {% else %}
+                <span class="lbl-done"><i class="ti ti-check" aria-hidden="true"></i> Done</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="11">
+              <div class="empty-state">
+                <i class="ti ti-inbox" aria-hidden="true"></i>
+                <p>No enrollments found{% if current_status %} with status "{{ current_status }}"{% endif %}.</p>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {# Mobile cards #}
+    <div class="mobile-cards">
+      {% for e in enrollments %}
+      <div class="m-card" data-search="{{ e.full_name|lower }} {{ e.email|lower }}">
+        <div class="m-top">
+          <div>
+            <div class="cell-name">{{ e.full_name }}</div>
+            <div class="cell-sub">{{ e.email }}</div>
+          </div>
+          <span class="bdg bdg-{{ e.status.code|default:'pending' }}">
+            <span class="bdg-dot dot-{{ e.status.code|default:'pending' }}"></span>
+            {{ e.status.name }}
+          </span>
+        </div>
+        <div class="m-meta">
+          {% for p in e.programs.all %}<span class="bdg-program">{{ p.name }}</span> {% endfor %}<br>
+          {{ e.phone }} · {{ e.created_at|date:"d M Y" }}
+          {% if e.preferred_registration_date %} · Reg {{ e.preferred_registration_date|date:"d M Y" }}{% endif %}
+        </div>
+        {% if e.status.code == 'pending' %}
+        <div class="m-actions">
+          <button class="btn-act btn-approve" onclick="openModal('approve', {{ e.id }}, '{{ e.full_name|escapejs }}', '{{ e.email|escapejs }}')">
+            <i class="ti ti-check" aria-hidden="true"></i> Approve
+          </button>
+          <button class="btn-act btn-reject" onclick="openModal('reject', {{ e.id }}, '{{ e.full_name|escapejs }}', '{{ e.email|escapejs }}')">
+            <i class="ti ti-x" aria-hidden="true"></i> Reject
+          </button>
+        </div>
+        {% endif %}
+      </div>
+      {% empty %}
+      <div class="empty-state">
+        <i class="ti ti-inbox" aria-hidden="true"></i>
+        <p>No enrollments found.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{# Confirm modal #}
+<div class="modal-overlay" id="confirmOverlay">
+  <div class="modal-box">
+    <div class="modal-head" id="modalHead">
+      <p class="modal-head-title" id="modalTitle">Confirm</p>
+      <button class="modal-close-btn" onclick="closeModal()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body-wrap">
+      <p class="modal-body-text" id="modalBody"></p>
+      <p class="modal-hint">
+        <i class="ti ti-mail" aria-hidden="true" style="font-size:14px; margin-top:1px; flex-shrink:0;"></i>
+        <span id="modalHint"></span>
+      </p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <form id="actionForm" method="POST" action="" style="margin:0;">
+        {% csrf_token %}
+        <input type="hidden" name="action" id="actionInput">
+        <button type="submit" class="btn-confirm-submit" id="confirmSubmitBtn">Confirm</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openModal(type, id, name, email) {
+    const overlay = document.getElementById('confirmOverlay');
+    const head    = document.getElementById('modalHead');
+    const title   = document.getElementById('modalTitle');
+    const body    = document.getElementById('modalBody');
+    const hint    = document.getElementById('modalHint');
+    const btn     = document.getElementById('confirmSubmitBtn');
+    const form    = document.getElementById('actionForm');
+
+    form.action = `/enrollments/${id}/update-status/`;
+    document.getElementById('actionInput').value = type;
+
+    if (type === 'approve') {
+      head.className    = 'modal-head approve';
+      title.textContent = 'Approve enrollment';
+      body.innerHTML    = `Confirm the enrollment for <strong>${name}</strong>?`;
+      hint.textContent  = `A confirmation email will be sent to ${email}`;
+      btn.className     = 'btn-confirm-submit approve';
+      btn.textContent   = 'Yes, approve';
+    } else {
+      head.className    = 'modal-head reject';
+      title.textContent = 'Reject enrollment';
+      body.innerHTML    = `Reject the enrollment for <strong>${name}</strong>?`;
+      hint.textContent  = `A rejection email will be sent to ${email}`;
+      btn.className     = 'btn-confirm-submit reject';
+      btn.textContent   = 'Yes, reject';
+    }
+
+    overlay.classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('confirmOverlay').classList.remove('open');
+  }
+
+  document.getElementById('confirmOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  function filterRows(q) {
+    const term = q.toLowerCase();
+    document.querySelectorAll('[data-search]').forEach(function(row) {
+      row.style.display = row.dataset.search.includes(term) ? '' : 'none';
+    });
+  }
+</script>
+{% endblock %}

@@ -64,6 +64,44 @@
         stroke-dashoffset: 0;
     }
 }
+.modal-overlay{
+    display:none;
+}
+
+.modal-overlay.show{
+    display:flex;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/*WHATSAPP BUTTON*/
+.whatsapp-float {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 9999;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background-color: #25D366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.whatsapp-float img {
+  width: 36px;
+  height: 36px;
+}
   </style>
 
   <!-- Hero Section -->
@@ -74,10 +112,12 @@
 
     <div class="hero-container">
       <div class="hero-content">
-        <h1 class="hero-title">
-    {% highlight "Invent the Code." shape="wave" %}
-    Ignite the Future
+     <h1 class="hero-title">
+    {% highlight shape="wave" color="blue" %}
+        Invent the Code.
     {% endhighlight %}
+    
+    Ignite the Future<br />
 </h1>
         {% comment %} <h1 class="hero-title">
           {% highlight "Invent the Code." shape="rect" color="blue" %}Ignite the Future<br />
@@ -89,18 +129,267 @@
         {% comment %} <div class="hero-buttons">
           <a href="" target="_blank" class="btn-primary">Join for free</a>
         </div> {% endcomment %}
-        {% highlight shape="oval" color="blue" %}
+        {% highlight shape="oval" color="orange" %}
             <div class="hero-buttons">
-                <a href="" target="_blank" class="btn-primary">
+                {% comment %} <a href="" target="_blank" class="btn-primary">
                     Join for free
-                </a>
+                </a> {% endcomment %}
+                 <button class="btn-primary" onclick="openEnrollmentModal()" style="border: none; cursor:pointer;">
+        Join for free
+    </button>
             </div>
         {% endhighlight %}
 
       </div>
+<div
+    class="modal-overlay"
+    id="enrollModal"
+    style="
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(15, 37, 53, 0.55);
+        backdrop-filter: blur(10px);
+        z-index: 9999;
+    "
+>
+
+    <div
+        style="
+            width: 100%;
+            max-width: 720px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(18px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            padding: 24px;
+        "
+    >
+
+        <!-- HEADER -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+            <h3 style="color:var(--text-dark);font-size:18px;font-weight:700;">
+                Enrollment Form
+            </h3>
+
+            <button onclick="closeEnrollmentModal()" style="
+                background: var(--primary-light);
+                border: none;
+                width: 34px;
+                height: 34px;
+                border-radius: 8px;
+                cursor: pointer;
+                color: var(--primary-dark);
+            ">
+                ✕
+            </button>
+        </div>
+
+        <!-- FORM -->
+        <form id="enrollForm">
+
+            <div style="display:grid; gap:14px;">
+
+                <input name="full_name" placeholder="Full Name"
+                    style="padding:10px;border:1px solid var(--border);border-radius:8px;">
+
+                <input name="phone" placeholder="Phone"
+                    style="padding:10px;border:1px solid var(--border);border-radius:8px;">
+
+                <input name="email" placeholder="Email"
+                    style="padding:10px;border:1px solid var(--border);border-radius:8px;">
+
+                <!-- PROGRAMS -->
+                <div>
+                    <label style="font-weight:600;color:var(--text-gray);">Programs</label>
+
+                    <div style="
+                        display:grid;
+                        grid-template-columns:1fr 1fr;
+                        gap:8px;
+                        padding:10px;
+                        border-radius:10px;
+                        background: rgba(230,247,247,0.4);
+                        border: 1px solid var(--border);
+                    ">
+                        {% for p in programs %}
+                        <label style="display:flex;gap:8px;font-size:13px;color:var(--text-dark);">
+                            <input type="checkbox" name="programs" value="{{ p.id }}">
+                            {{ p.name }}
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                 <div class="row align-items-start">
+                <div class="form-group mb-3 col">
+  <label for="age_bracket" class="form-label fw-semibold">
+    What is your age bracket? <span class="text-danger">*</span>
+  </label>
+  <select id="age_bracket" name="age_bracket" class="form-select" required>
+    <option value="" disabled selected>— Select your age bracket —</option>
+    {% for bracket in brackets %}
+      <option value="{{ bracket.id }}">{{ bracket.name }}</option>
+    {% endfor %}
+  </select>
+</div>
+<div class="form-group mb-3 col">
+  <label for="registration_timeline" class="form-label fw-semibold">
+    When are you planning to register? <span class="text-danger">*</span>
+  </label>
+  <select id="registration_timeline" name="registration_timeline" class="form-select" required>
+    <option value="" disabled selected>— Select a timeline —</option>
+    {% for timeline in timelines %}
+      <option value="{{ timeline.id }}">{{ timeline.name }}</option>
+    {% endfor %}
+  </select>
+</div>
+</div>
+
+<div class="row align-items-start">
+<div class="form-group mb-3 col">
+  <label for="preferred_registration_date" class="form-label fw-semibold">
+    Confirm your preferred date of registration <span class="text-danger">*</span>
+  </label>
+  <div class="input-group">
+    <span class="input-group-text"><i class="bi bi-calendar-check"></i></span>
+    <input
+      type="text"
+      id="preferred_registration_date"
+      name="preferred_registration_date"
+      class="form-control flatpickr-date"
+      placeholder="Select date"
+      autocomplete="off"
+      required
+      readonly
+    />
+  </div>
+</div>
+
+
+
+
+
+<div class="form-group mb-3 col">
+  <label for="prospective_start_date" class="form-label fw-semibold">
+    When would you like to start classes?
+    <small class="text-muted">(Prospective Start Date)</small>
+    <span class="text-danger">*</span>
+  </label>
+  <div class="input-group">
+    <span class="input-group-text"><i class="bi bi-calendar2-week"></i></span>
+    <input
+      type="text"
+      id="prospective_start_date"
+      name="prospective_start_date"
+      class="form-control flatpickr-date"
+      placeholder="Select date"
+      autocomplete="off"
+      required
+      readonly
+    />
+  </div>
+</div>
+</div>
+
+
+
+<div class="form-group mb-3">
+  <label class="form-label fw-semibold d-block">
+    Would you be interested in a customized course based on your needs
+    <small class="text-muted">(personal, school, or business)?</small>
+    <span class="text-danger">*</span>
+  </label>
+  <div class="d-flex gap-4">
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="radio"
+        name="customized_course"
+        id="customized_yes"
+        value="yes"
+        required
+      />
+      <label class="form-check-label" for="customized_yes">Yes</label>
+    </div>
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="radio"
+        name="customized_course"
+        id="customized_no"
+        value="no"
+      />
+      <label class="form-check-label" for="customized_no">No</label>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+                <textarea name="comments" placeholder="Comments"
+                    style="padding:10px;border:1px solid var(--border);border-radius:8px;min-height:90px;"></textarea>
+
+                <!-- BUTTON -->
+                <button
+                    type="submit"
+                    id="submitBtn"
+                    style="
+                        background: var(--primary);
+                        color: white;
+                        padding: 12px;
+                        border-radius: 8px;
+                        border: none;
+                        font-weight: 600;
+                        cursor: pointer;
+                    "
+                >
+                    Submit Enrollment
+                </button>
+
+                <!-- LOADER -->
+                <div id="loader" style="display:none;text-align:center;color:var(--text-gray);">
+                    Sending...
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> 
+<script>
+  (function () {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const sharedConfig = {
+      minDate: today,
+      dateFormat: "Y-m-d",       // value sent to Django
+      altInput: true,
+      altFormat: "F j, Y",       // human-readable display
+      disableMobile: false,
+    };
+
+    flatpickr("#preferred_registration_date", sharedConfig);
+    flatpickr("#prospective_start_date", sharedConfig);
+  })();
+</script>
+      
+
+      
+
+      
 
       <div class="hero-image">
-        <img src="{% static 'images/lab_classroom.jpeg' %}" alt="Student" class="student-img" />
+        <img src="{% static 'images/i-code-classroom.JPG' %}" alt="Student" class="student-img" />
 
         <!-- Floating Cards -->
         <div class="floating-card card-students">
@@ -507,5 +796,132 @@
         </a>
     </div>
   </section>
+
+
+  {% comment %} WHATSAPP BUTTON {% endcomment %}
+  <!-- WhatsApp Floating Button -->
+<a href="https://wa.me/0723987838" 
+   class="whatsapp-float" 
+   target="_blank" 
+   rel="noopener noreferrer"
+   aria-label="Chat on WhatsApp">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" />
+</a>
+
+
+<script>
+
+const modal = document.getElementById("enrollModal");
+const form = document.getElementById("enrollForm");
+const btn = document.getElementById("submitBtn");
+const loader = document.getElementById("loader");
+
+function openEnrollmentModal(){
+    modal.style.display = "flex";
+}
+
+function closeEnrollmentModal(){
+    modal.style.display = "none";
+}
+
+form.addEventListener("submit", function(e){
+    e.preventDefault();
+
+    btn.style.display = "none";
+    loader.style.display = "block";
+
+    const formData = new FormData(form);
+
+    fetch("{% url 'enrollment_store' %}", {
+        method: "POST",
+        body: formData,
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}"
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        loader.style.display = "none";
+        btn.style.display = "block";
+
+        if(data.success){
+            alert(data.message);
+            form.reset();
+            closeEnrollmentModal();
+        } else {
+            alert(data.message);
+        }
+
+    })
+    .catch(() => {
+        loader.style.display = "none";
+        btn.style.display = "block";
+        alert("Something went wrong");
+    });
+
+});
+
+</script>
+
+
+
+<script>
+document.getElementById("enrollForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const btn  = document.getElementById("submitBtn");
+
+    // ── Build FormData (Django reads this via request.POST / request.getlist) ──
+    const formData = new FormData(form);
+
+    // Collect checked programs and append each one individually
+    // (FormData already does this if the checkboxes are inside the form,
+    //  but if you build them manually, use the block below instead)
+    //
+    // form.querySelectorAll("input[name='programs']:checked")
+    //     .forEach(el => formData.append("programs", el.value));
+
+    // ── UI feedback ──────────────────────────────────────────────────────────
+    btn.disabled  = true;
+    btn.innerHTML = `<i class="ti ti-loader" style="animation:spin 1s linear infinite"></i> Submitting...`;
+
+    // ── POST ─────────────────────────────────────────────────────────────────
+    fetch("{% url 'enrollment_store' %}", {
+        method: "POST",
+        body: formData,
+        // Do NOT set Content-Type; the browser sets it with the correct
+        // multipart boundary automatically when using FormData.
+    })
+    .then(function (response) {
+        if (!response.ok) {
+            return response.text().then(function (text) {
+                throw new Error("Server error " + response.status + ": " + text);
+            });
+        }
+        return response.json();
+    })
+    .then(function (res) {
+        if (res.success) {
+            alert("Enrollment received! Check your email 📩");
+            form.reset();
+            closeEnrollmentModal();
+        } else {
+            alert(res.message || "Something went wrong. Please try again.");
+        }
+    })
+    .catch(function (err) {
+        console.error("Enrollment error:", err);
+        alert("Submission failed. Please try again.");
+    })
+    .finally(function () {
+        btn.disabled  = false;
+        btn.innerHTML = `<i class="ti ti-send"></i> Submit`;
+    });
+});
+</script>
+
+
 
 {% endblock %}
