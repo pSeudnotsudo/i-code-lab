@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'icode-admin/base_admin.html' %}
 {% load static %}
 
 {% block extra_css %}
@@ -14,84 +14,44 @@
   }
 
   .ft-auth-card {
-    display: flex;
-    width: 780px;
+    width: 560px;
     max-width: 100%;
     background: #fff;
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 16px 48px rgba(0,0,0,0.12);
-    min-height: 480px;
   }
-
-  .ft-auth-image {
-    width: 42%;
-    flex-shrink: 0;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .ft-auth-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .ft-auth-image-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.55) 30%, transparent 70%);
-  }
-
-  .ft-auth-image-text {
-    position: absolute;
-    bottom: 24px;
-    left: 20px;
-    right: 20px;
-    color: #fff;
-  }
-
-  .ft-auth-image-text h2 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 1.3;
-    margin-bottom: 4px;
-  }
-
-  .ft-auth-image-text p { font-size: 0.82rem; opacity: 0.85; }
 
   .ft-auth-form-panel {
-    flex: 1;
-    padding: 36px 32px 32px;
+    padding: 44px 48px 40px;
     display: flex;
     flex-direction: column;
   }
 
   .ft-auth-title {
     text-align: center;
-    font-size: 1rem;
-    font-weight: 500;
+    font-size: 1.2rem;
+    font-weight: 600;
     color: #333;
     margin-bottom: 4px;
   }
 
   .ft-auth-subtitle {
-    font-size: 0.82rem;
+    font-size: 0.84rem;
     color: #777;
-    margin-bottom: 18px;
+    margin-bottom: 24px;
     line-height: 1.5;
     text-align: center;
   }
 
-  .ft-auth-form-group { margin-bottom: 14px; }
+  .ft-auth-form-group { margin-bottom: 16px; }
 
   .ft-auth-form-group label {
     display: block;
-    font-size: 0.82rem;
+    font-size: 0.84rem;
     font-weight: 500;
     color: #444;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
   }
 
   .ft-auth-input-wrap { position: relative; }
@@ -99,16 +59,17 @@
   .ft-auth-input-wrap input,
   .ft-auth-input-wrap select {
     width: 100%;
-    padding: 10px 14px;
+    padding: 11px 16px;
     border: 1.5px solid #d9e8e8;
     border-radius: 10px;
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     color: #333;
     background: #fff;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
     appearance: none;
     -webkit-appearance: none;
+    box-sizing: border-box;
   }
 
   .ft-auth-input-wrap input:focus,
@@ -123,15 +84,15 @@
   .ft-role-selector {
     display: flex;
     gap: 8px;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
   }
 
   .ft-role-pill {
     flex: 1;
-    padding: 9px 0;
+    padding: 10px 0;
     border: 1.5px solid #d9e8e8;
     border-radius: 50px;
-    font-size: 0.82rem;
+    font-size: 0.84rem;
     font-weight: 500;
     color: #4a9e9e;
     background: #fff;
@@ -152,18 +113,18 @@
 
   .ft-auth-btn {
     width: 100%;
-    padding: 11px;
+    padding: 13px;
     background: #3ecfcf;
     color: #fff;
     border: none;
     border-radius: 10px;
-    font-size: 0.9rem;
+    font-size: 0.92rem;
     font-weight: 600;
     cursor: pointer;
     letter-spacing: 0.3px;
     transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
     box-shadow: 0 4px 14px rgba(62,207,207,0.4);
-    margin-top: 8px;
+    margin-top: 10px;
   }
 
   .ft-auth-btn:hover {
@@ -181,34 +142,21 @@
     font-size: 0.82rem;
     color: #3ecfcf;
     text-decoration: none;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     font-weight: 500;
   }
 
   .ft-back-link:hover { text-decoration: underline; }
 
   @media (max-width: 620px) {
-    .ft-auth-image { display: none; }
-    .ft-auth-form-panel { padding: 28px 20px 24px; }
+    .ft-auth-form-panel { padding: 28px 24px 24px; }
   }
 </style>
 {% endblock %}
 
-{% block content %}
+{% block admin_content %}
 <div class="ft-auth-wrapper">
   <div class="ft-auth-card">
-
-    <!-- LEFT IMAGE -->
-    <div class="ft-auth-image">
-      <img src="{% static 'images/robotic_signage_portrait.JPG' %}" alt="Students learning">
-      <div class="ft-auth-image-overlay"></div>
-      <div class="ft-auth-image-text">
-        <h2>Create a New Account</h2>
-        <p>Admin portal — invite a student, parent, or admin.</p>
-      </div>
-    </div>
-
-    <!-- RIGHT FORM -->
     <div class="ft-auth-form-panel">
 
       <a href="{% url 'admin_dashboard' %}" class="ft-back-link">
@@ -221,9 +169,9 @@
       </p>
 
       {% if messages %}
-      <div style="margin-bottom:14px;">
+      <div style="margin-bottom:16px;">
         {% for message in messages %}
-        <p style="font-size:0.82rem; padding:8px 14px; border-radius:8px; margin-bottom:6px;
+        <p style="font-size:0.82rem; padding:9px 14px; border-radius:8px; margin-bottom:6px;
                   {% if message.tags == 'error' %}
                     color:#e74c3c; background:#fdf0ef;
                   {% else %}
@@ -256,7 +204,7 @@
         </div>
 
         <!-- Name row -->
-        <div style="display:flex; gap:10px;">
+        <div style="display:flex; gap:12px;">
           <div class="ft-auth-form-group" style="flex:1;">
             <label for="reg-first-name">First Name</label>
             <div class="ft-auth-input-wrap">

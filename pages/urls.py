@@ -12,20 +12,15 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-   
     # AUTHENTICATION
     path('auth/',views.login_view,   name='login'),
     # path('auth/register/',views.register,name='register'),
     path('auth/confirm-email/<uidb64>/<token>/',views.confirm_email,name='confirm_email'),
     path('auth/confirm-sent/', lambda r: render(r, 'authentication/email_confirm_sent.html'),name='email_confirm_sent'),
     
-
-    
-    
     # ADMIN
-    
     path('secure-control-9x7a2k-panel/',  views.icode_admin,  name='admin_dashboard'),
-    path('admin/create-user/',views.create_user,name='create_user'),
+    path('icode-admin/create-user/',views.create_user, name='create_user'),
     path('activate/<uuid:token>/',views.activate_account,name='activate_account'),
     path('enrollment-list',  views.icode_enrollments,  name='enrollments_list'),
     path("enrollments/<int:pk>/update-status/", views.enrollment_update_status, name="enrollment_update_status"),
@@ -37,7 +32,7 @@ urlpatterns = [
     path("statuses/store/",views.status_store,name="status_store"),
     path("statuses/<int:pk>/update/",views.status_update,name="status_update"),
     
-    path("admin/programs/",views.programs_list,name="programs_list"),
+    path("icode-admin/programs/",views.programs_list,name="programs_list"),
     path("programs/store/",views.program_store,name="program_store"),
     path("programs/<int:pk>/update/",views.program_update,name="program_update"),
     
@@ -61,7 +56,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('pricing/', views.pricing, name='pricing'),
     path('socials/', views.socials, name='socials'),
-    
+    path('privacy-policy/', views.serve_privacy_policy, name='serve_privacy_policy'),
     # UPLOAD IMAGES $ VIDEOS.
     path('gallery/upload/', views.gallery_upload, name='gallery_upload'),
     
@@ -83,8 +78,15 @@ urlpatterns = [
     path('password-reset/complete/', auth_views.PasswordResetCompleteView.as_view(
         template_name='authentication/password_reset_complete.html',
     ), name='password_reset_complete'),
+    # terms and conditions
+    path('terms/', views.terms, name='terms'),
 
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    
+    
+    
+    
+    

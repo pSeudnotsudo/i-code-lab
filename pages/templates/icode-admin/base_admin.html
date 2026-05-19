@@ -414,6 +414,13 @@
             <i class="ti ti-layout-dashboard"></i> Dashboard
           </a>
           <a
+            href="{% url 'create_user' %}"
+            class="nav-item"
+            data-url="{% url 'create_user' %}"
+          >
+            <i class="ti ti-user-plus"></i> Create User
+          </a>
+          <a
             href="{% url 'enrollments_list' %}"
             class="nav-item"
             data-url="{% url 'enrollments_list' %}"
@@ -505,7 +512,7 @@
               </div>
               <div class="user-role">Administrator</div>
             </div>
-            <a href="{% url 'admin:logout' %}" title="Logout"
+            <a href="{% url 'logout' %}" title="Logout"
               ><i
                 class="ti ti-logout"
                 style="color: rgba(255, 255, 255, 0.3); font-size: 16px"
@@ -519,11 +526,7 @@
       <div class="main">
         <!-- Topbar -->
         <div class="topbar">
-          {% comment %}
-          <div class="topbar-title">
-            {% block page_title %}Dashboard{% endblock %}
-          </div>
-          {% endcomment %}
+          
           <div class="search-box">
             <i class="ti ti-search"></i>
             <input

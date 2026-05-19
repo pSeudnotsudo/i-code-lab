@@ -32,6 +32,9 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from django.db import transaction
+from django.http import FileResponse
+from django.conf import settings
 
 
 User = get_user_model()
@@ -42,6 +45,12 @@ EYE_SVG = """<svg width="18" height="18" fill="none" stroke="currentColor"
   <circle cx="12" cy="12" r="3"/>
 </svg>"""
 
+def serve_privacy_policy(request):
+    pdf_path = os.path.join(settings.MEDIA_ROOT, 'pdfs', 'privacy_policy.pdf')
+    response = FileResponse(open(pdf_path, 'rb'), content_type='application/pdf')
+    response['X-Frame-Options'] = 'SAMEORIGIN'  
+    return response
+    
 
 def _redirect_by_role(user):
     """Return the correct redirect for a logged-in user based on their role."""
@@ -55,10 +64,10 @@ def _redirect_by_role(user):
 # ─── LOGIN ───────────────────────────────────────────────────
 def login_view(request):
     if request.method == 'POST':
-        email    = request.POST.get('username', '').strip()  # field name stays 'username' in form
+        email    = request.POST.get('username', '').strip()   
         password = request.POST.get('password', '')
 
-        # look up user by email first
+        
         try:
             user_obj = CustomUser.objects.get(email=email)
             user     = authenticate(request, username=user_obj.username, password=password)
@@ -89,7 +98,7 @@ def confirm_email(request, uidb64, token):
     except (User.DoesNotExist, ValueError, TypeError):
         user = None
         
-     # Already confirmed — just send them to login
+     
     if user and user.is_email_verified:
         messages.info(request, "Your email is already confirmed. Please log in.")
         return redirect('login')
@@ -142,7 +151,7 @@ def create_user(request):
         user.save()
 
         invite_link  = f"{settings.SITE_URL}/activate/{user.invite_token}/"
-        html_content = render_to_string('emails/invite_email.html', {
+        html_content = render_to_string('emails/invite_link.html', {
             'first_name' : first_name,
             'last_name'  : last_name,
             'role'       : role,
@@ -167,8 +176,6 @@ def create_user(request):
 
 # 
 #  USER ACCOUNTS
-from django.shortcuts import get_object_or_404
-from django.contrib.auth import login
 def activate_account(request, token):
     user = get_object_or_404(CustomUser, invite_token=token)
 
@@ -252,14 +259,13 @@ def socials(request):
 
 
 
-# @login_required
+@login_required
 @staff_member_required(login_url='/login/')
 def gallery_upload(request):
     if not request.user.is_staff:
         raise PermissionDenied
     
     if request.method == 'POST':
-        # --- pull raw fields from request.POST / request.FILES ---
         title    = request.POST.get('title', '').strip()
         category = request.POST.get('category', '').strip()
         date     = request.POST.get('date', '').strip()
@@ -428,34 +434,32 @@ def enrollment_update_status(request, pk):
     (email is sent after commit to avoid holding the transaction open)
     """
     if request.method != "POST":
-        return redirect("icode_enrollments")
+        return redirect("enrollments_list")
  
     action     = request.POST.get("action", "").strip().lower()
     enrollment = get_object_or_404(Enrollment, pk=pk)
  
     if action not in ("approve", "reject"):
         messages.error(request, "Invalid action.")
-        return redirect("icode_enrollments")
+        return redirect("enrollments_list")
  
-    # Map action → status code
     target_code = "confirmed" if action == "approve" else "rejected"
  
-    # Fetch target status
-    target_status = EnrollmentStatus.objects.filter(code=target_code).first()
+    target_status = EnrollmentStatus.objects.filter(code=target_code, is_active='True').first()
     if not target_status:
         messages.error(
             request,
             f"System error: EnrollmentStatus with code='{target_code}' not found."
         )
-        return redirect("icode_enrollments")
+        return redirect("enrollments_list")
  
-    # Prevent double-processing
+   
     if enrollment.status.code == target_code:
         messages.warning(
             request,
             f"{enrollment.full_name}'s enrollment is already {target_code}."
         )
-        return redirect("icode_enrollments")
+        return redirect("enrollments_list")
  
     # ── Atomic update ────────────────────────────────────────────────────────
     try:
@@ -463,7 +467,6 @@ def enrollment_update_status(request, pk):
             enrollment.status = target_status
             enrollment.save(update_fields=["status"])
  
-        # Email sent AFTER commit (keeps transaction short)
         _send_status_email(enrollment, action)
  
         label = "approved" if action == "approve" else "rejected"
@@ -476,54 +479,46 @@ def enrollment_update_status(request, pk):
     except Exception as e:
         messages.error(request, f"Something went wrong: {str(e)}")
  
-    return redirect("icode_enrollments")
+    return redirect("enrollments_list")
+
 
 #  HELPER FUNCTION TO SEND EMAILS
-
 def _send_status_email(enrollment, action):
     if action == "approve":
-        subject = "Enrollment Confirmed — i-Code"
-        message = (
-            f"Dear {enrollment.full_name},\n\n"
-            "Great news! Your enrollment has been reviewed and confirmed.\n\n"
-            "Our team will be in touch shortly with the next steps and class details.\n\n"
-            "We look forward to having you at i-Code!\n\n"
-            "Warm regards,\n"
-            "The i-Code Team"
-        )
+        subject  = "Enrollment Confirmed — i-Code"
+        template = "emails/enrollment_confirmed.html"
     else:
-        subject = "Enrollment Update — i-Code"
-        message = (
-            f"Dear {enrollment.full_name},\n\n"
-            "Thank you for your interest in i-Code.\n\n"
-            "After careful review, we regret to inform you that we are unable to "
-            "proceed with your enrollment at this time.\n\n"
-            "If you have any questions or would like to discuss alternative options, "
-            "please don't hesitate to reach out to us.\n\n"
-            "We appreciate your interest and hope to work with you in the future.\n\n"
-            "Kind regards,\n"
-            "The i-Code Team"
-        )
- 
-    send_mail(
+        subject  = "Enrollment Update — i-Code"
+        template = "emails/enrollment_rejected.html"
+
+    programs_list = ", ".join(
+        p.name for p in enrollment.programs.all()
+    ) if hasattr(enrollment, "programs") else ""
+
+    context = {
+        "full_name": enrollment.full_name,
+        "programs":  programs_list,
+    }
+
+    html_body  = render_to_string(template, context)
+    plain_body = html_body  
+
+    email = EmailMultiAlternatives(
         subject=subject,
-        message=message,
+        body=plain_body,
         from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[enrollment.email],
-        fail_silently=False,   # raise errors so the caller can catch them
+        to=[enrollment.email],
     )
+    email.attach_alternative(html_body, "text/html")
+    email.send(fail_silently=False)
+    
 
- # PROGRAMS
-
-
+# PROGRAMS
 def programs_list(request):
-
     programs = Program.objects.all().order_by("order")
-
     context = {
         "programs": programs
     }
-
     return render(
         request,
         "icode-admin/program_list.html",
@@ -1004,21 +999,16 @@ def enrollment_store(request):
     if request.method != "POST":
         return JsonResponse({"success": False, "message": "Invalid request"})
  
-    # ── Core fields ──────────────────────────────────────────────────────────
     full_name   = request.POST.get("full_name", "").strip()
     phone       = request.POST.get("phone", "").strip()
     email       = request.POST.get("email", "").strip()
     comments    = request.POST.get("comments", "").strip()
     program_ids = request.POST.getlist("programs")
- 
-    # ── New fields ───────────────────────────────────────────────────────────
     age_bracket_id              = request.POST.get("age_bracket")
     preferred_registration_date = request.POST.get("preferred_registration_date")  
     registration_timeline_id    = request.POST.get("registration_timeline")
     prospective_start_date      = request.POST.get("preferred_start_date")       
-    customized_course           = request.POST.get("customized_course", "no")      
- 
-    # ── Lookups ──────────────────────────────────────────────────────────────
+    customized_course           = request.POST.get("customized_course", "no")  
     status = EnrollmentStatus.objects.filter(code="pending").first()
  
     age_bracket = None
@@ -1034,7 +1024,6 @@ def enrollment_store(request):
             id=registration_timeline_id
         ).first()
  
-    # ── Create enrollment ────────────────────────────────────────────────────
     enrollment = Enrollment.objects.create(
         full_name=full_name,
         phone=phone,
@@ -1045,15 +1034,12 @@ def enrollment_store(request):
         preferred_registration_date=preferred_registration_date or None,
         registration_timeline=registration_timeline,
         preferred_start_date=prospective_start_date or None,
-        # custom_course_interest=(customized_course == "yes"),
         custom_course_interest=customized_course if customized_course in ("yes", "no") else None,
     )
  
-    # ── M2M programs ─────────────────────────────────────────────────────────
     if program_ids:
         enrollment.programs.set(Program.objects.filter(id__in=program_ids))
  
-    # ── Email notification ───────────────────────────────────────────────────
     send_mail(
         subject="Enrollment Received - i-Code",
         message=(
@@ -1072,5 +1058,9 @@ def enrollment_store(request):
         "message": "Enrollment submitted successfully!"
     })
  
+#  TERMS AND CONDITIONS
+def terms(request):
+    return render(request, 'terms.html')
+
  
  

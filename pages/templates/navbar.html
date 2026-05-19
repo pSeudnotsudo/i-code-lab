@@ -35,7 +35,9 @@
                     <a href="{% url 'logout' %}" class="btn-signup">Logout</a>
                 {% else %}
                     <a href="{% url 'login' %}" class="btn-login">Login</a>
-                    <a href="https://docs.google.com/forms/d/e/1FAIpQLScf93on5X9wekHlI8Ws3uIXTGkgHGX5SBRS5t_7cjd5Dr6akg/viewform?usp=sharing&ouid=116472226513210841775" target="_blank" class="btn-signup">Sign Up</a>
+                    <a href="{% url 'enrollment_store' %}" class="btn-signup">Enroll Now!</a>
+                    
+                    <!--<a href="https://docs.google.com/forms/d/e/1FAIpQLScf93on5X9wekHlI8Ws3uIXTGkgHGX5SBRS5t_7cjd5Dr6akg/viewform?usp=sharing&ouid=116472226513210841775" target="_blank" class="btn-signup">Sign Up</a>-->
                 {% endif %}
             </div>
         </div>
@@ -302,7 +304,7 @@
 
     .nav-links a {
         display: block;
-        font-size: 1.05rem;
+        font-size: 1rem;
         padding: 12px 16px;
         width: 100%;
         border-radius: 10px;
@@ -336,8 +338,8 @@
     .btn-login,
     .btn-signup {
         text-align: center;
-        padding: 0.75rem 1.75rem;
-        font-size: 0.95rem;
+        padding: 0.5rem 1.5rem;
+        font-size: 0.8rem;
     }
 }
 

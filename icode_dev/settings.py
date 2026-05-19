@@ -188,5 +188,6 @@ PASSWORD_RESET_TIMEOUT = 259200
 
 # AUTH-MODEL
 AUTH_USER_MODEL = 'pages.CustomUser'
-# SITE_DOMAIN     = 'localhost:8000'
+SITE_DOMAIN     = 'localhost:8000'
+SITE_URL     = 'localhost:8000'
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

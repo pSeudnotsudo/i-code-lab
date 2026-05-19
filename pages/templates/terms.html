@@ -1,0 +1,1014 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block title %}Terms & Conditions | i-CODE {% endblock %} 
+{% block extra_css %}
+<style>
+  :root {
+    --primary: #49bbbd;
+    --primary-dark: #3da4a6;
+    --primary-light: #e6f7f7;
+    --accent: #a4dcdd;
+    --text-dark: #2c3e50;
+    --text-gray: #5d6c7b;
+    --text-light: #8392a5;
+    --border: #d4eced;
+    --bg-soft: #f8fafb;
+    --white: #ffffff;
+    --shadow-lg: 0 8px 32px rgba(73, 187, 189, 0.2);
+    --radius: 14px;
+    --font: "Poppins", sans-serif;
+  }
+
+  body {
+    font-family: var(--font);
+    color: var(--text-dark);
+    background: var(--bg-soft);
+    margin-top: 2.5rem;
+  }
+
+  .tc-hero {
+    background: linear-gradient(
+      135deg,
+      var(--primary) 0%,
+      var(--primary-dark) 100%
+    );
+    padding: 72px 0 56px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .tc-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .tc-hero .badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 6px 18px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+  .tc-hero h1 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+  .tc-hero p {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+  .tc-meta {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+  }
+  .tc-meta span {
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 6px 16px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .tc-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 20px 80px;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+  @media (max-width: 768px) {
+    .tc-wrapper {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  }
+
+  .tc-toc {
+    position: sticky;
+    top: 90px;
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: 24px;
+    border: 1px solid var(--border);
+  }
+  .tc-toc h6 {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-light);
+    margin-bottom: 16px;
+  }
+  .tc-toc ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .tc-toc ul li {
+    margin-bottom: 4px;
+  }
+  .tc-toc ul li a {
+    display: block;
+    padding: 7px 12px;
+    font-size: 0.82rem;
+    color: var(--text-gray);
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+  }
+  .tc-toc ul li a:hover,
+  .tc-toc ul li a.active {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    border-left-color: var(--primary);
+  }
+  @media (max-width: 768px) {
+    .tc-toc {
+      position: static;
+    }
+  }
+
+
+  .tc-content {
+    min-width: 0;
+  }
+
+  .tc-section {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: 0 2px 12px rgba(73, 187, 189, 0.08);
+    border: 1px solid var(--border);
+    padding: 36px 40px;
+    margin-bottom: 20px;
+    scroll-margin-top: 100px;
+    transition: box-shadow 0.2s ease;
+  }
+  .tc-section:hover {
+    box-shadow: var(--shadow-lg);
+  }
+  @media (max-width: 576px) {
+    .tc-section {
+      padding: 24px 20px;
+    }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .section-num {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 800;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+    padding-top: 8px;
+  }
+
+  .tc-section p {
+    color: var(--text-gray);
+    font-size: 0.93rem;
+    line-height: 1.75;
+    margin-bottom: 12px;
+  }
+  .tc-section ul {
+    padding-left: 0;
+    list-style: none;
+    margin-bottom: 12px;
+  }
+  .tc-section ul li {
+    position: relative;
+    padding: 8px 12px 8px 36px;
+    color: var(--text-gray);
+    font-size: 0.93rem;
+    line-height: 1.7;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    transition: background 0.15s;
+  }
+  .tc-section ul li:hover {
+    background: var(--primary-light);
+  }
+  .tc-section ul li::before {
+    content: "";
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--primary);
+  }
+  .tc-section ul li strong {
+    color: var(--text-dark);
+  }
+
+  /* Sub-section */
+  .tc-subsection {
+    background: var(--bg-soft);
+    border-left: 3px solid var(--primary);
+    border-radius: 0 10px 10px 0;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+  .tc-subsection h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 10px;
+  }
+
+  /* Highlight boxes */
+  .tc-highlight {
+    background: var(--primary-light);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+  }
+  .tc-highlight strong {
+    color: var(--primary-dark);
+  }
+
+  /* Contact card */
+  .contact-card {
+    background: linear-gradient(135deg, var(--primary-light), var(--white));
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 28px;
+  }
+  .contact-card .contact-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--text-gray);
+  }
+  .contact-card .contact-row:last-child {
+    border-bottom: none;
+  }
+  .contact-card .contact-row i {
+    color: var(--primary);
+    width: 20px;
+    flex-shrink: 0;
+  }
+  .contact-card .contact-row a {
+    color: var(--primary-dark);
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .contact-card .contact-row a:hover {
+    text-decoration: underline;
+  }
+
+  .tc-date-banner {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--text-gray);
+  }
+  .tc-date-banner i {
+    color: var(--primary);
+  }
+
+  .back-top {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--primary);
+    color: #fff;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(73, 187, 189, 0.4);
+    cursor: pointer;
+    border: none;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 0.3s,
+      transform 0.3s;
+    z-index: 999;
+  }
+  .back-top.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .back-top:hover {
+    transform: translateY(-3px);
+    background: var(--primary-dark);
+  }
+</style>
+{% endblock %} {% block content %}
+
+<!-- Hero -->
+<section class="tc-hero">
+  <div class="container position-relative">
+    <div class="badge-pill">
+      <i class="ti ti-shield-check"></i> Legal Document
+    </div>
+    <h1>Terms &amp; Conditions</h1>
+    <p>
+      i-CODE Robotics and AI Lab Limited &mdash; Please read carefully before
+      enrolling.
+    </p>
+    <div class="tc-meta">
+      {% comment %}
+      <span><i class="ti ti-calendar me-1"></i> Effective: [Insert date]</span>
+      <span
+        ><i class="ti ti-refresh me-1"></i> Last updated: [Insert date]</span
+      >
+      {% endcomment %}
+      <span><i class="ti ti-map-pin me-1"></i> Governed by Kenyan Law</span>
+    </div>
+  </div>
+</section>
+
+<!-- Main layout -->
+<div class="tc-wrapper">
+  <!-- Sidebar TOC -->
+  <aside class="tc-toc">
+    <h6>Contents</h6>
+    <ul>
+      <li><a href="#s1">1. Introduction</a></li>
+      <li><a href="#s2">2. Definitions</a></li>
+      <li><a href="#s3">3. Enrolment &amp; Registration</a></li>
+      <li><a href="#s4">4. Fees &amp; Payment</a></li>
+      <li><a href="#s5">5. Cancellation &amp; Refunds</a></li>
+      <li><a href="#s6">6. Code of Conduct</a></li>
+      <li><a href="#s7">7. Safeguarding of Children</a></li>
+      <li><a href="#s8">8. Equipment &amp; IP</a></li>
+      <li><a href="#s9">9. Photos &amp; Video</a></li>
+      <li><a href="#s10">10. Online Learning</a></li>
+      <li><a href="#s11">11. Website Use</a></li>
+      <li><a href="#s12">12. Limitation of Liability</a></li>
+      <li><a href="#s13">13. Health &amp; Safety</a></li>
+      <li><a href="#s14">14. Force Majeure</a></li>
+      <li><a href="#s15">15. Privacy</a></li>
+      <li><a href="#s16">16. Changes to Terms</a></li>
+      <li><a href="#s17">17. Governing Law</a></li>
+      <li><a href="#s18">18. Severability</a></li>
+      <li><a href="#s19">19. Contact</a></li>
+    </ul>
+  </aside>
+
+  <!-- Content -->
+  <main class="tc-content">
+    <div class="tc-date-banner">
+      <i class="ti ti-info-circle"></i>
+      By enrolling or using our services, you confirm that you have read and
+      agree to these Terms.
+    </div>
+
+    <!-- 1 -->
+    <div class="tc-section" id="s1">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <h2 class="section-title">Introduction</h2>
+      </div>
+      <p>
+        These Terms and Conditions ("Terms") govern your use of the website
+        <strong>icodeailab.com</strong>, the registration and enrolment process,
+        and any classes, programs, workshops, or services offered by
+        <strong>i-CODE Robotics and AI Lab Limited</strong> ("i-CODE," "we,"
+        "us," "our"), a private limited company incorporated in Kenya with
+        offices at OneStop Arcade, off Langata Road, Karen, Nairobi.
+      </p>
+      <p>
+        By visiting our website, submitting a registration form, paying program
+        fees, or attending any class or session, you agree to these Terms. If
+        you are registering on behalf of a child, you confirm that you are the
+        parent or legal guardian and that you accept these Terms on your own
+        behalf and on behalf of the learner.
+      </p>
+      <div class="tc-highlight">
+        <strong>Important:</strong> If you do not agree with any part of these
+        Terms, please do not enrol or use our services.
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="tc-section" id="s2">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <h2 class="section-title">Definitions</h2>
+      </div>
+      <ul>
+        <li>
+          <strong>"Learner"</strong> means the student enrolled in any i-CODE
+          program, whether a child, teenager, university student, or
+          professional.
+        </li>
+        <li>
+          <strong>"Parent"</strong> means the parent or legal guardian
+          responsible for a learner under 18.
+        </li>
+        <li>
+          <strong>"Program"</strong> means any course, module, workshop,
+          intensive, or session offered by i-CODE.
+        </li>
+        <li>
+          <strong>"Term"</strong> means a defined teaching cycle, typically 10
+          to 12 weeks for kids and teens.
+        </li>
+        <li>
+          <strong>"Fees"</strong> means the amounts payable for any program,
+          registration, or materials, as published on our website or quoted at
+          enrolment.
+        </li>
+      </ul>
+    </div>
+
+    <!-- 3 -->
+    <div class="tc-section" id="s3">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <h2 class="section-title">Enrolment and Registration</h2>
+      </div>
+      <ul>
+        <li>
+          Enrolment is confirmed only after we receive the completed
+          registration form and full payment of the applicable fees, unless we
+          agree otherwise in writing.
+        </li>
+        <li>
+          We reserve the right to decline an enrolment where a program is full,
+          the learner does not meet age or prerequisite requirements, or where
+          we reasonably believe enrolment is not in the best interests of the
+          learner or the wider class.
+        </li>
+        <li>
+          Class places are limited and are allocated on a
+          <strong>first-paid basis</strong>.
+        </li>
+        <li>
+          Parents must provide accurate and up-to-date contact, emergency, and
+          health information at enrolment, and must update us of any changes.
+        </li>
+      </ul>
+    </div>
+
+    <!-- 4 -->
+    <div class="tc-section" id="s4">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <h2 class="section-title">Fees and Payment</h2>
+      </div>
+      <ul>
+        <li>
+          Fees are quoted in <strong>Kenyan Shillings (KES)</strong> and are
+          reviewed periodically. The fees applicable to your enrolment are those
+          in effect at the time of registration.
+        </li>
+        <li>
+          A non-refundable registration fee of
+          <strong>KES 3,000</strong> applies to first-time learners.
+        </li>
+        <li>
+          Materials fees (e.g., robotics kits at KES 5,000 or drone materials at
+          KES 7,000) are charged in addition to tuition fees, where applicable.
+        </li>
+        <li>
+          Tuition fees are payable in full before the start of the term, unless
+          we agree to a payment plan in writing.
+        </li>
+        <li>
+          We currently accept payment by <strong>bank transfer</strong>. Bank
+          details are provided on the invoice. Please use the learner's full
+          name as the payment reference.
+        </li>
+        <li>
+          Discounts (such as early-payment or sibling discounts) apply only when
+          their stated conditions are met and cannot be combined unless
+          expressly stated.
+        </li>
+        <li>
+          Late payment may result in suspension of attendance until fees are
+          settled. We reserve the right to charge reasonable administrative fees
+          on persistently overdue accounts.
+        </li>
+      </ul>
+    </div>
+
+    <!-- 5 -->
+    <div class="tc-section" id="s5">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <h2 class="section-title">Cancellation and Refund Policy</h2>
+      </div>
+
+      <div class="tc-subsection">
+        <h4>5.1 Cancellation by the Parent or Learner</h4>
+        <ul>
+          <li>
+            <strong>7+ days before term starts:</strong> tuition fees refunded
+            in full, less the non-refundable registration fee and any materials
+            already issued.
+          </li>
+          <li>
+            <strong
+              >Less than 7 days before start, or within first 2 weeks:</strong
+            >
+            50% of tuition fees refunded, less registration and materials costs.
+          </li>
+          <li>
+            <strong>After the first 2 weeks:</strong> no refund of tuition fees.
+            In genuine medical or compassionate circumstances, we may at our
+            discretion offer a credit toward a future term.
+          </li>
+          <li>
+            Materials, kits, and any digital licences already issued are
+            <strong>non-refundable</strong>.
+          </li>
+        </ul>
+      </div>
+
+      <div class="tc-subsection">
+        <h4>5.2 Cancellation by i-CODE</h4>
+        <p>
+          If we cancel a program before it begins, we will offer either a full
+          refund of fees paid or a transfer to an alternative program of
+          equivalent value. If we cancel a program after it has begun for
+          reasons within our control, we will refund tuition fees on a pro-rata
+          basis for sessions not delivered.
+        </p>
+      </div>
+
+      <div class="tc-subsection">
+        <h4>5.3 Missed Sessions</h4>
+        <p>
+          Sessions missed by the learner are not generally refundable or
+          transferable. Where reasonably possible, we will provide make-up
+          materials or, at our discretion, a make-up session within the same
+          term.
+        </p>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="tc-section" id="s6">
+      <div class="section-header">
+        <div class="section-num">6</div>
+        <h2 class="section-title">Code of Conduct</h2>
+      </div>
+      <p>
+        To create a safe, respectful, and productive learning environment, all
+        learners and parents agree to:
+      </p>
+      <ul>
+        <li>
+          Treat instructors, staff, fellow learners, and equipment with respect
+        </li>
+        <li>Arrive on time and attend regularly</li>
+        <li>
+          Use i-CODE devices, kits, robots, drones, and software only for the
+          purposes of the program and under instructor guidance
+        </li>
+        <li>
+          Not engage in bullying, harassment, hate speech, or any unsafe
+          behaviour
+        </li>
+        <li>
+          Not record, photograph, or share images of other learners without
+          consent
+        </li>
+        <li>
+          Follow all health, safety, and security instructions while on our
+          premises
+        </li>
+      </ul>
+      <div class="tc-highlight">
+        We reserve the right to suspend or remove from a program any learner
+        whose conduct seriously or repeatedly breaches this code. In such cases,
+        no refund will be due for sessions not attended as a result of the
+        suspension.
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="tc-section" id="s7">
+      <div class="section-header">
+        <div class="section-num">7</div>
+        <h2 class="section-title">Safeguarding of Children</h2>
+      </div>
+      <p>
+        i-CODE is committed to the welfare and safety of all learners,
+        especially minors. We:
+      </p>
+      <ul>
+        <li>
+          Operate in line with the <strong>Children Act, 2022</strong> and
+          applicable child-protection guidance
+        </li>
+        <li>
+          Apply background and reference checks for staff and instructors who
+          work with minors
+        </li>
+        <li>
+          Maintain supervision ratios appropriate to the age of the learners
+        </li>
+        <li>
+          Will release minors at the end of a session only to a parent or an
+          authorised adult identified at registration
+        </li>
+        <li>
+          Will, in a medical or safety emergency, take reasonable steps to seek
+          medical assistance and contact the listed emergency contact
+        </li>
+      </ul>
+      <p>
+        Parents are responsible for the safe drop-off and pick-up of minors and
+        for any time spent on or near the premises outside scheduled session
+        times.
+      </p>
+    </div>
+
+    <!-- 8 -->
+    <div class="tc-section" id="s8">
+      <div class="section-header">
+        <div class="section-num">8</div>
+        <h2 class="section-title">
+          Equipment, Materials, and Intellectual Property
+        </h2>
+      </div>
+      <ul>
+        <li>
+          All robotics kits, drones, computers, software, and other equipment
+          owned by i-CODE remain our property unless they are sold to the
+          learner as part of the program.
+        </li>
+        <li>
+          Where a learner is issued with a take-home kit or materials as part of
+          fees, ownership transfers on full payment, but we accept no
+          responsibility for the kit once it leaves our premises.
+        </li>
+        <li>
+          Curriculum content, lesson materials, slide decks, project briefs,
+          recordings, and other learning resources are the intellectual property
+          of i-CODE or our licensors. They are provided for the personal,
+          non-commercial use of the enrolled learner only.
+        </li>
+        <li>
+          <strong>Student work:</strong> Original projects, code, and creations
+          made by a learner remain the intellectual property of the learner. By
+          enrolling, the learner (or parent on their behalf) grants i-CODE a
+          non-exclusive, royalty-free licence to display the work for
+          educational, promotional, and showcase purposes.
+        </li>
+      </ul>
+    </div>
+
+    <!-- 9 -->
+    <div class="tc-section" id="s9">
+      <div class="section-header">
+        <div class="section-num">9</div>
+        <h2 class="section-title">Use of Photographs, Video, and Showcases</h2>
+      </div>
+      <p>
+        Innovation showcases, demo days, social media, and our website are an
+        important part of how we celebrate learner achievement. We will only
+        feature an identifiable learner (especially a minor) where the parent or
+        adult learner has provided written consent.
+      </p>
+      <div class="tc-highlight">
+        Consent can be withdrawn at any time by writing to
+        <strong
+          ><a
+            href="mailto:info@icodeailab.com"
+            style="color: var(--primary-dark)"
+            >info@icodeailab.com</a
+          ></strong
+        >. See our Privacy Policy for details.
+      </div>
+    </div>
+
+    <!-- 10 -->
+    <div class="tc-section" id="s10">
+      <div class="section-header">
+        <div class="section-num">10</div>
+        <h2 class="section-title">Online Learning and Accounts</h2>
+      </div>
+      <p>
+        Some of our programs include online sessions, dashboards, or learning
+        platforms. Where we issue login credentials:
+      </p>
+      <ul>
+        <li>
+          The account holder is responsible for keeping their password
+          confidential
+        </li>
+        <li>
+          Accounts are personal and may not be shared, transferred, or sold
+        </li>
+        <li>
+          We may suspend or terminate access for misuse, breach of these Terms,
+          or non-payment of fees
+        </li>
+      </ul>
+    </div>
+
+    <!-- 11 -->
+    <div class="tc-section" id="s11">
+      <div class="section-header">
+        <div class="section-num">11</div>
+        <h2 class="section-title">Website Use</h2>
+      </div>
+      <p>
+        You agree to use <strong>icodeailab.com</strong> only for lawful
+        purposes and not to:
+      </p>
+      <ul>
+        <li>
+          Interfere with, disrupt, or attempt to gain unauthorised access to the
+          website or its underlying systems
+        </li>
+        <li>Submit false, misleading, or fraudulent information</li>
+        <li>Upload malicious code or use the site to harass others</li>
+        <li>
+          Reproduce or scrape substantial portions of our content for commercial
+          use without our written permission
+        </li>
+      </ul>
+      <p>
+        We may modify, suspend, or discontinue parts of the website at any time
+        without liability.
+      </p>
+    </div>
+
+    <!-- 12 -->
+    <div class="tc-section" id="s12">
+      <div class="section-header">
+        <div class="section-num">12</div>
+        <h2 class="section-title">Limitation of Liability</h2>
+      </div>
+      <p>To the fullest extent permitted by Kenyan law:</p>
+      <ul>
+        <li>
+          Our total liability to you in connection with any program or service
+          shall not exceed the fees you have paid to us for that specific
+          program in the 12 months preceding the claim.
+        </li>
+        <li>
+          We are not liable for loss of profit, loss of opportunity, loss of
+          data, or any indirect or consequential losses.
+        </li>
+        <li>
+          We do not exclude or limit liability for death or personal injury
+          caused by our negligence, for fraud, or for any other liability that
+          cannot lawfully be limited.
+        </li>
+      </ul>
+      <div class="tc-highlight">
+        You agree to indemnify i-CODE against any losses, claims, or damages
+        arising from your or the learner's wilful damage to equipment, breach of
+        these Terms, or unlawful conduct.
+      </div>
+    </div>
+
+    <!-- 13 -->
+    <div class="tc-section" id="s13">
+      <div class="section-header">
+        <div class="section-num">13</div>
+        <h2 class="section-title">
+          Health, Safety, and Equipment-Related Risks
+        </h2>
+      </div>
+      <p>
+        Some of our programs involve electronics, motors, robotics kits, drones,
+        and other physical equipment. While we take reasonable safety measures,
+        you acknowledge that:
+      </p>
+      <ul>
+        <li>
+          Some activities carry inherent minor risks (e.g., small parts,
+          soldering, or moving parts in robotics)
+        </li>
+        <li>Learners must follow safety instructions at all times</li>
+        <li>
+          Drones may only be flown in designated areas under instructor
+          supervision
+        </li>
+        <li>
+          Parents must disclose at registration any medical condition, allergy,
+          or accessibility need that may affect the learner's safety in class
+        </li>
+      </ul>
+    </div>
+
+    <!-- 14 -->
+    <div class="tc-section" id="s14">
+      <div class="section-header">
+        <div class="section-num">14</div>
+        <h2 class="section-title">Force Majeure</h2>
+      </div>
+      <p>
+        We are not liable for any failure or delay in delivering a program where
+        it is caused by circumstances beyond our reasonable control, including
+        but not limited to: power outages, internet failures, public health
+        emergencies, government directives, civil unrest, fire, flood, or strike
+        action.
+      </p>
+      <p>
+        Where this happens, we will use reasonable efforts to reschedule
+        sessions, deliver online alternatives, or extend the term.
+      </p>
+    </div>
+
+    <!-- 15 -->
+    <div class="tc-section" id="s15">
+      <div class="section-header">
+        <div class="section-num">15</div>
+        <h2 class="section-title">Privacy</h2>
+      </div>
+      <p>
+        Your personal data is handled in accordance with our
+        <strong>Privacy Policy</strong> and the
+        <strong>Kenya Data Protection Act, 2019</strong>. By accepting these
+        Terms you acknowledge that you have read and understood the Privacy
+        Policy.
+      </p>
+    </div>
+
+    <!-- 16 -->
+    <div class="tc-section" id="s16">
+      <div class="section-header">
+        <div class="section-num">16</div>
+        <h2 class="section-title">Changes to These Terms</h2>
+      </div>
+      <p>
+        We may amend these Terms from time to time. The current version will
+        always be available on our website. Where changes materially affect your
+        rights or obligations, we will notify enrolled parents and learners by
+        email or in writing.
+      </p>
+      <p>
+        Continued use of our services after a change constitutes acceptance of
+        the updated Terms.
+      </p>
+    </div>
+
+    <!-- 17 -->
+    <div class="tc-section" id="s17">
+      <div class="section-header">
+        <div class="section-num">17</div>
+        <h2 class="section-title">Governing Law and Disputes</h2>
+      </div>
+      <p>
+        These Terms are governed by the <strong>laws of Kenya</strong>. Any
+        dispute arising out of or in connection with these Terms or any program
+        shall first be addressed through good-faith discussion between the
+        parties.
+      </p>
+      <p>
+        Where a dispute cannot be resolved within 30 days, it shall be referred
+        to the courts of Kenya, which shall have exclusive jurisdiction.
+      </p>
+    </div>
+
+    <!-- 18 -->
+    <div class="tc-section" id="s18">
+      <div class="section-header">
+        <div class="section-num">18</div>
+        <h2 class="section-title">Severability and Entire Agreement</h2>
+      </div>
+      <p>
+        If any provision of these Terms is held to be invalid or unenforceable,
+        the remaining provisions remain in full force. These Terms, together
+        with our Privacy Policy and any program-specific enrolment forms,
+        constitute the entire agreement between you and i-CODE in relation to
+        the services provided.
+      </p>
+    </div>
+
+    <!-- 19 -->
+    <div class="tc-section" id="s19">
+      <div class="section-header">
+        <div class="section-num">19</div>
+        <h2 class="section-title">Contact</h2>
+      </div>
+      <div class="contact-card">
+        <div class="contact-row">
+          <i class="ti ti-building"></i>
+          <span><strong>i-CODE Robotics and AI Lab Limited</strong></span>
+        </div>
+        <div class="contact-row">
+          <i class="ti ti-map-pin"></i>
+          <span
+            >OneStop Arcade, off Langata Road, Karen, Nairobi &mdash; P.O. Box
+            29682-00502, Nairobi, Kenya</span
+          >
+        </div>
+        <div class="contact-row">
+          <i class="ti ti-phone"></i>
+          <a href="tel:+254141054939">+254 141 054 939</a>
+        </div>
+        <div class="contact-row">
+          <i class="ti ti-mail"></i>
+          <a href="mailto:info@icodeailab.com">info@icodeailab.com</a>
+        </div>
+        <div class="contact-row">
+          <i class="ti ti-world"></i>
+          <a href="https://icodeailab.com" target="_blank">icodeailab.com</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Back to top -->
+<button
+  class="back-top"
+  id="backTop"
+  onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+>
+  <i class="ti ti-chevron-up"></i>
+</button>
+
+{% endblock %} {% block extra_js %}
+<script>
+  // Back to top visibility
+  const backTop = document.getElementById("backTop");
+  window.addEventListener("scroll", () => {
+    backTop.classList.toggle("visible", window.scrollY > 400);
+  });
+
+  // Active TOC highlight on scroll
+  const sections = document.querySelectorAll(".tc-section");
+  const tocLinks = document.querySelectorAll(".tc-toc a");
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          tocLinks.forEach((link) => link.classList.remove("active"));
+          const active = document.querySelector(
+            `.tc-toc a[href="#${entry.target.id}"]`,
+          );
+          if (active) active.classList.add("active");
+        }
+      });
+    },
+    { rootMargin: "-30% 0px -60% 0px" },
+  );
+
+  sections.forEach((s) => observer.observe(s));
+
+  // Smooth scroll for TOC links
+  tocLinks.forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute("href"));
+      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+</script>
+{% endblock %}
