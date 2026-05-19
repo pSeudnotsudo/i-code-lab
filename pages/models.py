@@ -159,3 +159,11 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f"{self.get_full_name()} ({self.username})"
+    
+class NewsletterSubscriber(models.Model):
+    email = models.EmailField(unique=True)
+    subscribed_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.email

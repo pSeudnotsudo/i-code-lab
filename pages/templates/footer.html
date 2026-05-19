@@ -34,6 +34,21 @@
 
         <!-- Newsletter -->
         <div class="ft-footer__newsletter">
+          <h3 class="ft-footer__newsletter-title">Subscribe to get our Newsletter</h3>
+          <form class="ft-footer__newsletter-form" id="newsletterForm">
+            {% csrf_token %}
+            <input
+              type="email"
+              placeholder="Your Email"
+              class="ft-footer__input"
+              id="newsletterEmail"
+              required
+            />
+            <button type="submit" class="ft-footer__button">Subscribe</button>
+          </form>
+          <p id="newsletterMessage" style="display:none; margin-top: 8px; font-size: 14px;"></p>
+        </div>
+        {% comment %} <div class="ft-footer__newsletter">
           <h3 class="ft-footer__newsletter-title">
             Subscribe to get our Newsletter
           </h3>
@@ -46,7 +61,7 @@
             />
             <button type="submit" class="ft-footer__button">Subscribe</button>
           </form>
-        </div>
+        </div> {% endcomment %}
 
         <!-- Footer Links -->
         <div class="ft-footer__links">
@@ -413,3 +428,46 @@
     }
   }
 </style>
+
+<script>
+  document.getElementById('newsletterForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const email = document.getElementById('newsletterEmail').value;
+  const message = document.getElementById('newsletterMessage');
+  const button = this.querySelector('button');
+
+  button.disabled = true;
+  button.textContent = 'Subscribing...';
+
+  try {
+    const response = await fetch('/newsletter/subscribe/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await response.json();
+
+    message.style.display = 'block';
+    if (data.success) {
+      message.style.color = 'green';
+      message.textContent = '' + data.message;
+      this.reset();
+    } else {
+      message.style.color = 'red';
+      message.textContent = ' ' + data.message;
+    }
+  } catch (err) {
+    message.style.display = 'block';
+    message.style.color = 'red';
+    message.textContent = 'Something went wrong. Please try again.';
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Subscribe';
+  }
+});
+</script>

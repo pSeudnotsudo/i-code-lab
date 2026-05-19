@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body style="margin:0; padding:0; background:#f0f4f4; font-family:'Poppins', sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="padding: 40px 16px;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0"
+               style="background:#ffffff; border-radius:16px;
+                      box-shadow:0 8px 32px rgba(0,0,0,0.08); overflow:hidden;
+                      max-width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:#3ecfcf; padding:32px; text-align:center;">
+              <h1 style="margin:0; color:#fff; font-size:1.6rem; font-weight:700;
+                         letter-spacing:0.5px; font-family:'Poppins', sans-serif;">i-Code</h1>
+              <p style="margin:6px 0 0; color:rgba(255,255,255,0.85);
+                        font-size:0.88rem; font-family:'Poppins', sans-serif;">Learn Without Limits</p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:36px 40px 28px; text-align:center;">
+
+              {% if message == 'success' %}
+                {% comment %} <p style="font-size:3rem; margin:0;"></p> {% endcomment %}
+                <h2 style="margin:16px 0 8px; font-size:1.2rem; color:#333;
+                           font-family:'Poppins', sans-serif;">You've Been Unsubscribed</h2>
+                <p style="margin:0 0 20px; font-size:0.9rem; color:#555; line-height:1.6;
+                          font-family:'Poppins', sans-serif;">
+                  We've removed <strong style="color:#3ecfcf;">{{ email }}</strong>
+                  from our mailing list. You won't receive any further emails from us.
+                </p>
+                <table cellpadding="0" cellspacing="0" style="margin: 20px auto;">
+                  <tr>
+                    <td style="background:#fff4f4; border:1.5px solid #fecaca;
+                               border-radius:12px; padding:14px 28px;">
+                      <p style="margin:0; font-size:0.85rem; color:#991b1b; font-weight:600;
+                                font-family:'Poppins', sans-serif;">
+                        Unsubscribed Successfully
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+                <p style="margin:20px 0 0; font-size:0.85rem; color:#555; line-height:1.6;
+                          font-family:'Poppins', sans-serif;">
+                  Changed your mind?
+                  <a href="/" style="color:#3ecfcf; font-weight:600; text-decoration:none;">
+                    Resubscribe here
+                  </a>
+                </p>
+
+              {% elif message == 'already' %}
+                {% comment %} <p style="font-size:3rem; margin:0;">🤔</p> {% endcomment %}
+                <h2 style="margin:16px 0 8px; font-size:1.2rem; color:#333;
+                           font-family:'Poppins', sans-serif;">Already Unsubscribed</h2>
+                <p style="margin:0 0 20px; font-size:0.9rem; color:#555; line-height:1.6;
+                          font-family:'Poppins', sans-serif;">
+                  <strong style="color:#3ecfcf;">{{ email }}</strong> is already
+                  removed from our mailing list. No further action needed.
+                </p>
+
+              {% elif message == 'notfound' %}
+                <p style="font-size:3rem; margin:0;">🔍</p>
+                <h2 style="margin:16px 0 8px; font-size:1.2rem; color:#333;
+                           font-family:'Poppins', sans-serif;">Email Not Found</h2>
+                <p style="margin:0 0 20px; font-size:0.9rem; color:#555; line-height:1.6;
+                          font-family:'Poppins', sans-serif;">
+                  We couldn't find <strong style="color:#3ecfcf;">{{ email }}</strong>
+                  in our mailing list. It may have already been removed.
+                </p>
+              {% endif %}
+
+              <hr style="border:none; border-top:1px solid #eee; margin:28px 0;">
+              <p style="margin:0; font-size:0.8rem; color:#aaa; line-height:1.5;
+                        font-family:'Poppins', sans-serif;">
+                Questions? Reply to this email or contact us —
+                we're always happy to help.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#f8fafa; padding:20px 40px; text-align:center;
+                       border-top:1px solid #eee;">
+              <p style="margin:0; font-size:0.78rem; color:#bbb;
+                        font-family:'Poppins', sans-serif;">
+                © i-Code Team &nbsp;·&nbsp; Empowering students every step of the way.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

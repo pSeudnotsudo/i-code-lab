@@ -1062,5 +1062,76 @@ def enrollment_store(request):
 def terms(request):
     return render(request, 'terms.html')
 
+# newsletter subscribe
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.conf import settings
+
+@require_POST
+def newsletter_subscribe(request):
+    try:
+        data = json.loads(request.body)
+        email = data.get('email', '').strip()
+
+        if not email:
+            return JsonResponse({'success': False, 'message': 'Email is required.'}, status=400)
+
+        subscriber, created = NewsletterSubscriber.objects.get_or_create(email=email)
+
+        if not created:
+            # Already subscribed — don't send email again
+            return JsonResponse({'success': False, 'message': 'You are already subscribed!'}, status=200)
+
+        # ✅ Send welcome email only to NEW subscribers
+        send_welcome_email(request, email)
+
+        return JsonResponse({'success': True, 'message': 'Subscribed successfully! Check your inbox.'})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)}, status=500)
+
+
+def send_welcome_email(request, email):
+    unsubscribe_url = request.build_absolute_uri(f'/newsletter/unsubscribe/{email}/')
+
+    html_content = render_to_string('emails/welcome_newsletter.html', {
+        'email': email,
+        'unsubscribe_url': unsubscribe_url,
+    })
+
+    msg = EmailMultiAlternatives(
+        subject='🎉 You\'re subscribed! Welcome aboard.',
+        body='Thank you for subscribing to our newsletter. You will be receiving updates soon!',
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[email],
+    )
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
+
+# UNSUBSCRIBE
+def newsletter_unsubscribe(request, email):
+    try:
+        subscriber = NewsletterSubscriber.objects.get(email=email)
+        
+        if not subscriber.is_active:
+            # Already unsubscribed
+            return render(request, 'emails/unsubscribe.html', {
+                'message': 'already',
+                'email': email
+            })
+
+        subscriber.is_active = False
+        subscriber.save()
+
+        return render(request, 'emails/unsubscribe.html', {
+            'message': 'success',
+            'email': email
+        })
+
+    except NewsletterSubscriber.DoesNotExist:
+        return render(request, 'emails/unsubscribe.html', {
+            'message': 'notfound',
+            'email': email
+        })
  
  

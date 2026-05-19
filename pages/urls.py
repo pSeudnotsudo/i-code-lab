@@ -80,6 +80,9 @@ urlpatterns = [
     ), name='password_reset_complete'),
     # terms and conditions
     path('terms/', views.terms, name='terms'),
+    # NEWSLETTER SUBSCRIBE
+    path('newsletter/subscribe/', views.newsletter_subscribe, name='newsletter_subscribe'),
+    path('newsletter/unsubscribe/<str:email>/', views.newsletter_unsubscribe, name='newsletter_unsubscribe'),
 
 ]
 
