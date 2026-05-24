@@ -1,0 +1,717 @@
+{% extends "icode-admin/base_admin.html" %}
+
+{% block admin_content %}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Fees Manager</h2>
+        <p class="page-subtitle">Manage program types, term fees, additional costs and global config</p>
+    </div>
+</div>
+
+<!-- TAB NAV -->
+<div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('program-types')">
+        <i class="ti ti-tag"></i> Program Types
+    </button>
+    <button class="tab-btn" onclick="switchTab('term-fees')">
+        <i class="ti ti-receipt"></i> Term Fees
+    </button>
+    <button class="tab-btn" onclick="switchTab('additional-costs')">
+        <i class="ti ti-package"></i> Additional Costs
+    </button>
+    <button class="tab-btn" onclick="switchTab('fee-config')">
+        <i class="ti ti-settings"></i> Fee Config
+    </button>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 1 — PROGRAM TYPES
+════════════════════════════════════════════ -->
+<div class="tab-panel active" id="tab-program-types">
+
+    <div class="section-header">
+        <p class="section-desc">Define the types of programs offered (e.g. After-School, Weekend).</p>
+        <button class="btn-primary" onclick="openModal('ptModal')">
+            <i class="ti ti-plus"></i> Add Program Type
+        </button>
+    </div>
+
+    <div class="card table-card">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="ptTable">
+                {% for pt in program_types %}
+                <tr id="pt-row-{{ pt.id }}">
+                    <td>{{ pt.name }}</td>
+                    <td>{{ pt.order }}</td>
+                    <td>
+                        <button class="btn-icon" onclick="editProgramType({{ pt.id }}, '{{ pt.name }}', {{ pt.order }})">
+                            <i class="ti ti-edit"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr id="pt-empty"><td colspan="3" class="empty-msg">No program types yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 2 — TERM FEES
+════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-term-fees">
+
+    <div class="section-header">
+        <p class="section-desc">Set fee ranges for each program type.</p>
+        <button class="btn-primary" onclick="openModal('tfModal')">
+            <i class="ti ti-plus"></i> Add Term Fee
+        </button>
+    </div>
+
+    <div class="card table-card">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Program Type</th>
+                    <th>Min (KES)</th>
+                    <th>Max (KES)</th>
+                    <th>Display</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tfTable">
+                {% for fee in term_fees %}
+                <tr id="tf-row-{{ fee.id }}">
+                    <td>{{ fee.program_type.name }}</td>
+                    <td>{{ fee.fee_min|floatformat:0 }}</td>
+                    <td>{{ fee.fee_max|floatformat:0 }}</td>
+                    <td><span class="badge badge-active">{{ fee.display_fee }}</span></td>
+                    <td>
+                        <button class="btn-icon" onclick="editTermFee({{ fee.id }}, {{ fee.fee_min }}, {{ fee.fee_max }})">
+                            <i class="ti ti-edit"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr id="tf-empty"><td colspan="5" class="empty-msg">No term fees yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 3 — ADDITIONAL COSTS
+════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-additional-costs">
+
+    <div class="section-header">
+        <p class="section-desc">One-time fees for materials, registration, kits, etc.</p>
+        <button class="btn-primary" onclick="openModal('acModal')">
+            <i class="ti ti-plus"></i> Add Cost
+        </button>
+    </div>
+
+    <div class="card table-card">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Amount (KES)</th>
+                    <th>Note</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="acTable">
+                {% for cost in costs %}
+                <tr id="ac-row-{{ cost.id }}">
+                    <td>{{ cost.name }}</td>
+                    <td>{{ cost.amount|floatformat:0 }}</td>
+                    <td>{{ cost.note|default:"—" }}</td>
+                    <td>{{ cost.order }}</td>
+                    <td>
+                        <button class="btn-icon" onclick="editCost({{ cost.id }}, '{{ cost.name }}', {{ cost.amount }}, '{{ cost.note|default:'' }}', {{ cost.order }})">
+                            <i class="ti ti-edit"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr id="ac-empty"><td colspan="5" class="empty-msg">No additional costs yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION 4 — FEE CONFIG
+════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-fee-config">
+
+    <div class="section-header">
+        <p class="section-desc">Global headline fee range shown across the site.</p>
+    </div>
+
+    <div class="card" style="max-width:560px;padding:28px;">
+
+        <div id="configDisplay" {% if config %}style="display:block"{% else %}style="display:none"{% endif %}>
+            <div class="config-row">
+                <span class="config-label">Tagline</span>
+                <span class="config-val" id="dispTagline">{{ config.tagline|default:"—" }}</span>
+            </div>
+            <div class="config-row">
+                <span class="config-label">Fee Range</span>
+                <span class="config-val" id="dispRange">{{ config.display_range|default:"—" }}</span>
+            </div>
+            <button class="btn-primary" style="margin-top:20px;" onclick="openModal('fcModal')">
+                <i class="ti ti-edit"></i> Edit Config
+            </button>
+        </div>
+
+        {% if not config %}
+        <p style="color:var(--text-gray);margin-bottom:16px;">No configuration set yet.</p>
+        <button class="btn-primary" onclick="openModal('fcModal')">
+            <i class="ti ti-plus"></i> Set Config
+        </button>
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     MODALS
+════════════════════════════════════════════ -->
+
+<!-- Program Type Modal -->
+<div class="modal-overlay" id="ptModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 id="ptModalTitle">Add Program Type</h3>
+            <button class="close-btn" onclick="closeModal('ptModal')"><i class="ti ti-x"></i></button>
+        </div>
+        <form id="ptForm">
+            <input type="hidden" id="ptId" value="">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="ptName" placeholder="e.g. After-School" required>
+            </div>
+            <div class="form-group">
+                <label>Display Order</label>
+                <input type="number" id="ptOrder" value="0">
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeModal('ptModal')">Cancel</button>
+                <button type="submit" class="btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Term Fee Modal -->
+<div class="modal-overlay" id="tfModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 id="tfModalTitle">Add Term Fee</h3>
+            <button class="close-btn" onclick="closeModal('tfModal')"><i class="ti ti-x"></i></button>
+        </div>
+        <form id="tfForm">
+            <input type="hidden" id="tfId" value="">
+            <div class="form-group" id="tfTypeGroup">
+                <label>Program Type</label>
+                <select id="tfType">
+                    <option value="">— Select —</option>
+                    {% for pt in program_types %}
+                    <option value="{{ pt.id }}">{{ pt.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Min Fee (KES)</label>
+                <input type="number" id="tfMin" placeholder="e.g. 50000" required>
+            </div>
+            <div class="form-group">
+                <label>Max Fee (KES) <small style="font-weight:400;color:var(--text-gray);">— same as min for fixed price</small></label>
+                <input type="number" id="tfMax" placeholder="e.g. 60000" required>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeModal('tfModal')">Cancel</button>
+                <button type="submit" class="btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Additional Cost Modal -->
+<div class="modal-overlay" id="acModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 id="acModalTitle">Add Additional Cost</h3>
+            <button class="close-btn" onclick="closeModal('acModal')"><i class="ti ti-x"></i></button>
+        </div>
+        <form id="acForm">
+            <input type="hidden" id="acId" value="">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="acName" placeholder="e.g. Robotics Kit" required>
+            </div>
+            <div class="form-group">
+                <label>Amount (KES)</label>
+                <input type="number" id="acAmount" placeholder="e.g. 5000" required>
+            </div>
+            <div class="form-group">
+                <label>Note <small style="font-weight:400;color:var(--text-gray);">— optional</small></label>
+                <input type="text" id="acNote" placeholder="e.g. One-time purchase">
+            </div>
+            <div class="form-group">
+                <label>Order</label>
+                <input type="number" id="acOrder" value="0">
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeModal('acModal')">Cancel</button>
+                <button type="submit" class="btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Fee Config Modal -->
+<div class="modal-overlay" id="fcModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Edit Fee Configuration</h3>
+            <button class="close-btn" onclick="closeModal('fcModal')"><i class="ti ti-x"></i></button>
+        </div>
+        <form id="fcForm">
+            <div class="form-group">
+                <label>Tagline</label>
+                <input type="text" id="fcTagline" value="{{ config.tagline|default:'Invest in skills that last a lifetime' }}" required>
+            </div>
+            <div class="form-group">
+                <label>Min Fee Per Term (KES)</label>
+                <input type="number" id="fcMin" value="{{ config.fees_per_term_min|default:55000 }}" required>
+            </div>
+            <div class="form-group">
+                <label>Max Fee Per Term (KES)</label>
+                <input type="number" id="fcMax" value="{{ config.fees_per_term_max|default:90000 }}" required>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeModal('fcModal')">Cancel</button>
+                <button type="submit" class="btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block extra_css %}
+<style>
+
+/* ── Layout ── */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+.page-title   { font-size: 26px; font-weight: 700; }
+.page-subtitle { color: var(--text-gray); margin-top: 4px; }
+
+/* ── Tabs ── */
+.tab-nav {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 24px;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0;
+}
+.tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border: none;
+    background: none;
+    font-family: "Poppins", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-gray);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color .2s, border-color .2s;
+}
+.tab-btn:hover  { color: var(--primary); }
+.tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+/* ── Panels ── */
+.tab-panel        { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── Section header inside each panel ── */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.section-desc { color: var(--text-gray); font-size: 14px; }
+
+/* ── Table ── */
+.table-card       { overflow: hidden; }
+.custom-table     { width: 100%; border-collapse: collapse; }
+.custom-table th  { background: #f8fafb; padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px; }
+.custom-table td  { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 14px; }
+.custom-table tr:last-child td { border-bottom: none; }
+.empty-msg        { text-align: center; color: var(--text-gray); font-size: 14px; }
+
+/* ── Icon button ── */
+.btn-icon {
+    border: none;
+    background: #f0f4f8;
+    border-radius: 8px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 15px;
+    color: var(--primary);
+    transition: background .2s;
+}
+.btn-icon:hover { background: #e2eaf3; }
+
+/* ── Config display ── */
+.config-row   { display: flex; gap: 16px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.config-label { font-weight: 600; min-width: 100px; font-size: 14px; }
+.config-val   { color: var(--text-gray); font-size: 14px; }
+
+/* ── Modal ── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+.modal-overlay.show { display: flex; }
+.modal-box {
+    width: 100%;
+    max-width: 500px;
+    background: #fff;
+    border-radius: 14px;
+    padding: 28px;
+    animation: modalFade .2s ease;
+}
+@keyframes modalFade {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+.modal-header h3 { font-size: 18px; font-weight: 700; }
+.close-btn { border: none; background: none; font-size: 22px; cursor: pointer; }
+
+/* ── Form ── */
+.form-group           { margin-bottom: 18px; }
+.form-group label     { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
+.form-group input,
+.form-group select    {
+    width: 100%;
+    height: 46px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0 14px;
+    outline: none;
+    font-family: "Poppins", sans-serif;
+    font-size: 14px;
+    background: #fff;
+}
+.form-group input:focus,
+.form-group select:focus { border-color: var(--primary); }
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+.btn-secondary {
+    border: none;
+    background: #eef2f5;
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-family: "Poppins", sans-serif;
+}
+
+</style>
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+
+// ── Tabs ─────────────────────────────────────────────────────────────────────
+function switchTab(name) {
+    document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.getElementById("tab-" + name).classList.add("active");
+    event.currentTarget.classList.add("active");
+}
+
+// ── Modal helpers ─────────────────────────────────────────────────────────────
+function openModal(id)  { document.getElementById(id).classList.add("show"); }
+function closeModal(id) { document.getElementById(id).classList.remove("show"); }
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function fmtKES(n) {
+    return "KES " + Number(n).toLocaleString();
+}
+
+function removeEmpty(tableId) {
+    const empty = document.querySelector(`#${tableId} .empty-row`);
+    if (empty) empty.remove();
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PROGRAM TYPES
+// ══════════════════════════════════════════════════════════════════════════════
+
+function editProgramType(id, name, order) {
+    document.getElementById("ptModalTitle").textContent = "Edit Program Type";
+    document.getElementById("ptId").value    = id;
+    document.getElementById("ptName").value  = name;
+    document.getElementById("ptOrder").value = order;
+    openModal("ptModal");
+}
+
+document.getElementById("ptForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const id    = document.getElementById("ptId").value;
+    const name  = document.getElementById("ptName").value.trim();
+    const order = document.getElementById("ptOrder").value;
+    const isEdit = !!id;
+
+    const url = isEdit
+        ? `/icode-admin/program-types/${id}/update/`
+        : "{% url 'program_type_store' %}";
+
+    ajaxPost(url, { name, order }, function(res) {
+        const pt = res.program_type;
+
+        if (isEdit) {
+            const row = document.getElementById(`pt-row-${pt.id}`);
+            row.cells[0].textContent = pt.name;
+            row.cells[1].textContent = pt.order;
+        } else {
+            removeEmpty("ptTable");
+            document.getElementById("ptTable").insertAdjacentHTML("afterbegin", `
+                <tr id="pt-row-${pt.id}">
+                    <td>${pt.name}</td>
+                    <td>${pt.order}</td>
+                    <td>
+                        <button class="btn-icon" onclick="editProgramType(${pt.id}, '${pt.name}', ${pt.order})">
+                            <i class="ti ti-edit"></i>
+                        </button>
+                    </td>
+                </tr>
+            `);
+
+            // also add to term fee dropdown
+            const sel = document.getElementById("tfType");
+            const opt = document.createElement("option");
+            opt.value       = pt.id;
+            opt.textContent = pt.name;
+            sel.appendChild(opt);
+        }
+
+        document.getElementById("ptForm").reset();
+        document.getElementById("ptId").value = "";
+        document.getElementById("ptModalTitle").textContent = "Add Program Type";
+        closeModal("ptModal");
+    });
+});
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TERM FEES
+// ══════════════════════════════════════════════════════════════════════════════
+
+function editTermFee(id, feeMin, feeMax) {
+    document.getElementById("tfModalTitle").textContent = "Edit Term Fee";
+    document.getElementById("tfId").value  = id;
+    document.getElementById("tfMin").value = feeMin;
+    document.getElementById("tfMax").value = feeMax;
+    // hide the type selector when editing — type is fixed via OneToOne
+    document.getElementById("tfTypeGroup").style.display = "none";
+    openModal("tfModal");
+}
+
+document.getElementById("tfForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const id     = document.getElementById("tfId").value;
+    const feeMin = document.getElementById("tfMin").value;
+    const feeMax = document.getElementById("tfMax").value;
+    const isEdit = !!id;
+
+    const payload = isEdit
+        ? { fee_min: feeMin, fee_max: feeMax }
+        : {
+            program_type_id: document.getElementById("tfType").value,
+            fee_min: feeMin,
+            fee_max: feeMax
+          };
+
+    const url = isEdit
+        ? `/icode-admin/term-fees/${id}/update/`
+        : "{% url 'term_fee_store' %}";
+
+    ajaxPost(url, payload, function(res) {
+        const fee = res.fee;
+
+        if (isEdit) {
+            const row = document.getElementById(`tf-row-${fee.id}`);
+            row.cells[1].textContent = Number(fee.fee_min).toLocaleString();
+            row.cells[2].textContent = Number(fee.fee_max).toLocaleString();
+            row.cells[3].innerHTML   = `<span class="badge badge-active">${fee.display_fee}</span>`;
+        } else {
+            removeEmpty("tfTable");
+            document.getElementById("tfTable").insertAdjacentHTML("afterbegin", `
+                <tr id="tf-row-${fee.id}">
+                    <td>${fee.program_type}</td>
+                    <td>${Number(fee.fee_min).toLocaleString()}</td>
+                    <td>${Number(fee.fee_max).toLocaleString()}</td>
+                    <td><span class="badge badge-active">${fee.display_fee}</span></td>
+                    <td>
+                        <button class="btn-icon" onclick="editTermFee(${fee.id}, ${fee.fee_min}, ${fee.fee_max})">
+                            <i class="ti ti-edit"></i>
+                        </button>
+                    </td>
+                </tr>
+            `);
+        }
+
+        document.getElementById("tfForm").reset();
+        document.getElementById("tfId").value = "";
+        document.getElementById("tfModalTitle").textContent = "Add Term Fee";
+        document.getElementById("tfTypeGroup").style.display = "block";
+        closeModal("tfModal");
+    });
+});
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ADDITIONAL COSTS
+// ══════════════════════════════════════════════════════════════════════════════
+
+function editCost(id, name, amount, note, order) {
+    document.getElementById("acModalTitle").textContent = "Edit Additional Cost";
+    document.getElementById("acId").value     = id;
+    document.getElementById("acName").value   = name;
+    document.getElementById("acAmount").value = amount;
+    document.getElementById("acNote").value   = note;
+    document.getElementById("acOrder").value  = order;
+    openModal("acModal");
+}
+
+document.getElementById("acForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const id     = document.getElementById("acId").value;
+    const name   = document.getElementById("acName").value.trim();
+    const amount = document.getElementById("acAmount").value;
+    const note   = document.getElementById("acNote").value.trim();
+    const order  = document.getElementById("acOrder").value;
+    const isEdit = !!id;
+
+    const url = isEdit
+        ? `/icode-admin/additional-costs/${id}/update/`
+        : "{% url 'additional_cost_store' %}";
+
+    ajaxPost(url, { name, amount, note, order }, function(res) {
+        const cost = res.cost;
+
+        if (isEdit) {
+            const row = document.getElementById(`ac-row-${cost.id}`);
+            row.cells[0].textContent = cost.name;
+            row.cells[1].textContent = Number(cost.amount).toLocaleString();
+            row.cells[2].textContent = cost.note || "—";
+            row.cells[3].textContent = order;
+        } else {
+            removeEmpty("acTable");
+            document.getElementById("acTable").insertAdjacentHTML("afterbegin", `
+                <tr id="ac-row-${cost.id}">
+                    <td>${cost.name}</td>
+                    <td>${Number(cost.amount).toLocaleString()}</td>
+                    <td>${cost.note || "—"}</td>
+                    <td>${order}</td>
+                    <td>
+                        <button class="btn-icon" onclick="editCost(${cost.id}, '${cost.name}', ${cost.amount}, '${cost.note || ""}', ${order})">
+                            <i class="ti ti-edit"></i>
+                        </button>
+                    </td>
+                </tr>
+            `);
+        }
+
+        document.getElementById("acForm").reset();
+        document.getElementById("acId").value = "";
+        document.getElementById("acModalTitle").textContent = "Add Additional Cost";
+        closeModal("acModal");
+    });
+});
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// FEE CONFIG
+// ══════════════════════════════════════════════════════════════════════════════
+
+document.getElementById("fcForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const tagline = document.getElementById("fcTagline").value.trim();
+    const min     = document.getElementById("fcMin").value;
+    const max     = document.getElementById("fcMax").value;
+
+    ajaxPost(
+        "{% url 'fee_config_update' %}",
+        { tagline, fees_per_term_min: min, fees_per_term_max: max },
+        function(res) {
+            const cfg = res.config;
+            document.getElementById("dispTagline").textContent = cfg.tagline;
+            document.getElementById("dispRange").textContent   = cfg.display_range;
+            document.getElementById("configDisplay").style.display = "block";
+            closeModal("fcModal");
+        }
+    );
+});
+
+</script>
+{% endblock %}

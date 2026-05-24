@@ -481,6 +481,7 @@
               
             </div>
           </div>
+          
 
           <!-- Timelines -->
           <div class="nav-group">
@@ -492,6 +493,21 @@
               
               <a href="{% url 'timeline_list' %}" class="nav-item"
                 ><i class="ti ti-list"></i> All Timelines</a
+              >
+             
+              
+            </div>
+          </div>
+
+          <div class="nav-group">
+            <div class="nav-group-header" onclick="toggleGroup(this)">
+              <i class="ti ti-calendar-time"></i> Fees & Funds
+              <i class="ti ti-chevron-down"></i>
+            </div>
+            <div class="nav-sub">
+              
+              <a href="{% url 'fees_manager' %}" class="nav-item"
+                ><i class="ti ti-list"></i> All Funds</a
               >
              
               

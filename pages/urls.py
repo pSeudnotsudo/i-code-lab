@@ -49,6 +49,23 @@ urlpatterns = [
     path('dashboard/parent/',  views.parent_dashboard,  name='parent_dashboard'),
     # path('dashboard/admin/',   views.admin_dashboard,   name='admin_dashboard'),
     
+    # MORE ADMIN URLS 
+    path("icode-admin/fees/", views.fees_manager, name="fees_manager"),
+    path("icode-admin/program-types/",               views.program_types,          name="program_types"),
+    path("icode-admin/program-types/store/",         views.program_type_store,     name="program_type_store"),
+    path("icode-admin/program-types/<int:pk>/update/", views.program_type_update,  name="program_type_update"),
+
+    path("icode-admin/term-fees/",                   views.term_fees,              name="term_fees"),
+    path("icode-admin/term-fees/store/",             views.term_fee_store,         name="term_fee_store"),
+    path("icode-admin/term-fees/<int:pk>/update/",   views.term_fee_update,        name="term_fee_update"),
+
+    path("icode-admin/additional-costs/",            views.additional_costs,       name="additional_costs"),
+    path("icode-admin/additional-costs/store/",      views.additional_cost_store,  name="additional_cost_store"),
+    path("icode-admin/additional-costs/<int:pk>/update/", views.additional_cost_update, name="additional_cost_update"),
+
+    path("icode-admin/fee-config/",                  views.fee_config,             name="fee_config"),
+    path("icode-admin/fee-config/update/",           views.fee_config_update,      name="fee_config_update"),
+    
     # PUBLIC URLS
     
     path('programs/', views.programs, name='programs'),

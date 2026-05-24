@@ -1,0 +1,134 @@
+{% comment %}
+  partials/enrollment_modal.html
+  Requires Bootstrap 5 + Flatpickr loaded in base.html
+{% endcomment %}
+
+<div class="modal fade" id="enrollModal" tabindex="-1" aria-labelledby="enrollModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+
+      <!-- Header -->
+      <div class="modal-header border-0 px-4 pt-4 pb-2">
+        <h5 class="modal-title fw-bold fs-4" id="enrollModalLabel"
+            style="background: linear-gradient(135deg, var(--primary-dark), var(--accent-alt));
+                   -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+          Enrollment Form
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Scrollable body -->
+      <div class="modal-body px-4 pb-4">
+        <form id="enrollForm"
+              data-url="{{ enrollment_store_url }}"
+              data-csrf="{{ csrf_token }}">
+          <div class="row g-3">
+
+            <!-- Name & Phone -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small">Full Name <span class="text-danger">*</span></label>
+              <input class="form-control" name="full_name" placeholder="e.g. Jane Doe" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small">Phone <span class="text-danger">*</span></label>
+              <input class="form-control" name="phone" placeholder="+254 700 000 000" required>
+            </div>
+
+            <!-- Email -->
+            <div class="col-12">
+              <label class="form-label fw-semibold small">Email Address <span class="text-danger">*</span></label>
+              <input class="form-control" name="email" type="email" placeholder="you@example.com" required>
+            </div>
+
+            <!-- Programs -->
+            <div class="col-12">
+              <label class="form-label fw-semibold small">Programs <span class="text-danger">*</span></label>
+              <div class="row g-2 p-3 border rounded-3 bg-white">
+                {% for p in programs %}
+                <div class="col-md-6">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="programs" value="{{ p.id }}" id="prog_{{ p.id }}">
+                    <label class="form-check-label small" for="prog_{{ p.id }}">{{ p.name }}</label>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Age Bracket & Timeline -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small">Age Bracket <span class="text-danger">*</span></label>
+              <select name="age_bracket" class="form-select" required>
+                <option value="" disabled selected>— Select bracket —</option>
+                {% for bracket in brackets %}
+                  <option value="{{ bracket.id }}">{{ bracket.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small">Registration Timeline <span class="text-danger">*</span></label>
+              <select name="registration_timeline" class="form-select" required>
+                <option value="" disabled selected>— Select timeline —</option>
+                {% for timeline in timelines %}
+                  <option value="{{ timeline.id }}">{{ timeline.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Dates -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small">Preferred Registration Date <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text bg-white"><i class="bi bi-calendar-check text-teal"></i></span>
+                <input type="text" id="preferred_registration_date" name="preferred_registration_date"
+                  class="form-control flatpickr-date" placeholder="Select date" autocomplete="off" required readonly>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small">Prospective Start Date <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text bg-white"><i class="bi bi-calendar2-week text-teal"></i></span>
+                <input type="text" id="prospective_start_date" name="prospective_start_date"
+                  class="form-control flatpickr-date" placeholder="Select date" autocomplete="off" required readonly>
+              </div>
+            </div>
+
+            <!-- Customised course -->
+            <div class="col-12">
+              <label class="form-label fw-semibold small">Interested in a customised course? <span class="text-danger">*</span></label>
+              <div class="d-flex gap-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="customized_course" value="yes" id="customYes" required>
+                  <label class="form-check-label small" for="customYes">Yes, definitely</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="customized_course" value="no" id="customNo">
+                  <label class="form-check-label small" for="customNo">No, thanks</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Comments -->
+            <div class="col-12">
+              <label class="form-label fw-semibold small">Additional Comments</label>
+              <textarea class="form-control" name="comments" rows="3"
+                placeholder="Any questions or special requirements..."></textarea>
+            </div>
+
+            <!-- Submit -->
+            <div class="col-12">
+              <button type="submit" class="btn btn-submit w-100 py-3 fw-bold" id="submitBtn">
+                <i class="bi bi-send-fill me-2"></i>Submit Enrollment
+              </button>
+              <div id="loader" class="text-center text-muted mt-2" style="display:none;">
+                <div class="spinner-border spinner-border-sm me-1"></div> Sending your enrollment...
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>

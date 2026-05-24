@@ -1062,10 +1062,7 @@ def enrollment_store(request):
 def terms(request):
     return render(request, 'terms.html')
 
-# newsletter subscribe
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
-from django.conf import settings
+
 
 @require_POST
 def newsletter_subscribe(request):
@@ -1134,4 +1131,292 @@ def newsletter_unsubscribe(request, email):
             'email': email
         })
  
- 
+# EXTRA SETTINGS
+# views.py
+import json
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from .models import ProgramType, TermFee, AdditionalCost, FeeConfig
+
+
+# ─── PROGRAM TYPES ───────────────────────────────────────────────────────────
+
+def program_types(request):
+    types = ProgramType.objects.all()
+    context = {"program_types": types}
+    return render(request, "icode-admin/program_types.html", context)
+
+
+@require_POST
+def program_type_store(request):
+    try:
+        data  = json.loads(request.body)
+        name  = data.get("name", "").strip()
+        order = data.get("order", 0)
+
+        if not name:
+            return JsonResponse({"success": False, "error": "Name is required"})
+
+        if ProgramType.objects.filter(name__iexact=name).exists():
+            return JsonResponse({"success": False, "error": "Program type already exists"})
+
+        pt = ProgramType.objects.create(name=name, order=order)
+
+        return JsonResponse({
+            "success": True,
+            "message": "Program type added",
+            "program_type": {"id": pt.id, "name": pt.name, "order": pt.order}
+        })
+
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
+
+
+@require_POST
+def program_type_update(request, pk):
+    try:
+        data  = json.loads(request.body)
+        name  = data.get("name", "").strip()
+        order = data.get("order", 0)
+
+        if not name:
+            return JsonResponse({"success": False, "error": "Name is required"})
+
+        pt = ProgramType.objects.get(pk=pk)
+
+        if ProgramType.objects.filter(name__iexact=name).exclude(pk=pk).exists():
+            return JsonResponse({"success": False, "error": "Another type with this name exists"})
+
+        pt.name  = name
+        pt.order = order
+        pt.save()
+
+        return JsonResponse({
+            "success": True,
+            "message": "Program type updated",
+            "program_type": {"id": pt.id, "name": pt.name, "order": pt.order}
+        })
+
+    except ProgramType.DoesNotExist:
+        return JsonResponse({"success": False, "error": "Program type not found"})
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
+
+
+# ─── TERM FEES ────────────────────────────────────────────────────────────────
+
+def term_fees(request):
+    fees  = TermFee.objects.select_related("program_type").all()
+    types = ProgramType.objects.all()          # for the dropdown in the modal
+    context = {"term_fees": fees, "program_types": types}
+    return render(request, "icode-admin/term_fees.html", context)
+
+
+@require_POST
+def term_fee_store(request):
+    try:
+        data            = json.loads(request.body)
+        program_type_id = data.get("program_type_id")
+        fee_min         = data.get("fee_min")
+        fee_max         = data.get("fee_max")
+
+        if not all([program_type_id, fee_min, fee_max]):
+            return JsonResponse({"success": False, "error": "All fields are required"})
+
+        if int(fee_max) < int(fee_min):
+            return JsonResponse({"success": False, "error": "Max fee cannot be less than min fee"})
+
+        pt = ProgramType.objects.get(pk=program_type_id)
+
+        if TermFee.objects.filter(program_type=pt).exists():
+            return JsonResponse({"success": False, "error": "Fee for this program type already exists"})
+
+        fee = TermFee.objects.create(
+            program_type=pt,
+            fee_min=fee_min,
+            fee_max=fee_max
+        )
+
+        return JsonResponse({
+            "success": True,
+            "message": "Fee added",
+            "fee": {
+                "id":           fee.id,
+                "program_type": pt.name,
+                "fee_min":      fee.fee_min,
+                "fee_max":      fee.fee_max,
+                "display_fee":  fee.display_fee
+            }
+        })
+
+    except ProgramType.DoesNotExist:
+        return JsonResponse({"success": False, "error": "Program type not found"})
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
+
+
+@require_POST
+def term_fee_update(request, pk):
+    try:
+        data    = json.loads(request.body)
+        fee_min = data.get("fee_min")
+        fee_max = data.get("fee_max")
+
+        if not all([fee_min, fee_max]):
+            return JsonResponse({"success": False, "error": "Both fee fields are required"})
+
+        if int(fee_max) < int(fee_min):
+            return JsonResponse({"success": False, "error": "Max fee cannot be less than min fee"})
+
+        fee         = TermFee.objects.get(pk=pk)
+        fee.fee_min = fee_min
+        fee.fee_max = fee_max
+        fee.save()
+
+        return JsonResponse({
+            "success": True,
+            "message": "Fee updated",
+            "fee": {
+                "id":          fee.id,
+                "fee_min":     fee.fee_min,
+                "fee_max":     fee.fee_max,
+                "display_fee": fee.display_fee
+            }
+        })
+
+    except TermFee.DoesNotExist:
+        return JsonResponse({"success": False, "error": "Fee not found"})
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
+
+
+# ─── ADDITIONAL COSTS ─────────────────────────────────────────────────────────
+
+def additional_costs(request):
+    costs = AdditionalCost.objects.all()
+    context = {"costs": costs}
+    return render(request, "icode-admin/additional_costs.html", context)
+
+
+@require_POST
+def additional_cost_store(request):
+    try:
+        data   = json.loads(request.body)
+        name   = data.get("name", "").strip()
+        amount = data.get("amount")
+        note   = data.get("note", "").strip()
+        order  = data.get("order", 0)
+
+        if not name:
+            return JsonResponse({"success": False, "error": "Name is required"})
+        if not amount:
+            return JsonResponse({"success": False, "error": "Amount is required"})
+
+        cost = AdditionalCost.objects.create(
+            name=name, amount=amount, note=note, order=order
+        )
+
+        return JsonResponse({
+            "success": True,
+            "message": "Cost added",
+            "cost": {
+                "id":             cost.id,
+                "name":           cost.name,
+                "amount":         cost.amount,
+                "display_amount": cost.display_amount,
+                "note":           cost.note or ""
+            }
+        })
+
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
+
+
+@require_POST
+def additional_cost_update(request, pk):
+    try:
+        data   = json.loads(request.body)
+        name   = data.get("name", "").strip()
+        amount = data.get("amount")
+        note   = data.get("note", "").strip()
+        order  = data.get("order", 0)
+
+        if not name:
+            return JsonResponse({"success": False, "error": "Name is required"})
+        if not amount:
+            return JsonResponse({"success": False, "error": "Amount is required"})
+
+        cost        = AdditionalCost.objects.get(pk=pk)
+        cost.name   = name
+        cost.amount = amount
+        cost.note   = note
+        cost.order  = order
+        cost.save()
+
+        return JsonResponse({
+            "success": True,
+            "message": "Cost updated",
+            "cost": {
+                "id":             cost.id,
+                "name":           cost.name,
+                "amount":         cost.amount,
+                "display_amount": cost.display_amount,
+                "note":           cost.note or ""
+            }
+        })
+
+    except AdditionalCost.DoesNotExist:
+        return JsonResponse({"success": False, "error": "Cost not found"})
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
+
+
+# ─── FEE CONFIG (singleton) ───────────────────────────────────────────────────
+
+def fee_config(request):
+    config = FeeConfig.objects.first()
+    context = {"config": config}
+    return render(request, "icode-admin/fee_config.html", context)
+
+
+@require_POST
+def fee_config_update(request):
+    try:
+        data              = json.loads(request.body)
+        fees_per_term_min = data.get("fees_per_term_min")
+        fees_per_term_max = data.get("fees_per_term_max")
+        tagline           = data.get("tagline", "").strip()
+
+        if not all([fees_per_term_min, fees_per_term_max, tagline]):
+            return JsonResponse({"success": False, "error": "All fields are required"})
+
+        if int(fees_per_term_max) < int(fees_per_term_min):
+            return JsonResponse({"success": False, "error": "Max cannot be less than min"})
+
+        # get_or_create handles first-time setup
+        config, _ = FeeConfig.objects.get_or_create(pk=1)
+        config.fees_per_term_min = fees_per_term_min
+        config.fees_per_term_max = fees_per_term_max
+        config.tagline           = tagline
+        config.save()
+
+        return JsonResponse({
+            "success": True,
+            "message": "Fee configuration updated",
+            "config": {
+                "tagline":       config.tagline,
+                "display_range": config.display_range
+            }
+        })
+
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
+    
+def fees_manager(request):
+    return render(request, "icode-admin/fees_manager.html", {
+        "program_types": ProgramType.objects.all(),
+        "term_fees":     TermFee.objects.select_related("program_type").all(),
+        "costs":         AdditionalCost.objects.all(),
+        "config":        FeeConfig.objects.first(),
+    })

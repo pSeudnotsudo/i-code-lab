@@ -29,15 +29,21 @@ class EnrollmentStatus(models.Model):
 
  # Programs
 class Program(models.Model):
-    name = models.CharField(max_length=100)   # e.g. Robotics
-    code = models.CharField(max_length=50, unique=True)
+    name        = models.CharField(max_length=100)
+    code        = models.CharField(max_length=50, unique=True)
     description = models.TextField(blank=True, null=True)
+    # icon        = models.CharField(max_length=10, default='💡')   # emoji icon
+    age_range   = models.CharField(max_length=30, blank=True, null=True)  # e.g. "Ages 12+"
 
-    is_active = models.BooleanField(default=True)
-    order = models.IntegerField(default=0)
+    is_active   = models.BooleanField(default=True)
+    order       = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
 
     def __str__(self):
         return self.name
+
     
 class RegistrationTimeline(models.Model):
     title = models.CharField(max_length=100)  # Immediately, Within 1 week, etc
@@ -167,3 +173,79 @@ class NewsletterSubscriber(models.Model):
 
     def __str__(self):
         return self.email
+
+class ProgramType(models.Model):
+    """Fee program types — manageable from admin."""
+    name  = models.CharField(max_length=100, unique=True)  # e.g. "After-School"
+    order = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.name
+
+
+class TermFee(models.Model):
+    """Fee ranges shown in the Programs section and Terms & Conditions."""
+    program_type = models.OneToOneField(
+        ProgramType,
+        on_delete=models.CASCADE,
+        related_name='fee'
+    )
+    fee_min = models.PositiveIntegerField(help_text="Minimum fee in KES. Use same value as max for fixed price.")
+    fee_max = models.PositiveIntegerField(help_text="Maximum fee in KES. Set equal to min if no range.")
+
+    class Meta:
+        ordering = ['program_type__order']
+
+    def __str__(self):
+        if self.fee_min == self.fee_max:
+            return f"{self.program_type.name} — KES {self.fee_min:,}"
+        return f"{self.program_type.name} — KES {self.fee_min:,} - {self.fee_max:,}"
+
+    @property
+    def display_fee(self):
+        if self.fee_min == self.fee_max:
+            return f"KES {self.fee_min:,}"
+        return f"KES {self.fee_min:,} - {self.fee_max:,}"
+
+
+class AdditionalCost(models.Model):
+    """One-time fees for materials, registration, etc."""
+    name   = models.CharField(max_length=100)
+    amount = models.PositiveIntegerField()
+    note   = models.CharField(max_length=200, blank=True, null=True)
+    order  = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.name} — KES {self.amount:,}"
+
+    @property
+    def display_amount(self):
+        return f"KES {self.amount:,}"
+
+
+class FeeConfig(models.Model):
+    """Global fee headline figures — singleton."""
+    fees_per_term_min = models.PositiveIntegerField(default=55000)
+    fees_per_term_max = models.PositiveIntegerField(default=90000)
+    tagline           = models.CharField(max_length=200, default="Invest in skills that last a lifetime")
+
+    class Meta:
+        verbose_name        = "Fee Configuration"
+        verbose_name_plural = "Fee Configuration"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return "Fee Configuration"
+
+    @property
+    def display_range(self):
+        return f"KES {self.fees_per_term_min:,} - {self.fees_per_term_max:,}"
