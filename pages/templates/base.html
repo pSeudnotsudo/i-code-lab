@@ -1,51 +1,67 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      {% block title %}
-        i-Code Innovation Lab
-      {% endblock %}
-    </title>
+    <title>{% block title %} i-Code Innovation Lab {% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-   
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'css/enrollment_modal.css' %}">
- 
-   
-  
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{% static 'images/favicon.ico' %}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
+    />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    
 
     {% block extra_css %}{% endblock %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/enrollment_modal.css' %}" />
   </head>
   <body>
     <main>
-      {% include 'navbar.html' %}
-       {% include "partials/enrollment_modal.html" %}
-      {% block content %}
-     
+      {% include 'navbar.html' %} 
+      {% include "partials/enrollment_modal.html" %}
 
-      {% endblock %}
-      {% include 'footer.html' %}
+      {% block content %} 
 
+      {% endblock %} 
+      {% include 'footer.html' %} 
       {% block scripts %}
-       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-      <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> 
-        <!-- JQuery -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"
+      ></script>
+      <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+      <!-- JQuery -->
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-        <script type="text/javascript" src="{% static 'js/enrollment_modal.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+      <script
+        type="text/javascript"
+        src="{% static 'js/enrollment_modal.js' %}"
+      ></script>
+      <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
       {% endblock %}
     </main>
-
-    
   </body>
 </html>

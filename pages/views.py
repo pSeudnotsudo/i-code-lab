@@ -1133,11 +1133,7 @@ def newsletter_unsubscribe(request, email):
  
 # EXTRA SETTINGS
 # views.py
-import json
-from django.shortcuts import render
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-from .models import ProgramType, TermFee, AdditionalCost, FeeConfig
+
 
 
 # ─── PROGRAM TYPES ───────────────────────────────────────────────────────────
@@ -1420,3 +1416,255 @@ def fees_manager(request):
         "costs":         AdditionalCost.objects.all(),
         "config":        FeeConfig.objects.first(),
     })
+    
+    
+
+# ─────────────────────────────────────────────────────────────────────────────
+# LEVEL
+# ─────────────────────────────────────────────────────────────────────────────
+
+def level_list(request):
+    levels = Level.objects.all().order_by("order")
+    context = {"levels": levels}
+    return render(request, "icode-admin/level_list.html", context)
+
+
+@require_POST
+def level_store(request):
+    try:
+        data  = json.loads(request.body)
+        name  = data.get("name", "").strip()
+        slug  = data.get("slug", "").strip()
+        order = data.get("order", 0)
+
+        if not name:
+            return JsonResponse({"success": False, "error": "Name is required"})
+
+        if not slug:
+            return JsonResponse({"success": False, "error": "Slug is required"})
+
+        if Level.objects.filter(slug=slug).exists():
+            return JsonResponse({"success": False, "error": "Slug already exists"})
+
+        if Level.objects.filter(name=name).exists():
+            return JsonResponse({"success": False, "error": "Name already exists"})
+
+        level = Level.objects.create(name=name, slug=slug, order=order)
+
+        return JsonResponse({
+            "success": True,
+            "message": "Level added successfully",
+            "level": {
+                "id":    level.id,
+                "name":  level.name,
+                "slug":  level.slug,
+                "order": level.order,
+            }
+        })
+
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
+
+
+@require_POST
+def level_update(request, pk):
+    try:
+        level = get_object_or_404(Level, pk=pk)
+        data  = json.loads(request.body)
+        name  = data.get("name", "").strip()
+        slug  = data.get("slug", "").strip()
+        order = data.get("order", 0)
+        is_active = data.get("is_active", True)
+
+        if not name:
+            return JsonResponse({"success": False, "error": "Name is required"})
+
+        if not slug:
+            return JsonResponse({"success": False, "error": "Slug is required"})
+
+        if Level.objects.exclude(id=level.id).filter(slug=slug).exists():
+            return JsonResponse({"success": False, "error": "Slug already exists"})
+
+        if Level.objects.exclude(id=level.id).filter(name=name).exists():
+            return JsonResponse({"success": False, "error": "Name already exists"})
+
+        level.name     = name
+        level.slug     = slug
+        level.order    = order
+        level.save()
+
+        return JsonResponse({"success": True, "message": "Level updated successfully"})
+
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# TOOL TYPE
+# ─────────────────────────────────────────────────────────────────────────────
+
+def tool_type_list(request):
+    tool_types = ToolType.objects.all().order_by("order")
+    context = {"tool_types": tool_types}
+    return render(request, "icode-admin/tool_type_list.html", context)
+
+
+@require_POST
+def tool_type_store(request):
+    try:
+        data  = json.loads(request.body)
+        name  = data.get("name", "").strip()
+        slug  = data.get("slug", "").strip()
+        order = data.get("order", 0)
+
+        if not name:
+            return JsonResponse({"success": False, "error": "Name is required"})
+
+        if not slug:
+            return JsonResponse({"success": False, "error": "Slug is required"})
+
+        if ToolType.objects.filter(slug=slug).exists():
+            return JsonResponse({"success": False, "error": "Slug already exists"})
+
+        if ToolType.objects.filter(name=name).exists():
+            return JsonResponse({"success": False, "error": "Name already exists"})
+
+        tool_type = ToolType.objects.create(name=name, slug=slug, order=order)
+
+        return JsonResponse({
+            "success": True,
+            "message": "Tool type added successfully",
+            "tool_type": {
+                "id":    tool_type.id,
+                "name":  tool_type.name,
+                "slug":  tool_type.slug,
+                "order": tool_type.order,
+            }
+        })
+
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
+
+
+@require_POST
+def tool_type_update(request, pk):
+    try:
+        tool_type = get_object_or_404(ToolType, pk=pk)
+        data  = json.loads(request.body)
+        name  = data.get("name", "").strip()
+        slug  = data.get("slug", "").strip()
+        order = data.get("order", 0)
+
+        if not name:
+            return JsonResponse({"success": False, "error": "Name is required"})
+
+        if not slug:
+            return JsonResponse({"success": False, "error": "Slug is required"})
+
+        if ToolType.objects.exclude(id=tool_type.id).filter(slug=slug).exists():
+            return JsonResponse({"success": False, "error": "Slug already exists"})
+
+        if ToolType.objects.exclude(id=tool_type.id).filter(name=name).exists():
+            return JsonResponse({"success": False, "error": "Name already exists"})
+
+        tool_type.name  = name
+        tool_type.slug  = slug
+        tool_type.order = order
+        tool_type.save()
+
+        return JsonResponse({"success": True, "message": "Tool type updated successfully"})
+
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PROGRAM TOOL
+# ─────────────────────────────────────────────────────────────────────────────
+
+def program_tool_list(request):
+    program_tools = (
+        ProgramTool.objects
+        .select_related("program", "tool_type")
+        .order_by("program__order", "order")
+    )
+    programs   = Program.objects.filter(is_active=True).order_by("order")
+    tool_types = ToolType.objects.all().order_by("order")
+
+    context = {
+        "program_tools": program_tools,
+        "programs":      programs,
+        "tool_types":    tool_types,
+    }
+    return render(request, "icode-admin/program_tool_list.html", context)
+
+
+@require_POST
+def program_tool_store(request):
+    try:
+        data          = json.loads(request.body)
+        name          = data.get("name", "").strip()
+        program_id    = data.get("program_id")
+        tool_type_id  = data.get("tool_type_id")
+        order         = data.get("order", 0)
+
+        if not name:
+            return JsonResponse({"success": False, "error": "Tool name is required"})
+
+        if not program_id:
+            return JsonResponse({"success": False, "error": "Programme is required"})
+
+        program   = get_object_or_404(Program,  pk=program_id)
+        tool_type = get_object_or_404(ToolType, pk=tool_type_id) if tool_type_id else None
+
+        tool = ProgramTool.objects.create(
+            name=name,
+            program=program,
+            tool_type=tool_type,
+            order=order,
+        )
+
+        return JsonResponse({
+            "success": True,
+            "message": "Tool added successfully",
+            "tool": {
+                "id":             tool.id,
+                "name":           tool.name,
+                "program_id":     program.id,
+                "program_name":   program.name,
+                "tool_type_id":   tool_type.id   if tool_type else None,
+                "tool_type_name": tool_type.name if tool_type else "—",
+                "order":          tool.order,
+            }
+        })
+
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
+
+
+@require_POST
+def program_tool_update(request, pk):
+    try:
+        tool         = get_object_or_404(ProgramTool, pk=pk)
+        data         = json.loads(request.body)
+        name         = data.get("name", "").strip()
+        program_id   = data.get("program_id")
+        tool_type_id = data.get("tool_type_id")
+        order        = data.get("order", 0)
+
+        if not name:
+            return JsonResponse({"success": False, "error": "Tool name is required"})
+
+        if not program_id:
+            return JsonResponse({"success": False, "error": "Programme is required"})
+
+        tool.name      = name
+        tool.program   = get_object_or_404(Program, pk=program_id)
+        tool.tool_type = get_object_or_404(ToolType, pk=tool_type_id) if tool_type_id else None
+        tool.order     = order
+        tool.save()
+
+        return JsonResponse({"success": True, "message": "Tool updated successfully"})
+
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})

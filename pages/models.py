@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
 import uuid
+from django.utils.text import slugify
 
 # age Brackets
 class AgeBracket(models.Model):
@@ -26,23 +27,159 @@ class EnrollmentStatus(models.Model):
     def __str__(self):
         return self.name
  
-
  # Programs
-class Program(models.Model):
-    name        = models.CharField(max_length=100)
-    code        = models.CharField(max_length=50, unique=True)
-    description = models.TextField(blank=True, null=True)
-    # icon        = models.CharField(max_length=10, default='💡')   # emoji icon
-    age_range   = models.CharField(max_length=30, blank=True, null=True)  # e.g. "Ages 12+"
+# class Program(models.Model):
+#     name        = models.CharField(max_length=100)
+#     code        = models.CharField(max_length=50, unique=True)
+#     description = models.TextField(blank=True, null=True)
+#     # icon        = models.CharField(max_length=10, default='💡')   # emoji icon
+#     age_range   = models.CharField(max_length=30, blank=True, null=True)  # e.g. "Ages 12+"
 
-    is_active   = models.BooleanField(default=True)
-    order       = models.IntegerField(default=0)
+#     is_active   = models.BooleanField(default=True)
+#     order       = models.IntegerField(default=0)
+
+#     class Meta:
+#         ordering = ['order']
+
+#     def __str__(self):
+#         return self.name
+
+class Program(models.Model):
+    # ── Core identity ─────────────────────────────────────────────────────
+    name  = models.CharField(max_length=100)
+    code  = models.CharField(max_length=50, unique=True)
+    slug  = models.SlugField(max_length=120, unique=True, blank=True)
+
+    # ── Specs (FK lookups) ────────────────────────────────────────────────
+    level = models.ForeignKey(
+        'Level',
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='programs',
+    )
+    duration_weeks = models.PositiveIntegerField(null=True, blank=True)
+    total_hours    = models.PositiveIntegerField(null=True, blank=True)
+    term_fee       = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    fee_currency   = models.CharField(max_length=10, default='KES')
+    age_range      = models.CharField(max_length=40, blank=True)
+
+    # ── Hero section ──────────────────────────────────────────────────────
+    description = models.TextField(blank=True)
+    hero_copy   = models.TextField(blank=True)
+
+    # ── Bullet lists ──────────────────────────────────────────────────────
+    what_they_build   = models.JSONField(default=list, blank=True)
+    learning_outcomes = models.JSONField(default=list, blank=True)
+
+    # ── Certificate ───────────────────────────────────────────────────────
+    certificate_name = models.CharField(
+        max_length=150,
+        default='i-CODE Certificate of Completion',
+        blank=True,
+    )
+
+    # ── SEO ───────────────────────────────────────────────────────────────
+    meta_description = models.TextField(blank=True)
+
+    # ── Admin / ordering ──────────────────────────────────────────────────
+    is_active = models.BooleanField(default=True)
+    order     = models.IntegerField(default=0)
+
+    # ── Reverse relations (defined on the child models) ───────────────────
+    # self.weeks.all()   → ProgramWeek queryset  (related_name='weeks')
+    # self.tools.all()   → ProgramTool queryset  (related_name='tools')
+
+    class Meta:
+        ordering = ['order']
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('programme-detail', kwargs={'slug': self.slug})
+
+    # ── Convenience properties ────────────────────────────────────────────
+    @property
+    def curriculum(self):
+        """Ordered curriculum weeks. Use in templates as program.curriculum"""
+        return self.weeks.all()
+
+    @property
+    def tools_by_type(self):
+        """
+        Returns tools grouped by their ToolType, e.g.:
+        [
+            { 'type': <ToolType: Hardware>, 'items': [<ProgramTool>, ...] },
+            { 'type': <ToolType: Software>, 'items': [<ProgramTool>, ...] },
+        ]
+        """
+        from itertools import groupby
+        grouped = []
+        tools = self.tools.select_related('tool_type').order_by('tool_type__order', 'order')
+        for tool_type, items in groupby(tools, key=lambda t: t.tool_type):
+            grouped.append({'type': tool_type, 'items': list(items)})
+        return grouped
+
+    @property
+    def fee_display(self):
+        """e.g. 'KES 65,000 per term'"""
+        if self.term_fee is None:
+            return ''
+        return f"{self.fee_currency} {self.term_fee:,.0f} per term"
+
+    def __str__(self):
+        return self.name
+# Levels
+
+class Level(models.Model):
+    name  = models.CharField(max_length=50, unique=True)  # "Beginner"
+    slug  = models.SlugField(max_length=50, unique=True)  # "beginner"
+    order = models.IntegerField(default=0)
 
     class Meta:
         ordering = ['order']
 
     def __str__(self):
         return self.name
+
+
+class ToolType(models.Model):
+    name  = models.CharField(max_length=50, unique=True)  # "Hardware"
+    slug  = models.SlugField(max_length=50, unique=True)  # "hardware"
+    order = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.name
+
+
+
+
+
+class ProgramTool(models.Model):
+    program   = models.ForeignKey(Program, on_delete=models.CASCADE, related_name='tools')
+    name      = models.CharField(max_length=100)
+    tool_type = models.ForeignKey(
+        ToolType,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='tools',
+    )
+    order = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.name
+
+
 
     
 class RegistrationTimeline(models.Model):

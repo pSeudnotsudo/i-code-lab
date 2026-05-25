@@ -1,0 +1,267 @@
+{% extends "icode-admin/base_admin.html" %}
+
+{% block admin_content %}
+
+<div class="page-header">
+
+    <div>
+        <h2 class="page-title">Programme Levels</h2>
+        <p class="page-subtitle">Manage difficulty levels (Beginner, Intermediate, Advanced…)</p>
+    </div>
+
+    <button class="btn-primary" onclick="openAddModal()">
+        <i class="ti ti-plus"></i>
+        Add Level
+    </button>
+
+</div>
+
+
+<div class="card table-card">
+
+    <table class="custom-table">
+
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Slug</th>
+                <th>Order</th>
+                <th width="120">Action</th>
+            </tr>
+        </thead>
+
+        <tbody id="levelTable">
+
+            {% for level in levels %}
+
+            <tr
+                id="row-{{ level.id }}"
+                data-id="{{ level.id }}"
+                data-name="{{ level.name }}"
+                data-slug="{{ level.slug }}"
+                data-order="{{ level.order }}"
+            >
+                <td class="name">{{ level.name }}</td>
+                <td class="slug">{{ level.slug }}</td>
+                <td class="order">{{ level.order }}</td>
+                <td>
+                    <button class="table-btn" onclick="editLevel({{ level.id }})">
+                        <i class="ti ti-edit"></i>
+                    </button>
+                </td>
+            </tr>
+
+            {% empty %}
+            <tr>
+                <td colspan="4">No levels found</td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<!-- ADD MODAL -->
+<div class="modal-overlay" id="addModal">
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <h3>Add Level</h3>
+            <button class="close-btn" onclick="closeAddModal()">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+
+        <form id="addForm">
+
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" name="name" placeholder="e.g. Beginner" required>
+            </div>
+
+            <div class="form-group">
+                <label>Slug</label>
+                <input type="text" name="slug" placeholder="e.g. beginner" required>
+                <small class="field-hint">Lowercase, hyphens only. Auto-fills from name.</small>
+            </div>
+
+            <div class="form-group">
+                <label>Display Order</label>
+                <input type="number" name="order" value="0">
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeAddModal()">Cancel</button>
+                <button type="submit" class="btn-primary">Save Level</button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <h3>Edit Level</h3>
+            <button class="close-btn" onclick="closeEditModal()">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+
+        <form id="editForm">
+
+            <input type="hidden" id="editId">
+
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="editName" required>
+            </div>
+
+            <div class="form-group">
+                <label>Slug</label>
+                <input type="text" id="editSlug" required>
+                <small class="field-hint">Changing this affects any programmes linked to this level.</small>
+            </div>
+
+            <div class="form-group">
+                <label>Display Order</label>
+                <input type="number" id="editOrder">
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeEditModal()">Cancel</button>
+                <button type="submit" class="btn-primary">Update Level</button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block extra_css %}
+<style>
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+.page-title{font-size:26px;font-weight:700;}
+.page-subtitle{color:var(--text-gray);margin-top:4px;}
+.table-card{overflow:hidden;}
+.custom-table{width:100%;border-collapse:collapse;}
+.custom-table th{background:#f8fafb;padding:16px;text-align:left;border-bottom:1px solid var(--border);}
+.custom-table td{padding:16px;border-bottom:1px solid var(--border);}
+.table-btn{border:none;background:#eef2f5;width:36px;height:36px;border-radius:8px;cursor:pointer;}
+.field-hint{display:block;margin-top:4px;font-size:12px;color:var(--text-gray);}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:9999;}
+.modal-overlay.show{display:flex;}
+.modal-box{width:100%;max-width:500px;background:#fff;border-radius:14px;padding:24px;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+.close-btn{border:none;background:none;font-size:22px;cursor:pointer;}
+.form-group{margin-bottom:18px;}
+.form-group label{display:block;margin-bottom:8px;font-weight:600;}
+.form-group input[type="text"],
+.form-group input[type="number"]{width:100%;height:46px;border:1px solid var(--border);border-radius:var(--radius);padding:0 14px;outline:none;}
+.modal-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:24px;}
+.btn-secondary{border:none;background:#eef2f5;padding:10px 16px;border-radius:var(--radius);cursor:pointer;}
+</style>
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+
+const addModal  = document.getElementById("addModal");
+const editModal = document.getElementById("editModal");
+
+function openAddModal()  { addModal.classList.add("show"); }
+function closeAddModal() { addModal.classList.remove("show"); }
+function openEditModal()  { editModal.classList.add("show"); }
+function closeEditModal() { editModal.classList.remove("show"); }
+
+/* Auto-slug from name in add form */
+document.querySelector('[name="name"]').addEventListener("input", function () {
+    const slug = this.value.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    document.querySelector('[name="slug"]').value = slug;
+});
+
+document.getElementById("addForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const form = e.target;
+
+    const payload = {
+        name:  form.name.value,
+        slug:  form.slug.value,
+        order: form.order.value,
+    };
+
+    ajaxPost("{% url 'level_store' %}", payload, function (res) {
+
+        const level = res.level;
+
+        document.getElementById("levelTable").insertAdjacentHTML("afterbegin", `
+            <tr
+                id="row-${level.id}"
+                data-id="${level.id}"
+                data-name="${level.name}"
+                data-slug="${level.slug}"
+                data-order="${level.order}"
+            >
+                <td class="name">${level.name}</td>
+                <td class="slug">${level.slug}</td>
+                <td class="order">${level.order}</td>
+                <td>
+                    <button class="table-btn" onclick="editLevel(${level.id})">
+                        <i class="ti ti-edit"></i>
+                    </button>
+                </td>
+            </tr>
+        `);
+
+        form.reset();
+        closeAddModal();
+    });
+});
+
+
+function editLevel(id) {
+    const row = document.getElementById(`row-${id}`);
+    document.getElementById("editId").value    = id;
+    document.getElementById("editName").value  = row.dataset.name;
+    document.getElementById("editSlug").value  = row.dataset.slug;
+    document.getElementById("editOrder").value = row.dataset.order;
+    openEditModal();
+}
+
+
+document.getElementById("editForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const id = document.getElementById("editId").value;
+
+    const payload = {
+        name:  document.getElementById("editName").value,
+        slug:  document.getElementById("editSlug").value,
+        order: document.getElementById("editOrder").value,
+    };
+
+    ajaxPost(`/levels/${id}/update/`, payload, function () {
+        const row = document.getElementById(`row-${id}`);
+        row.dataset.name  = payload.name;
+        row.dataset.slug  = payload.slug;
+        row.dataset.order = payload.order;
+        row.querySelector(".name").innerText  = payload.name;
+        row.querySelector(".slug").innerText  = payload.slug;
+        row.querySelector(".order").innerText = payload.order;
+        closeEditModal();
+    });
+});
+
+</script>
+{% endblock %}

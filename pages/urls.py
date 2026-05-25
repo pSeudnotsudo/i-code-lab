@@ -66,6 +66,19 @@ urlpatterns = [
     path("icode-admin/fee-config/",                  views.fee_config,             name="fee_config"),
     path("icode-admin/fee-config/update/",           views.fee_config_update,      name="fee_config_update"),
     
+    path("icode-admin/level-list/",            views.level_list,       name="level_list"),
+    path("icode-admin/level-list/store/",      views.level_store,  name="level_store"),
+    path("icode-admin/level-list/<int:pk>/update/", views.level_update, name="level_store_update"),
+
+    path("icode-admin/tool-type-list/",            views.tool_type_list,       name="tool_type_list"),
+    path("icode-admin/tool-type-list/store/",      views.tool_type_store,  name="tool_type_store"),
+    path("icode-admin/tool-type-list/<int:pk>/update/", views.tool_type_update, name="tool_type_update"),
+
+    path("icode-admin/program-tool-list/",            views.program_tool_list,       name="program_tool_list"),
+    path("icode-admin/program-tool-store/store/",      views.program_tool_store,  name="program_tool_store"),
+    path("icode-admin/program-tool-update/<int:pk>/update/", views.program_tool_update, name="program_tool_update"),
+
+    
     # PUBLIC URLS
     
     path('programs/', views.programs, name='programs'),

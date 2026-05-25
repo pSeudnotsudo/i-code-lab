@@ -28,8 +28,23 @@
       flatpickr("#prospective_start_date", cfg);
     }
 
-    /* ── Open/close (Bootstrap handles it via data-bs-toggle,
-          these are kept for any programmatic calls elsewhere) ── */
+    /* ── Select placeholder colour ── */
+    function updateSelectColour(sel) {
+      if (sel.value) {
+        sel.classList.add("has-value");
+      } else {
+        sel.classList.remove("has-value");
+      }
+    }
+
+    document.querySelectorAll(".modal-content .form-select").forEach(function (sel) {
+      updateSelectColour(sel);                          // run once on load
+      sel.addEventListener("change", function () {
+        updateSelectColour(this);
+      });
+    });
+
+    /* ── Open/close ── */
     window.openEnrollmentModal = function () {
       bootstrap.Modal.getOrCreateInstance(modalEl).show();
     };
@@ -37,9 +52,12 @@
       bootstrap.Modal.getOrCreateInstance(modalEl).hide();
     };
 
-    /* ── Reset form when modal is fully closed ── */
+    /* ── Reset form + selects when modal closes ── */
     modalEl.addEventListener("hidden.bs.modal", function () {
       form.reset();
+      document.querySelectorAll(".modal-content .form-select").forEach(function (sel) {
+        sel.classList.remove("has-value");             // back to placeholder grey
+      });
     });
 
     /* ── Form submit ── */
@@ -71,7 +89,7 @@
         })
         .finally(function () {
           submitBtn.disabled = false;
-          submitBtn.innerHTML = '<i class="bi bi-send-fill me-2"></i>Submit Enrollment';
+          submitBtn.innerHTML = '<i class="ti ti-send" aria-hidden="true"></i> Submit Enrollment';
         });
     });
 

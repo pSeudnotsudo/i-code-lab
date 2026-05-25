@@ -499,6 +499,54 @@
             </div>
           </div>
 
+          {% comment %} levels {% endcomment %}
+          <div class="nav-group">
+            <div class="nav-group-header" onclick="toggleGroup(this)">
+              <i class="ti ti-calendar-time"></i> Levels
+              <i class="ti ti-chevron-down"></i>
+            </div>
+            <div class="nav-sub">
+              
+              <a href="{% url 'level_list' %}" class="nav-item"
+                ><i class="ti ti-list"></i> All Levels</a
+              >
+             
+              
+            </div>
+          </div>
+
+          {% comment %} tool type {% endcomment %}
+          <div class="nav-group">
+            <div class="nav-group-header" onclick="toggleGroup(this)">
+              <i class="ti ti-calendar-time"></i> Tool Type
+              <i class="ti ti-chevron-down"></i>
+            </div>
+            <div class="nav-sub">
+              
+              <a href="{% url 'tool_type_list' %}" class="nav-item"
+                ><i class="ti ti-list"></i> Tools</a
+              >
+             
+              
+            </div>
+          </div>
+
+          {% comment %} program list tool {% endcomment %}
+          <div class="nav-group">
+            <div class="nav-group-header" onclick="toggleGroup(this)">
+              <i class="ti ti-calendar-time"></i> Program Tool List
+              <i class="ti ti-chevron-down"></i>
+            </div>
+            <div class="nav-sub">
+              
+              <a href="{% url 'program_tool_list' %}" class="nav-item"
+                ><i class="ti ti-list"></i> Program Tools</a
+              >
+             
+              
+            </div>
+          </div>
+
           <div class="nav-group">
             <div class="nav-group-header" onclick="toggleGroup(this)">
               <i class="ti ti-calendar-time"></i> Fees & Funds

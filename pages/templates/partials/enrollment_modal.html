@@ -1,24 +1,30 @@
-{% comment %}
-  partials/enrollment_modal.html
-  Requires Bootstrap 5 + Flatpickr loaded in base.html
-{% endcomment %}
-
 <div class="modal fade" id="enrollModal" tabindex="-1" aria-labelledby="enrollModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
 
       <!-- Header -->
-      <div class="modal-header border-0 px-4 pt-4 pb-2">
-        <h5 class="modal-title fw-bold fs-4" id="enrollModalLabel"
-            style="background: linear-gradient(135deg, var(--primary-dark), var(--accent-alt));
-                   -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-          Enrollment Form
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="modal-header border-0 p-0">
+        <div class="modal-header-inner w-100">
+          <div class="d-flex align-items-start justify-content-between">
+            <div>
+              <div class="modal-badge">
+                <span class="modal-badge-dot"></span> Enrollments open
+              </div>
+              <h5 class="modal-title" id="enrollModalLabel">Join I-CODE Academy</h5>
+              <p class="modal-subtitle">Fill in your details — takes less than 2 minutes</p>
+            </div>
+            <button type="button" class="modal-close" data-bs-dismiss="modal" aria-label="Close">✕</button>
+          </div>
+          <div class="modal-steps">
+            <div class="modal-step done"></div>
+            <div class="modal-step active"></div>
+            <div class="modal-step"></div>
+          </div>
+        </div>
       </div>
 
       <!-- Scrollable body -->
-      <div class="modal-body px-4 pb-4">
+      <div class="modal-body px-4 py-4">
         <form id="enrollForm"
               data-url="{{ enrollment_store_url }}"
               data-csrf="{{ csrf_token }}">
@@ -61,7 +67,7 @@
               <select name="age_bracket" class="form-select" required>
                 <option value="" disabled selected>— Select bracket —</option>
                 {% for bracket in brackets %}
-                  <option value="{{ bracket.id }}">{{ bracket.name }}</option>
+                <option value="{{ bracket.id }}">{{ bracket.title }}</option>
                 {% endfor %}
               </select>
             </div>
@@ -70,7 +76,7 @@
               <select name="registration_timeline" class="form-select" required>
                 <option value="" disabled selected>— Select timeline —</option>
                 {% for timeline in timelines %}
-                  <option value="{{ timeline.id }}">{{ timeline.name }}</option>
+                <option value="{{ timeline.id }}">{{ timeline.title }}</option>
                 {% endfor %}
               </select>
             </div>
@@ -115,20 +121,23 @@
                 placeholder="Any questions or special requirements..."></textarea>
             </div>
 
-            <!-- Submit -->
-            <div class="col-12">
-              <button type="submit" class="btn btn-submit w-100 py-3 fw-bold" id="submitBtn">
-                <i class="bi bi-send-fill me-2"></i>Submit Enrollment
-              </button>
-              <div id="loader" class="text-center text-muted mt-2" style="display:none;">
-                <div class="spinner-border spinner-border-sm me-1"></div> Sending your enrollment...
-              </div>
-            </div>
-
-          </div>
+          </div><!-- /.row g-3 -->
         </form>
-      </div>
+      </div><!-- /.modal-body -->
 
-    </div>
-  </div>
-</div>
+      <!-- Footer OUTSIDE modal-body -->
+      <div class="modal-footer">
+        <button type="submit" form="enrollForm" class="btn-submit" id="submitBtn">
+          <i class="ti ti-send" aria-hidden="true"></i> Reserve My Child's Slot 
+        </button>
+        <div class="modal-privacy">
+          <i class="ti ti-lock" aria-hidden="true"></i> Your data is safe and never shared
+        </div>
+        <div id="loader">
+          <div class="spinner-border spinner-border-sm me-1"></div> Sending your enrollment...
+        </div>
+      </div><!-- /.modal-footer -->
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
