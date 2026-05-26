@@ -538,7 +538,7 @@ body { font-family: var(--font-body); color: var(--text-dark); background: var(-
 /* ─── PROGRAMS (STYLED CARDS) ─── */
 .programs-section {
   padding: 96px 24px;
-  /*background: var(--text-dark);*/
+  background: var(--text-dark);
   
   position: relative;
   overflow: hidden;
@@ -864,7 +864,7 @@ body { font-family: var(--font-body); color: var(--text-dark); background: var(-
 
       <div class="hero-actions">
         <button class="btn-hero-primary" onclick="openEnrollmentModal()">
-            Enroll Now <i class="ti ti-arrow-right" aria-hidden="true"></i>
+            Book a Trial <i class="ti ti-arrow-right" aria-hidden="true"></i>
         </button>
        <a href="{% url 'programs' %}" class="btn-hero-ghost">
     <i class="ti ti-compass" aria-hidden="true"></i>
@@ -1149,7 +1149,7 @@ body { font-family: var(--font-body); color: var(--text-dark); background: var(-
         <div class="what-image-wrap">
   <video autoplay muted loop playsinline 
     style="width:100%;display:block;border-radius:15px;">
-    <source src="{% static 'images/icode.mp4' %}" type="video/mp4">
+    <source src="/media/videos/icode.mp4" type="video/mp4">
   </video>
   <div class="what-badge">🚀 A Real Innovation Lab</div>
 </div>
@@ -1217,7 +1217,10 @@ body { font-family: var(--font-body); color: var(--text-dark); background: var(-
 
   <div class="programs-grid">
     {% for program in programs %}
-<div class="prog-card">
+<div class="prog-card" onclick="location.href='{{ program.get_absolute_url }}'" style="cursor:pointer;">
+  {% comment %} <a href="{{ program.get_absolute_url }}" class="prog-card" style="text-decoration:none;"> {% endcomment %}
+  
+
   <div class="go-corner"><span class="go-arrow">&#10140;</span></div>
   <div class="prog-card__icon">
     {% with code=program.code|lower %}
@@ -1232,15 +1235,18 @@ body { font-family: var(--font-body); color: var(--text-dark); background: var(-
 {% endwith %}
   </div>
   <div class="prog-card__title">{{ program.name }}</div>
-  <p class="prog-card__desc">{{ program.description }}</p>
+  <p class="prog-card__desc">{{ program.hero_copy }}</p>
   {% if program.age_range %}
-    <span class="prog-card__badge">{{ program.age_range }}</span>
+    <span class="prog-card__badge">{{ program.age_range.title }}</span>
   {% endif %}
 </div>
 {% empty %}
 <p style="color:rgba(255,255,255,.6);text-align:center;">No programs available yet.</p>
 {% endfor %}
   </div>
+  {% comment %} </a> {% endcomment %}
+
+
 
   <div class="programs-cta" style="position:relative;z-index:1;">
     <a href="{% url 'programs' %}" class="btn-programs">
@@ -1258,7 +1264,7 @@ body { font-family: var(--font-body); color: var(--text-dark); background: var(-
     <h2 class="section-title" style="color:#fff;margin-bottom:28px;">Watch a Class <span class="hl">In Session</span></h2>
     <video controls poster="{% static 'images/video-thumb.jpg' %}"
       style="width:100%;border-radius:16px;box-shadow:0 8px 32px rgba(73,187,189,.25);">
-      <source src="{% static 'images/icode.mp4' %}" type="video/mp4">
+      <source src="/media/videos/icode.mp4" type="video/mp4">
     </video>
   </div>
 </section>

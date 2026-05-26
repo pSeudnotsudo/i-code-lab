@@ -87,6 +87,7 @@ urlpatterns = [
     path('pricing/', views.pricing, name='pricing'),
     path('socials/', views.socials, name='socials'),
     path('privacy-policy/', views.serve_privacy_policy, name='serve_privacy_policy'),
+    path('programs/<slug:slug>/', views.program_detail, name='programme-detail'),
     # UPLOAD IMAGES $ VIDEOS.
     path('gallery/upload/', views.gallery_upload, name='gallery_upload'),
     

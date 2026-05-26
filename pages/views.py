@@ -515,149 +515,184 @@ def _send_status_email(enrollment, action):
 
 # PROGRAMS
 def programs_list(request):
-    programs = Program.objects.all().order_by("order")
-    context = {
-        "programs": programs
-    }
+    # programs = Program.objects.all().order_by("order")
+    programs     = Program.objects.all().order_by("order")
+    age_brackets = AgeBracket.objects.all()
+    fees         = TermFee.objects.all()
+    levels       = Level.objects.all().order_by("order")
     return render(
         request,
         "icode-admin/program_list.html",
-        context
+        {
+            "programs":     programs,
+            "age_brackets": age_brackets,
+            "fees":         fees,
+            "levels":       levels,
+        }
     )
+
+
+def _parse_lines(value):
+    """Convert a textarea blob (one item per line) to a clean list."""
+    if not value:
+        return []
+    return [line.strip() for line in value.splitlines() if line.strip()]
+
+
+def _int_or_none(value):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _decimal_or_none(value):
+    try:
+        from decimal import Decimal
+        return Decimal(str(value))
+    except (TypeError, ValueError):
+        return None
 
 
 @require_POST
 def program_store(request):
-
     try:
-
         data = json.loads(request.body)
 
-        name = data.get("name")
-        code = data.get("code")
-        description = data.get("description")
-        order = data.get("order", 0)
+        name             = data.get("name", "").strip()
+        code             = data.get("code", "").strip()
+        description      = data.get("description", "").strip()
+        hero_copy        = data.get("hero_copy", "").strip()
+        fee_currency     = data.get("fee_currency", "KES").strip()
+        certificate_name = data.get("certificate_name", "").strip()
+        meta_description = data.get("meta_description", "").strip()
+        order            = data.get("order", 0)
+
+        duration_weeks    = _int_or_none(data.get("duration_weeks"))
+        total_hours       = _int_or_none(data.get("total_hours"))
+        what_they_build   = _parse_lines(data.get("what_they_build", ""))
+        learning_outcomes = _parse_lines(data.get("learning_outcomes", ""))
+
+        # FK ids
+        level_id     = _int_or_none(data.get("level"))
+        age_range_id = _int_or_none(data.get("age_range"))  # FIX: was age_range_id = age_range_id,
+        term_fee     = _decimal_or_none(data.get("term_fee"))
 
         if not name:
-
-            return JsonResponse({
-                "success": False,
-                "error": "Program name is required"
-            })
-
+            return JsonResponse({"success": False, "error": "Program name is required"})
         if not code:
-
-            return JsonResponse({
-                "success": False,
-                "error": "Program code is required"
-            })
-
+            return JsonResponse({"success": False, "error": "Program code is required"})
         if Program.objects.filter(code=code).exists():
-
-            return JsonResponse({
-                "success": False,
-                "error": "Program code already exists"
-            })
+            return JsonResponse({"success": False, "error": "Program code already exists"})
 
         program = Program.objects.create(
-            name=name,
-            code=code,
-            description=description,
-            order=order,
-            is_active=True
+            name              = name,
+            code              = code,
+            description       = description,
+            hero_copy         = hero_copy,
+            duration_weeks    = duration_weeks,
+            total_hours       = total_hours,
+            fee_currency      = fee_currency,
+            certificate_name  = certificate_name,
+            meta_description  = meta_description,
+            what_they_build   = what_they_build,
+            learning_outcomes = learning_outcomes,
+            order             = order,
+            is_active         = True,
+            level_id          = level_id,
+            age_range_id      = age_range_id,
+            term_fee          = term_fee,
         )
 
         return JsonResponse({
-
             "success": True,
             "message": "Program added successfully",
-
             "program": {
-                "id": program.id,
-                "name": program.name,
-                "code": program.code,
-                "description": program.description or "",
-                "order": program.order,
-                "active": program.is_active
-            }
-
+                "id":               program.id,
+                "name":             program.name,
+                "code":             program.code,
+                "description":      program.description or "",
+                "hero_copy":        program.hero_copy or "",
+                "age_range":        program.age_range_id or "",
+                "level":            program.level_id or "",
+                "duration_weeks":   program.duration_weeks,
+                "total_hours":      program.total_hours,
+                "term_fee":         str(program.term_fee) if program.term_fee else "",  # FIX
+                "fee_currency":     program.fee_currency,
+                "certificate_name": program.certificate_name,
+                "meta_description": program.meta_description or "",
+                "what_they_build":  "\n".join(program.what_they_build),
+                "learning_outcomes":"\n".join(program.learning_outcomes),
+                "order":            program.order,
+                "is_active":        program.is_active,
+            },
         })
 
     except Exception as e:
-
-        return JsonResponse({
-            "success": False,
-            "error": str(e)
-        })
+        return JsonResponse({"success": False, "error": str(e)})
 
 
 @require_POST
 def program_update(request, pk):
-
     try:
-
-        program = get_object_or_404(
-            Program,
-            pk=pk
-        )
+        program = get_object_or_404(Program, pk=pk)
 
         data = json.loads(request.body)
 
-        name = data.get("name")
-        code = data.get("code")
-        description = data.get("description")
-        order = data.get("order", 0)
-        is_active = data.get("is_active", True)
+        name             = data.get("name", "").strip()
+        code             = data.get("code", "").strip()
+        description      = data.get("description", "").strip()
+        hero_copy        = data.get("hero_copy", "").strip()
+        fee_currency     = data.get("fee_currency", "KES").strip()
+        certificate_name = data.get("certificate_name", "").strip()
+        meta_description = data.get("meta_description", "").strip()
+        order            = data.get("order", 0)
+        is_active        = data.get("is_active", True)
+
+        duration_weeks    = _int_or_none(data.get("duration_weeks"))
+        total_hours       = _int_or_none(data.get("total_hours"))
+        what_they_build   = _parse_lines(data.get("what_they_build", ""))
+        learning_outcomes = _parse_lines(data.get("learning_outcomes", ""))
+
+        # FK ids
+        level_id     = _int_or_none(data.get("level"))
+        age_range_id = _int_or_none(data.get("age_range"))
+        term_fee     = _decimal_or_none(data.get("term_fee"))  # FIX: DecimalField, not FK
 
         if not name:
-
-            return JsonResponse({
-                "success": False,
-                "error": "Program name is required"
-            })
-
+            return JsonResponse({"success": False, "error": "Program name is required"})
         if not code:
+            return JsonResponse({"success": False, "error": "Program code is required"})
+        if Program.objects.exclude(pk=program.pk).filter(code=code).exists():
+            return JsonResponse({"success": False, "error": "Program code already exists"})
 
-            return JsonResponse({
-                "success": False,
-                "error": "Program code is required"
-            })
-
-        exists = Program.objects.exclude(
-            id=program.id
-        ).filter(
-            code=code
-        ).exists()
-
-        if exists:
-
-            return JsonResponse({
-                "success": False,
-                "error": "Program code already exists"
-            })
-
-        program.name = name
-        program.code = code
-        program.description = description
-        program.order = order
-        program.is_active = is_active
-
+        program.name              = name
+        program.code              = code
+        program.description       = description
+        program.hero_copy         = hero_copy
+        program.duration_weeks    = duration_weeks
+        program.total_hours       = total_hours
+        program.fee_currency      = fee_currency
+        program.certificate_name  = certificate_name
+        program.meta_description  = meta_description
+        program.what_they_build   = what_they_build
+        program.learning_outcomes = learning_outcomes
+        program.order             = order
+        program.is_active         = is_active
+        program.level_id          = level_id
+        program.age_range_id      = age_range_id
+        program.term_fee          = term_fee  # FIX: was program.term_fee_id
         program.save()
 
-        return JsonResponse({
-            "success": True,
-            "message": "Program updated successfully"
-        })
+        return JsonResponse({"success": True, "message": "Program updated successfully"})
 
     except Exception as e:
-
-        return JsonResponse({
-            "success": False,
-            "error": str(e)
-        })
-
-
-
+        return JsonResponse({"success": False, "error": str(e)})
+    
+    
+def program_detail(request, slug):
+    program = get_object_or_404(Program, slug=slug, is_active=True)
+    return render(request, 'program_detail.html', {'program': program})
 
 # AGE BRACKETS
 def age_brackets(request):

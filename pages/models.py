@@ -27,30 +27,13 @@ class EnrollmentStatus(models.Model):
     def __str__(self):
         return self.name
  
- # Programs
-# class Program(models.Model):
-#     name        = models.CharField(max_length=100)
-#     code        = models.CharField(max_length=50, unique=True)
-#     description = models.TextField(blank=True, null=True)
-#     # icon        = models.CharField(max_length=10, default='💡')   # emoji icon
-#     age_range   = models.CharField(max_length=30, blank=True, null=True)  # e.g. "Ages 12+"
-
-#     is_active   = models.BooleanField(default=True)
-#     order       = models.IntegerField(default=0)
-
-#     class Meta:
-#         ordering = ['order']
-
-#     def __str__(self):
-#         return self.name
-
+# Programs
 class Program(models.Model):
     # ── Core identity ─────────────────────────────────────────────────────
     name  = models.CharField(max_length=100)
     code  = models.CharField(max_length=50, unique=True)
     slug  = models.SlugField(max_length=120, unique=True, blank=True)
 
-    # ── Specs (FK lookups) ────────────────────────────────────────────────
     level = models.ForeignKey(
         'Level',
         on_delete=models.SET_NULL,
@@ -61,7 +44,13 @@ class Program(models.Model):
     total_hours    = models.PositiveIntegerField(null=True, blank=True)
     term_fee       = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     fee_currency   = models.CharField(max_length=10, default='KES')
-    age_range      = models.CharField(max_length=40, blank=True)
+    # age_range      = models.CharField(max_length=40, blank=True)
+    age_range = models.ForeignKey(
+    'AgeBracket',
+    on_delete=models.SET_NULL,
+    null=True, blank=True,
+    related_name='programs',
+)
 
     # ── Hero section ──────────────────────────────────────────────────────
     description = models.TextField(blank=True)

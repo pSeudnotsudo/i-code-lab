@@ -5,44 +5,30 @@
 <div class="page-header">
 
     <div>
-        <h2 class="page-title">
-            Programs
-        </h2>
-
-        <p class="page-subtitle">
-            Manage learning programs
-        </p>
+        <h2 class="page-title">Programs</h2>
+        <p class="page-subtitle">Manage learning programs</p>
     </div>
 
-    <button
-        class="btn-primary"
-        onclick="openAddModal()"
-    >
+    <button class="btn-primary" onclick="openAddModal()">
         <i class="ti ti-plus"></i>
         Add Program
     </button>
 
 </div>
 
-
-
 <div class="card table-card">
 
     <table class="custom-table">
 
         <thead>
-
             <tr>
-
                 <th>Name</th>
                 <th>Code</th>
                 <th>Description</th>
                 <th>Order</th>
                 <th>Status</th>
                 <th width="120">Action</th>
-
             </tr>
-
         </thead>
 
         <tbody id="programTable">
@@ -55,53 +41,38 @@
                 data-name="{{ program.name }}"
                 data-code="{{ program.code }}"
                 data-description="{{ program.description }}"
+                data-hero-copy="{{ program.hero_copy }}"
+                data-age-range="{{ program.age_range_id|default:'' }}"
+                data-duration-weeks="{{ program.duration_weeks|default:'' }}"
+                data-total-hours="{{ program.total_hours|default:'' }}"
+                data-term-fee="{{ program.term_fee|default:'' }}"
+                data-fee-currency="{{ program.fee_currency }}"
+                data-level="{{ program.level_id|default:'' }}"
+                data-certificate-name="{{ program.certificate_name }}"
+                data-what-they-build="{{ program.what_they_build|join:'\n' }}"
+                data-learning-outcomes="{{ program.learning_outcomes|join:'\n' }}"
+                data-meta-description="{{ program.meta_description }}"
                 data-order="{{ program.order }}"
                 data-active="{{ program.is_active|yesno:'true,false' }}"
             >
 
-                <td class="name">
-                    {{ program.name }}
-                </td>
-
-                <td class="code">
-                    {{ program.code }}
-                </td>
-
-                <td class="description">
-                    {{ program.description|default:"-" }}
-                </td>
-
-                <td class="order">
-                    {{ program.order }}
-                </td>
+                <td class="name">{{ program.name }}</td>
+                <td class="code">{{ program.code }}</td>
+                <td class="description">{{ program.description|default:"-" }}</td>
+                <td class="order">{{ program.order }}</td>
 
                 <td class="status-badge">
-
                     {% if program.is_active %}
-
-                        <span class="badge badge-active">
-                            Active
-                        </span>
-
+                        <span class="badge badge-active">Active</span>
                     {% else %}
-
-                        <span class="badge badge-pending">
-                            Inactive
-                        </span>
-
+                        <span class="badge badge-pending">Inactive</span>
                     {% endif %}
-
                 </td>
 
                 <td>
-
-                    <button
-                        class="table-btn"
-                        onclick="editProgram({{ program.id }})"
-                    >
+                    <button class="table-btn" onclick="editProgram({{ program.id }})">
                         <i class="ti ti-edit"></i>
                     </button>
-
                 </td>
 
             </tr>
@@ -109,9 +80,7 @@
             {% empty %}
 
             <tr>
-                <td colspan="6">
-                    No programs found
-                </td>
+                <td colspan="6">No programs found</td>
             </tr>
 
             {% endfor %}
@@ -123,564 +92,611 @@
 </div>
 
 
-
-<!-- ADD MODAL -->
+<!-- ── ADD MODAL ───────────────────────────────────────────────────── -->
 
 <div class="modal-overlay" id="addModal">
-
     <div class="modal-box">
 
         <div class="modal-header">
-
             <h3>Add Program</h3>
-
-            <button
-                class="close-btn"
-                onclick="closeAddModal()"
-            >
+            <button class="close-btn" onclick="closeAddModal()">
                 <i class="ti ti-x"></i>
             </button>
-
         </div>
 
+        <form id="addForm" style="display:flex;flex-direction:column;flex:1;min-height:0;">
 
-        <form id="addForm">
+            <div class="modal-body">
 
-            <div class="form-group">
-                <label>Program Name</label>
+                <div class="form-group span-3">
+                    <label>Program Name</label>
+                    <input type="text" name="name" required>
+                </div>
 
-                <input
-                    type="text"
-                    name="name"
-                    required
-                >
+                <div class="form-group">
+                    <label>Program Code</label>
+                    <input type="text" name="code" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Display Order</label>
+                    <input type="number" name="order" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Level</label>
+                    <select name="level">
+                        <option value="">— Select Level —</option>
+                        {% for level in levels %}
+                            <option value="{{ level.id }}">{{ level.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Age Range</label>
+                    <select name="age_range">
+                        <option value="">— Select Age Range —</option>
+                        {% for bracket in age_brackets %}
+                            <option value="{{ bracket.id }}">{{ bracket.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Duration (weeks)</label>
+                    <input type="number" name="duration_weeks">
+                </div>
+
+                <div class="form-group">
+                    <label>Total Hours</label>
+                    <input type="number" name="total_hours">
+                </div>
+
+                <div class="form-group">
+                    <label>Term Fee</label>
+                    <input type="number" name="term_fee">
+                </div>
+
+                <div class="form-group">
+                    <label>Currency</label>
+                    <input type="text" name="fee_currency" value="KES">
+                </div>
+
+                <div class="form-group span-2">
+                    <label>Certificate Name</label>
+                    <input type="text" name="certificate_name" value="i-CODE Certificate of Completion">
+                </div>
+
+                <div class="form-group span-3">
+                    <label>Description</label>
+                    <textarea name="description" rows="3"></textarea>
+                </div>
+
+                <div class="form-group span-3">
+                    <label>Hero Copy</label>
+                    <textarea name="hero_copy" rows="3"></textarea>
+                </div>
+
+                <div class="form-group span-2">
+                    <label>What They Build <small>(one per line)</small></label>
+                    <textarea name="what_they_build" rows="5"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Learning Outcomes <small>(one per line)</small></label>
+                    <textarea name="learning_outcomes" rows="5"></textarea>
+                </div>
+
+                <div class="form-group span-3">
+                    <label>Meta Description</label>
+                    <textarea name="meta_description" rows="2"></textarea>
+                </div>
+
             </div>
 
-            <div class="form-group">
-                <label>Program Code</label>
-
-                <input
-                    type="text"
-                    name="code"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label>Description</label>
-
-                <textarea
-                    name="description"
-                    rows="4"
-                ></textarea>
-            </div>
-
-            <div class="form-group">
-                <label>Display Order</label>
-
-                <input
-                    type="number"
-                    name="order"
-                    value="0"
-                >
-            </div>
-
-            <div class="modal-actions">
-
-                <button
-                    type="button"
-                    class="btn-secondary"
-                    onclick="closeAddModal()"
-                >
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeAddModal()">
                     Cancel
                 </button>
-
-                <button
-                    type="submit"
-                    class="btn-primary"
-                >
+                <button type="submit" class="btn-primary">
                     Save Program
                 </button>
-
             </div>
 
         </form>
 
     </div>
-
 </div>
 
 
-
-
-<!-- EDIT MODAL -->
+<!-- ── EDIT MODAL ──────────────────────────────────────────────────── -->
 
 <div class="modal-overlay" id="editModal">
-
     <div class="modal-box">
 
         <div class="modal-header">
-
             <h3>Edit Program</h3>
-
-            <button
-                class="close-btn"
-                onclick="closeEditModal()"
-            >
+            <button class="close-btn" onclick="closeEditModal()">
                 <i class="ti ti-x"></i>
             </button>
-
         </div>
 
-
-        <form id="editForm">
+        <form id="editForm" style="display:flex;flex-direction:column;flex:1;min-height:0;">
 
             <input type="hidden" id="editId">
 
-            <div class="form-group">
-                <label>Program Name</label>
+            <div class="modal-body">
 
-                <input
-                    type="text"
-                    id="editName"
-                    required
-                >
+                <div class="form-group span-3">
+                    <label>Program Name</label>
+                    <input type="text" id="editName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Program Code</label>
+                    <input type="text" id="editCode" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Display Order</label>
+                    <input type="number" id="editOrder">
+                </div>
+
+                <div class="form-group">
+                    <label>Level</label>
+                    <select id="editLevel">
+                        <option value="">— Select Level —</option>
+                        {% for level in levels %}
+                            <option value="{{ level.id }}">{{ level.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Age Range</label>
+                    <select id="editAgeRange">
+                        <option value="">— Select Age Range —</option>
+                        {% for bracket in age_brackets %}
+                            <option value="{{ bracket.id }}">{{ bracket.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Duration (weeks)</label>
+                    <input type="number" id="editDurationWeeks">
+                </div>
+
+                <div class="form-group">
+                    <label>Total Hours</label>
+                    <input type="number" id="editTotalHours">
+                </div>
+
+                <div class="form-group">
+                    <label>Term Fee</label>
+                    <input type="number" id="editTermFee">
+                </div>
+
+                <div class="form-group">
+                    <label>Currency</label>
+                    <input type="text" id="editFeeCurrency">
+                </div>
+
+                <div class="form-group span-2">
+                    <label>Certificate Name</label>
+                    <input type="text" id="editCertificateName">
+                </div>
+
+                <div class="form-group span-3">
+                    <label>Description</label>
+                    <textarea id="editDescription" rows="3"></textarea>
+                </div>
+
+                <div class="form-group span-3">
+                    <label>Hero Copy</label>
+                    <textarea id="editHeroCopy" rows="3"></textarea>
+                </div>
+
+                <div class="form-group span-2">
+                    <label>What They Build <small>(one per line)</small></label>
+                    <textarea id="editWhatTheyBuild" rows="5"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Learning Outcomes <small>(one per line)</small></label>
+                    <textarea id="editLearningOutcomes" rows="5"></textarea>
+                </div>
+
+                <div class="form-group span-3">
+                    <label>Meta Description</label>
+                    <textarea id="editMetaDescription" rows="2"></textarea>
+                </div>
+
+                <div class="form-group span-3 check-group">
+                    <input type="checkbox" id="editActive">
+                    <label for="editActive">Active</label>
+                </div>
+
             </div>
 
-            <div class="form-group">
-                <label>Program Code</label>
-
-                <input
-                    type="text"
-                    id="editCode"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label>Description</label>
-
-                <textarea
-                    id="editDescription"
-                    rows="4"
-                ></textarea>
-            </div>
-
-            <div class="form-group">
-                <label>Display Order</label>
-
-                <input
-                    type="number"
-                    id="editOrder"
-                >
-            </div>
-
-            <div class="form-group check-group">
-
-                <input
-                    type="checkbox"
-                    id="editActive"
-                >
-
-                <label for="editActive">
-                    Active
-                </label>
-
-            </div>
-
-            <div class="modal-actions">
-
-                <button
-                    type="button"
-                    class="btn-secondary"
-                    onclick="closeEditModal()"
-                >
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeEditModal()">
                     Cancel
                 </button>
-
-                <button
-                    type="submit"
-                    class="btn-primary"
-                >
+                <button type="submit" class="btn-primary">
                     Update Program
                 </button>
-
             </div>
 
         </form>
 
     </div>
-
 </div>
 
 {% endblock %}
 
 
-
 {% block extra_css %}
-
 <style>
 
-.page-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:24px;
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
 }
 
-.page-title{
-    font-size:26px;
-    font-weight:700;
+.page-title {
+    font-size: 26px;
+    font-weight: 700;
 }
 
-.page-subtitle{
-    color:var(--text-gray);
-    margin-top:4px;
+.page-subtitle {
+    color: var(--text-gray);
+    margin-top: 4px;
 }
 
-.table-card{
-    overflow:hidden;
+.table-card { overflow: hidden; }
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-.custom-table{
-    width:100%;
-    border-collapse:collapse;
+.custom-table th {
+    background: #f8fafb;
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
 }
 
-.custom-table th{
-    background:#f8fafb;
-    padding:16px;
-    text-align:left;
-    border-bottom:1px solid var(--border);
+.custom-table td {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
 }
 
-.custom-table td{
-    padding:16px;
-    border-bottom:1px solid var(--border);
+.table-btn {
+    border: none;
+    background: #eef2f5;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
-.table-btn{
-    border:none;
-    background:#eef2f5;
-    width:36px;
-    height:36px;
-    border-radius:8px;
-    cursor:pointer;
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    z-index: 9999;
+    padding: 24px 16px;
+    box-sizing: border-box;
+    overflow-y: auto;
 }
 
-.modal-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.45);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    z-index:9999;
+.modal-overlay.show { display: flex; }
+
+.modal-box {
+    width: 100%;
+    max-width: 780px;
+    background: #fff;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 48px);
+    overflow: hidden;
+    flex-shrink: 0;
 }
 
-.modal-overlay.show{
-    display:flex;
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
 }
 
-.modal-box{
-    width:100%;
-    max-width:600px;
-    background:#fff;
-    border-radius:14px;
-    padding:24px;
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
 }
 
-.modal-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:24px;
+.close-btn {
+    border: none;
+    background: none;
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
 }
 
-.close-btn{
-    border:none;
-    background:none;
-    font-size:22px;
-    cursor:pointer;
+.modal-body {
+    overflow-y: auto;
+    padding: 20px 24px;
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px 16px;
+    align-items: start;
 }
 
-.form-group{
-    margin-bottom:18px;
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
 }
 
-.form-group label{
-    display:block;
-    margin-bottom:8px;
-    font-weight:600;
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.span-2 { grid-column: span 2; }
+.form-group.span-3 { grid-column: span 3; }
+
+.form-group label {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.form-group small {
+    font-weight: 400;
+    color: var(--text-gray);
 }
 
 .form-group input[type="text"],
 .form-group input[type="number"],
-.form-group textarea{
-    width:100%;
-    border:1px solid var(--border);
-    border-radius:var(--radius);
-    padding:12px 14px;
-    outline:none;
-    font-family:"Poppins", sans-serif;
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    outline: none;
+    font-family: "Poppins", sans-serif;
+    font-size: 14px;
+    background: #fff;
 }
 
 .form-group input[type="text"],
-.form-group input[type="number"]{
-    height:46px;
+.form-group input[type="number"],
+.form-group select {
+    height: 42px;
 }
 
-.check-group{
-    display:flex;
-    align-items:center;
-    gap:10px;
+.form-group textarea {
+    resize: vertical;
 }
 
-.modal-actions{
-    display:flex;
-    justify-content:flex-end;
-    gap:12px;
-    margin-top:24px;
+.check-group {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding-top: 4px;
 }
 
-.btn-secondary{
-    border:none;
-    background:#eef2f5;
-    padding:10px 16px;
-    border-radius:var(--radius);
-    cursor:pointer;
+.btn-secondary {
+    border: none;
+    background: #eef2f5;
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-family: "Poppins", sans-serif;
 }
 
 </style>
-
 {% endblock %}
 
 
-
 {% block extra_js %}
-
 <script>
 
-const addModal = document.getElementById("addModal");
+const addModal  = document.getElementById("addModal");
 const editModal = document.getElementById("editModal");
 
-
-function openAddModal(){
-
-    addModal.classList.add("show");
-
-}
-
-function closeAddModal(){
-
-    addModal.classList.remove("show");
-
-}
+function openAddModal()   { addModal.classList.add("show");    }
+function closeAddModal()  { addModal.classList.remove("show"); }
+function openEditModal()  { editModal.classList.add("show");   }
+function closeEditModal() { editModal.classList.remove("show");}
 
 
-function openEditModal(){
+/* ── ADD ──────────────────────────────────────────────────────────── */
 
-    editModal.classList.add("show");
-
-}
-
-function closeEditModal(){
-
-    editModal.classList.remove("show");
-
-}
-
-
-document
-.getElementById("addForm")
-.addEventListener("submit", function(e){
+document.getElementById("addForm").addEventListener("submit", function(e) {
 
     e.preventDefault();
 
     const form = e.target;
 
     const payload = {
-
-        name: form.name.value,
-        code: form.code.value,
-        description: form.description.value,
-        order: form.order.value
-
+        name:              form.name.value,
+        code:              form.code.value,
+        description:       form.description.value,
+        hero_copy:         form.hero_copy.value,
+        age_range:         form.age_range.value         || null,
+        level:             form.level.value             || null,
+        duration_weeks:    form.duration_weeks.value    || null,
+        total_hours:       form.total_hours.value       || null,
+        term_fee:          form.term_fee.value          || null,
+        fee_currency:      form.fee_currency.value,
+        certificate_name:  form.certificate_name.value,
+        what_they_build:   form.what_they_build.value,
+        learning_outcomes: form.learning_outcomes.value,
+        meta_description:  form.meta_description.value,
+        order:             form.order.value,
     };
 
-    ajaxPost(
-        "{% url 'program_store' %}",
-        payload,
+    ajaxPost("{% url 'program_store' %}", payload, function(res) {
 
-        function(res){
+        const p = res.program;
 
-            const program = res.program;
+        document.getElementById("programTable").insertAdjacentHTML("afterbegin", `
+            <tr
+                id="row-${p.id}"
+                data-id="${p.id}"
+                data-name="${p.name}"
+                data-code="${p.code}"
+                data-description="${p.description}"
+                data-hero-copy="${p.hero_copy}"
+                data-age-range="${p.age_range ?? ''}"
+                data-duration-weeks="${p.duration_weeks ?? ''}"
+                data-total-hours="${p.total_hours ?? ''}"
+                data-term-fee="${p.term_fee ?? ''}"
+                data-fee-currency="${p.fee_currency}"
+                data-level="${p.level ?? ''}"
+                data-certificate-name="${p.certificate_name}"
+                data-what-they-build="${p.what_they_build}"
+                data-learning-outcomes="${p.learning_outcomes}"
+                data-meta-description="${p.meta_description}"
+                data-order="${p.order}"
+                data-active="true"
+            >
+                <td class="name">${p.name}</td>
+                <td class="code">${p.code}</td>
+                <td class="description">${p.description || "-"}</td>
+                <td class="order">${p.order}</td>
+                <td class="status-badge">
+                    <span class="badge badge-active">Active</span>
+                </td>
+                <td>
+                    <button class="table-btn" onclick="editProgram(${p.id})">
+                        <i class="ti ti-edit"></i>
+                    </button>
+                </td>
+            </tr>
+        `);
 
-            document
-            .getElementById("programTable")
-            .insertAdjacentHTML(
+        form.reset();
+        closeAddModal();
 
-                "afterbegin",
-
-                `
-                <tr
-                    id="row-${program.id}"
-                    data-id="${program.id}"
-                    data-name="${program.name}"
-                    data-code="${program.code}"
-                    data-description="${program.description}"
-                    data-order="${program.order}"
-                    data-active="true"
-                >
-
-                    <td class="name">
-                        ${program.name}
-                    </td>
-
-                    <td class="code">
-                        ${program.code}
-                    </td>
-
-                    <td class="description">
-                        ${program.description || "-"}
-                    </td>
-
-                    <td class="order">
-                        ${program.order}
-                    </td>
-
-                    <td class="status-badge">
-                        <span class="badge badge-active">
-                            Active
-                        </span>
-                    </td>
-
-                    <td>
-                        <button
-                            class="table-btn"
-                            onclick="editProgram(${program.id})"
-                        >
-                            <i class="ti ti-edit"></i>
-                        </button>
-                    </td>
-
-                </tr>
-                `
-            );
-
-            form.reset();
-
-            closeAddModal();
-
-        }
-    );
+    });
 
 });
 
 
-function editProgram(id){
+/* ── EDIT ─────────────────────────────────────────────────────────── */
 
-    const row = document.getElementById(`row-${id}`);
+function editProgram(id) {
 
-    document.getElementById("editId").value = id;
+    const d = document.getElementById(`row-${id}`).dataset;
 
-    document.getElementById("editName").value =
-        row.dataset.name;
+    document.getElementById("editId").value               = id;
+    document.getElementById("editName").value             = d.name;
+    document.getElementById("editCode").value             = d.code;
+    document.getElementById("editDescription").value      = d.description;
+    document.getElementById("editHeroCopy").value         = d.heroCopy;
+    document.getElementById("editDurationWeeks").value    = d.durationWeeks;
+    document.getElementById("editTotalHours").value       = d.totalHours;
+    document.getElementById("editFeeCurrency").value      = d.feeCurrency;
+    document.getElementById("editCertificateName").value  = d.certificateName;
+    document.getElementById("editWhatTheyBuild").value    = d.whatTheyBuild;
+    document.getElementById("editLearningOutcomes").value = d.learningOutcomes;
+    document.getElementById("editMetaDescription").value  = d.metaDescription;
+    document.getElementById("editOrder").value            = d.order;
+    document.getElementById("editActive").checked         = d.active === "true";
 
-    document.getElementById("editCode").value =
-        row.dataset.code;
-
-    document.getElementById("editDescription").value =
-        row.dataset.description;
-
-    document.getElementById("editOrder").value =
-        row.dataset.order;
-
-    document.getElementById("editActive").checked =
-        row.dataset.active === "true";
+    // selects — set by value (the FK id stored in data-*)
+    document.getElementById("editAgeRange").value = d.ageRange  || "";
+    document.getElementById("editTermFee").value  = d.termFee   || "";
+    document.getElementById("editLevel").value    = d.level     || "";
 
     openEditModal();
 
 }
 
 
-
-document
-.getElementById("editForm")
-.addEventListener("submit", function(e){
+document.getElementById("editForm").addEventListener("submit", function(e) {
 
     e.preventDefault();
 
-    const id =
-        document.getElementById("editId").value;
+    const id = document.getElementById("editId").value;
 
     const payload = {
-
-        name:
-            document.getElementById("editName").value,
-
-        code:
-            document.getElementById("editCode").value,
-
-        description:
-            document.getElementById("editDescription").value,
-
-        order:
-            document.getElementById("editOrder").value,
-
-        is_active:
-            document.getElementById("editActive").checked
-
+        name:              document.getElementById("editName").value,
+        code:              document.getElementById("editCode").value,
+        description:       document.getElementById("editDescription").value,
+        hero_copy:         document.getElementById("editHeroCopy").value,
+        age_range:         document.getElementById("editAgeRange").value   || null,
+        level:             document.getElementById("editLevel").value      || null,
+        duration_weeks:    document.getElementById("editDurationWeeks").value || null,
+        total_hours:       document.getElementById("editTotalHours").value    || null,
+        term_fee:          document.getElementById("editTermFee").value       || null,
+        fee_currency:      document.getElementById("editFeeCurrency").value,
+        certificate_name:  document.getElementById("editCertificateName").value,
+        what_they_build:   document.getElementById("editWhatTheyBuild").value,
+        learning_outcomes: document.getElementById("editLearningOutcomes").value,
+        meta_description:  document.getElementById("editMetaDescription").value,
+        order:             document.getElementById("editOrder").value,
+        is_active:         document.getElementById("editActive").checked,
     };
 
+    ajaxPost(`/programs/${id}/update/`, payload, function() {
 
-    ajaxPost(
+        const row = document.getElementById(`row-${id}`);
 
-        `/programs/${id}/update/`,
-        payload,
+        row.dataset.name             = payload.name;
+        row.dataset.code             = payload.code;
+        row.dataset.description      = payload.description;
+        row.dataset.heroCopy         = payload.hero_copy;
+        row.dataset.ageRange         = payload.age_range    ?? "";
+        row.dataset.level            = payload.level        ?? "";
+        row.dataset.durationWeeks    = payload.duration_weeks ?? "";
+        row.dataset.totalHours       = payload.total_hours    ?? "";
+        row.dataset.termFee          = payload.term_fee       ?? "";
+        row.dataset.feeCurrency      = payload.fee_currency;
+        row.dataset.certificateName  = payload.certificate_name;
+        row.dataset.whatTheyBuild    = payload.what_they_build;
+        row.dataset.learningOutcomes = payload.learning_outcomes;
+        row.dataset.metaDescription  = payload.meta_description;
+        row.dataset.order            = payload.order;
+        row.dataset.active           = payload.is_active;
 
-        function(){
+        row.querySelector(".name").innerText        = payload.name;
+        row.querySelector(".code").innerText        = payload.code;
+        row.querySelector(".description").innerText = payload.description || "-";
+        row.querySelector(".order").innerText       = payload.order;
 
-            const row =
-                document.getElementById(`row-${id}`);
+        row.querySelector(".status-badge").innerHTML = payload.is_active
+            ? `<span class="badge badge-active">Active</span>`
+            : `<span class="badge badge-pending">Inactive</span>`;
 
-            row.dataset.name = payload.name;
-            row.dataset.code = payload.code;
-            row.dataset.description = payload.description;
-            row.dataset.order = payload.order;
-            row.dataset.active = payload.is_active;
+        closeEditModal();
 
-            row.querySelector(".name").innerText =
-                payload.name;
-
-            row.querySelector(".code").innerText =
-                payload.code;
-
-            row.querySelector(".description").innerText =
-                payload.description || "-";
-
-            row.querySelector(".order").innerText =
-                payload.order;
-
-            row.querySelector(".status-badge").innerHTML =
-                payload.is_active
-
-                ? `<span class="badge badge-active">
-                        Active
-                   </span>`
-
-                : `<span class="badge badge-pending">
-                        Inactive
-                   </span>`;
-
-            closeEditModal();
-
-        }
-
-    );
+    });
 
 });
 
 </script>
-
 {% endblock %}

@@ -1,0 +1,573 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+/* (all CSS unchanged) */
+:root {
+  --primary:       #49BBBD;
+  --primary-dark:  #3DA4A6;
+  --primary-light: #e6f7f7;
+  --accent:        #a4dcdd;
+  --accent-alt:    #F48C06;
+  --accent-pink:   #E94B7F;
+  --accent-purple: #9B59B6;
+  --text-dark:     #2C3E50;
+  --text-gray:     #5D6C7B;
+  --text-light:    #8392A5;
+  --border:        #d4eced;
+  --bg-soft:       #F8FAFB;
+  --white:         #FFFFFF;
+  --shadow-sm:     0 2px 8px rgba(73,187,189,.10);
+  --shadow-md:     0 4px 20px rgba(73,187,189,.15);
+  --shadow-lg:     0 8px 32px rgba(73,187,189,.20);
+  --radius:        14px;
+  --font-display:  "Poppins", sans-serif;
+  --font-body:     "Poppins", sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-soft);
+  color: var(--text-dark);
+}
+
+.hero {
+  background: linear-gradient(135deg, #1a7a7c 0%, #49BBBD 60%, #7dd4d5 100%);
+  padding: 72px 0 100px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(255,255,255,.08) 0%, transparent 50%),
+    radial-gradient(circle at 85% 20%, rgba(255,255,255,.06) 0%, transparent 40%);
+}
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+}
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 32px;
+  font-size: 13px;
+}
+.breadcrumb a { color: rgba(255,255,255,.7); text-decoration: none; transition: color .2s; }
+.breadcrumb a:hover { color: #fff; }
+.breadcrumb-sep { color: rgba(255,255,255,.4); font-size: 11px; }
+.breadcrumb-current { color: rgba(255,255,255,.9); }
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: start;
+}
+.hero-icon {
+  width: 72px; height: 72px;
+  background: rgba(255,255,255,.15);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.25);
+  color: #fff; font-size: 12px; font-weight: 600;
+  padding: 5px 12px; border-radius: 100px;
+  margin-bottom: 16px; letter-spacing: .04em; text-transform: uppercase;
+}
+.hero-title {
+  font-size: clamp(28px, 5vw, 46px); font-weight: 700;
+  color: #fff; line-height: 1.15; margin-bottom: 16px; letter-spacing: -.02em;
+}
+.hero-copy {
+  font-size: 17px; color: rgba(255,255,255,.85);
+  line-height: 1.7; max-width: 560px; margin-bottom: 28px;
+}
+.hero-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+.hero-tag {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+  color: rgba(255,255,255,.9); font-size: 13px; font-weight: 500;
+  padding: 6px 14px; border-radius: 100px;
+}
+.hero-tag i { font-size: 14px; }
+.hero-stat-card {
+  background: rgba(255,255,255,.95); backdrop-filter: blur(20px);
+  border-radius: var(--radius); padding: 28px 24px;
+  box-shadow: var(--shadow-lg); min-width: 200px;
+  border: 1px solid rgba(73,187,189,.15); margin-top: 60px;
+}
+.stat-row { display: flex; flex-direction: column; gap: 20px; }
+.stat-item { display: flex; align-items: center; gap: 14px; }
+.stat-icon {
+  width: 40px; height: 40px; background: var(--primary-light);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  color: var(--primary-dark); font-size: 18px; flex-shrink: 0;
+}
+.stat-label {
+  font-size: 11px; font-weight: 600; color: var(--text-light);
+  text-transform: uppercase; letter-spacing: .06em; margin-bottom: 2px;
+}
+.stat-value { font-size: 15px; font-weight: 700; color: var(--text-dark); }
+.wave-divider { margin-top: -2px; line-height: 0; }
+.wave-divider svg { display: block; }
+.main-content { padding: 60px 0 80px; }
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 40px;
+  align-items: start;
+}
+.section { margin-bottom: 48px; }
+.section-title {
+  font-size: 20px; font-weight: 700; color: var(--text-dark);
+  margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+}
+.section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.section-icon {
+  width: 32px; height: 32px; background: var(--primary-light);
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  color: var(--primary-dark); font-size: 16px; flex-shrink: 0;
+}
+.build-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+.build-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px 16px;
+  display: flex; align-items: flex-start; gap: 12px;
+  transition: box-shadow .2s, transform .2s, border-color .2s;
+}
+.build-card:hover { box-shadow: var(--shadow-sm); transform: translateY(-2px); border-color: var(--accent); }
+.build-dot { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+.build-text { font-size: 14px; font-weight: 500; color: var(--text-dark); line-height: 1.5; }
+.outcomes-list { display: flex; flex-direction: column; gap: 12px; }
+.outcome-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 16px; background: var(--white);
+  border: 1px solid var(--border); border-radius: var(--radius); transition: border-color .2s;
+}
+.outcome-item:hover { border-color: var(--accent); }
+.outcome-check {
+  width: 24px; height: 24px; background: var(--primary);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 13px; flex-shrink: 0; margin-top: 1px;
+}
+.outcome-text { font-size: 14px; color: var(--text-dark); line-height: 1.6; }
+.curriculum-list { display: flex; flex-direction: column; gap: 0; }
+.week-item { display: flex; gap: 0; position: relative; }
+.week-item:not(:last-child) .week-line {
+  position: absolute; left: 19px; top: 44px; bottom: 0;
+  width: 2px; background: var(--border);
+}
+.week-marker { display: flex; flex-direction: column; align-items: center; padding-right: 20px; position: relative; z-index: 1; }
+.week-dot {
+  width: 38px; height: 38px; background: var(--primary-light);
+  border: 2px solid var(--primary); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--primary-dark); flex-shrink: 0;
+}
+.week-content { flex: 1; padding-bottom: 28px; }
+.week-title { font-size: 15px; font-weight: 600; color: var(--text-dark); margin-bottom: 4px; margin-top: 8px; }
+.week-desc { font-size: 13px; color: var(--text-gray); line-height: 1.6; }
+.tools-group { margin-bottom: 24px; }
+.tools-group-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-light); margin-bottom: 12px; }
+.tools-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.tool-chip {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 100px; padding: 6px 14px;
+  font-size: 13px; font-weight: 500; color: var(--text-dark);
+  transition: border-color .2s, background .2s;
+}
+.tool-chip:hover { border-color: var(--primary); background: var(--primary-light); }
+.sidebar { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 20px; }
+.enroll-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-md);
+}
+.enroll-card-header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  padding: 20px 20px 16px;
+}
+.enroll-card-price { font-size: 28px; font-weight: 800; color: #fff; line-height: 1; margin-bottom: 4px; }
+.enroll-card-price-label { font-size: 12px; color: rgba(255,255,255,.75); font-weight: 500; }
+.enroll-card-body { padding: 20px; }
+.enroll-detail {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px;
+}
+.enroll-detail:last-of-type { border-bottom: none; }
+.enroll-detail-label { color: var(--text-gray); display: flex; align-items: center; gap: 6px; }
+.enroll-detail-value { font-weight: 600; color: var(--text-dark); }
+.btn-enroll {
+  display: block; width: 100%; padding: 14px;
+  background: var(--primary); color: #fff;
+  font-family: var(--font-body); font-size: 15px; font-weight: 700;
+  border: none; border-radius: var(--radius); cursor: pointer;
+  text-align: center; text-decoration: none; margin-top: 16px;
+  transition: background .2s, transform .15s; letter-spacing: .01em;
+}
+.btn-enroll:hover { background: var(--primary-dark); transform: translateY(-1px); }
+.btn-enroll:active { transform: translateY(0); }
+.cert-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+.cert-card-inner { display: flex; gap: 14px; align-items: flex-start; }
+.cert-icon {
+  width: 44px; height: 44px; background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+  border-radius: 12px; display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+}
+.cert-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-light); margin-bottom: 4px; }
+.cert-name { font-size: 14px; font-weight: 600; color: var(--text-dark); line-height: 1.4; }
+
+@media (max-width: 860px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-stat-card { display: none; }
+  .content-grid { grid-template-columns: 1fr; }
+  .sidebar { position: static; }
+}
+@media (max-width: 560px) {
+  .build-grid { grid-template-columns: 1fr; }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-left { animation: fadeUp .55s ease both; }
+.hero-stat-card { animation: fadeUp .55s .15s ease both; }
+.section { animation: fadeUp .5s ease both; }
+.section:nth-child(2) { animation-delay: .07s; }
+.section:nth-child(3) { animation-delay: .14s; }
+.section:nth-child(4) { animation-delay: .21s; }
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<!-- ── HERO ──────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="container">
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'programs' %}">Programs</a>
+      <span class="breadcrumb-sep">&#8250;</span>
+      <span class="breadcrumb-current">{{ program.name }}</span>
+    </nav>
+
+    <div class="hero-inner">
+      <div class="hero-left">
+
+        <div class="hero-icon">
+          {% with code=program.code|lower %}
+            {% if 'cod' in code or 'web' in code %}💻
+            {% elif 'robot' in code or 'arduino' in code %}🤖
+            {% elif 'ai' in code or 'machine' in code or 'ml' in code %}🧠
+            {% elif 'drone' in code or 'uav' in code %}🚁
+            {% elif 'kid' in code or 'junior' in code or 'scratch' in code %}🎮
+            {% elif 'cyber' in code or 'security' in code or 'hack' in code %}🔐
+            {% else %}💡
+            {% endif %}
+          {% endwith %}
+        </div>
+
+        {% if program.level %}
+          <div class="hero-badge">
+            <i class="ti ti-certificate"></i>
+            {{ program.level.name }}
+          </div>
+        {% endif %}
+
+        <h1 class="hero-title">{{ program.name }}</h1>
+
+        {% if program.hero_copy %}
+          <p class="hero-copy">{{ program.hero_copy }}</p>
+        {% endif %}
+
+        <div class="hero-tags">
+          {% if program.age_range %}
+            <span class="hero-tag">
+              <i class="ti ti-users"></i>
+              {{ program.age_range.title }}
+            </span>
+          {% endif %}
+          {% if program.duration_weeks %}
+            <span class="hero-tag">
+              <i class="ti ti-calendar"></i>
+              {{ program.duration_weeks }} weeks
+            </span>
+          {% endif %}
+          {% if program.total_hours %}
+            <span class="hero-tag">
+              <i class="ti ti-clock"></i>
+              {{ program.total_hours }} hours
+            </span>
+          {% endif %}
+        </div>
+
+      </div><!-- .hero-left -->
+
+      <!-- Floating stat card -->
+      <div class="hero-stat-card">
+        <div class="stat-row">
+
+          {% if program.age_range %}
+          <div class="stat-item">
+            <div class="stat-icon"><i class="ti ti-users"></i></div>
+            <div>
+              <div class="stat-label">Age Range</div>
+              <div class="stat-value">{{ program.age_range.title }}</div>
+            </div>
+          </div>
+          {% endif %}
+
+          {% if program.duration_weeks %}
+          <div class="stat-item">
+            <div class="stat-icon"><i class="ti ti-calendar"></i></div>
+            <div>
+              <div class="stat-label">Duration</div>
+              <div class="stat-value">{{ program.duration_weeks }} weeks</div>
+            </div>
+          </div>
+          {% endif %}
+
+          {% if program.total_hours %}
+          <div class="stat-item">
+            <div class="stat-icon"><i class="ti ti-clock"></i></div>
+            <div>
+              <div class="stat-label">Total Hours</div>
+              <div class="stat-value">{{ program.total_hours }} hrs</div>
+            </div>
+          </div>
+          {% endif %}
+
+          {% if program.level %}
+          <div class="stat-item">
+            <div class="stat-icon"><i class="ti ti-certificate"></i></div>
+            <div>
+              <div class="stat-label">Level</div>
+              <div class="stat-value">{{ program.level.name }}</div>
+            </div>
+          </div>
+          {% endif %}
+
+        </div>
+      </div><!-- .hero-stat-card -->
+
+    </div><!-- .hero-inner -->
+  </div>
+</section>
+
+<!-- Wave divider -->
+<div class="wave-divider">
+  <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:60px;">
+    <path d="M0,40 C360,80 1080,0 1440,40 L1440,60 L0,60 Z" fill="#F8FAFB"/>
+  </svg>
+</div>
+
+
+<!-- ── MAIN ───────────────────────────────────────────────────────── -->
+<div class="main-content">
+  <div class="container">
+    <div class="content-grid">
+
+      <!-- Left column -->
+      <div>
+
+        <!-- Description -->
+        {% if program.description %}
+        <div class="section">
+          <h2 class="section-title">
+            <span class="section-icon"><i class="ti ti-info-circle"></i></span>
+            About this program
+          </h2>
+          <p style="font-size:15px;color:var(--text-gray);line-height:1.8;">
+            {{ program.description }}
+          </p>
+        </div>
+        {% endif %}
+
+        <!-- What They Build -->
+        {% if program.what_they_build %}
+        <div class="section">
+          <h2 class="section-title">
+            <span class="section-icon"><i class="ti ti-hammer"></i></span>
+            What they'll build
+          </h2>
+          <div class="build-grid">
+            {% for item in program.what_they_build %}
+            <div class="build-card">
+              <div class="build-dot"></div>
+              <span class="build-text">{{ item }}</span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Learning Outcomes -->
+        {% if program.learning_outcomes %}
+        <div class="section">
+          <h2 class="section-title">
+            <span class="section-icon"><i class="ti ti-bulb"></i></span>
+            Learning outcomes
+          </h2>
+          <div class="outcomes-list">
+            {% for outcome in program.learning_outcomes %}
+            <div class="outcome-item">
+              <div class="outcome-check"><i class="ti ti-check"></i></div>
+              <span class="outcome-text">{{ outcome }}</span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Curriculum -->
+        {% comment %} {% if program.curriculum %}
+        <div class="section">
+          <h2 class="section-title">
+            <span class="section-icon"><i class="ti ti-list-details"></i></span>
+            Curriculum
+          </h2>
+          <div class="curriculum-list">
+            {% for week in program.curriculum %}
+            <div class="week-item">
+              <div class="week-line"></div>
+              <div class="week-marker">
+                <div class="week-dot">W{{ week.week_number }}</div>
+              </div>
+              <div class="week-content">
+                <div class="week-title">{{ week.title }}</div>
+                {% if week.description %}
+                <div class="week-desc">{{ week.description }}</div>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %} {% endcomment %}
+
+        <!-- Tools -->
+        {% if program.tools_by_type %}
+        <div class="section">
+          <h2 class="section-title">
+            <span class="section-icon"><i class="ti ti-tools"></i></span>
+            Tools &amp; resources
+          </h2>
+          {% for group in program.tools_by_type %}
+          <div class="tools-group">
+            
+            <div class="tools-group-title">{{ group.type.name }}</div>
+            <div class="tools-chips">
+              {% for pt in group.items %}
+              <span class="tool-chip">
+                <i class="ti ti-circle-dot" style="font-size:12px;color:var(--primary);"></i>
+                {{ pt.name }}
+              </span>
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+      </div><!-- /left -->
+
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+
+        <!-- Enrol card -->
+        <div class="enroll-card">
+          <div class="enroll-card-header">
+            {# FIX: use model's fee_display property instead of manual formatting #}
+            {% if program.term_fee %}
+              <div class="enroll-card-price">{{ program.fee_display }}</div>
+            {% else %}
+              <div class="enroll-card-price" style="font-size:20px;">Contact us for fees</div>
+            {% endif %}
+          </div>
+
+          <div class="enroll-card-body">
+            {% if program.age_range %}
+            <div class="enroll-detail">
+              <span class="enroll-detail-label">
+                <i class="ti ti-users" style="font-size:15px;"></i> Age Range
+              </span>
+              <span class="enroll-detail-value">{{ program.age_range.title }}</span>
+            </div>
+            {% endif %}
+
+            {% if program.duration_weeks %}
+            <div class="enroll-detail">
+              <span class="enroll-detail-label">
+                <i class="ti ti-calendar" style="font-size:15px;"></i> Duration
+              </span>
+              <span class="enroll-detail-value">{{ program.duration_weeks }} weeks</span>
+            </div>
+            {% endif %}
+
+            {% if program.total_hours %}
+            <div class="enroll-detail">
+              <span class="enroll-detail-label">
+                <i class="ti ti-clock" style="font-size:15px;"></i> Total hours
+              </span>
+              <span class="enroll-detail-value">{{ program.total_hours }} hrs</span>
+            </div>
+            {% endif %}
+
+            {% if program.level %}
+            <div class="enroll-detail">
+              <span class="enroll-detail-label">
+                <i class="ti ti-certificate" style="font-size:15px;"></i> Level
+              </span>
+              <span class="enroll-detail-value">{{ program.level.name }}</span>
+            </div>
+            {% endif %}
+
+            <a href="#enroll" class="btn-enroll">Enrol Now →</a>
+          </div>
+        </div>
+
+        <!-- Certificate card -->
+        {% if program.certificate_name %}
+        <div class="cert-card">
+          <div class="cert-card-inner">
+            <div class="cert-icon">🏅</div>
+            <div>
+              <div class="cert-label">Certificate</div>
+              <div class="cert-name">{{ program.certificate_name }}</div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+      </aside>
+
+    </div><!-- /content-grid -->
+  </div>
+</div>
+
+{% endblock %}
