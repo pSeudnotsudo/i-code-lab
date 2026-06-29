@@ -1,0 +1,682 @@
+{% extends "icode-admin/base_admin.html" %}
+{% block extra_css %}
+<style>
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.page-title   { font-size: 26px; font-weight: 700; }
+.page-subtitle { color: var(--text-gray); margin-top: 4px; }
+
+/* ── Filter tabs ── */
+.filter-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.filter-tab {
+    padding: 7px 18px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.filter-tab.active,
+.filter-tab:hover {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+/* ── Table ── */
+.table-card {
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+.custom-table th {
+    background: #f8fafb;
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+}
+
+.custom-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    vertical-align: top;
+}
+
+.custom-table tr:last-child td { border-bottom: none; }
+.custom-table tr:hover { background: #fafcfd; }
+
+/* ── Avatar ── */
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--primary-light, #e6f7f7);
+    color: var(--primary-dark, #17a8a8);
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.author-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.author-name { font-weight: 600; }
+.author-role { color: var(--text-gray); font-size: 12px; margin-top: 2px; }
+
+/* ── Stars ── */
+.stars { color: #f59e0b; letter-spacing: 1px; font-size: 13px; }
+.stars .off { color: #d1d5db; }
+
+/* ── Content preview ── */
+.content-preview {
+    max-width: 320px;
+    color: #4b5563;
+    line-height: 1.55;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ── Badges ── */
+.badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.badge-active  { background: #e6f7ee; color: #1a7a4a; }
+.badge-pending { background: #fff4e3; color: #b86800; }
+
+/* ── Toggle switch ── */
+.toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.toggle {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
+.toggle input { opacity: 0; width: 0; height: 0; }
+
+.toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: #d1d5db;
+    border-radius: 22px;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 3px;
+    top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: .25s;
+}
+
+.toggle input:checked + .toggle-slider { background: var(--primary); }
+.toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+/* ── Action buttons ── */
+.table-btn {
+    border: none;
+    background: #eef2f5;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: .2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.table-btn:hover { background: #dfe7ec; }
+.table-btn.danger:hover { background: #fee2e2; color: #dc2626; }
+
+/* ── Empty state ── */
+.empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--text-gray);
+}
+
+.empty-state i { font-size: 40px; opacity: .3; display: block; margin-bottom: 12px; }
+
+/* ── Toast ── */
+.toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 6px 20px rgba(0,0,0,.12);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .3s, transform .3s;
+    pointer-events: none;
+}
+
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast-success { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+.toast-error   { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+/* ── View modal ── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-overlay.show { display: flex; }
+
+.modal-box {
+    width: 100%;
+    max-width: 520px;
+    background: #fff;
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: 0 10px 40px rgba(0,0,0,.2);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h3 { font-size: 18px; font-weight: 600; }
+
+.close-btn {
+    border: none;
+    background: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--text-gray);
+}
+
+.modal-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.modal-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--primary-light, #e6f7f7);
+    color: var(--primary-dark, #17a8a8);
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.modal-content-text {
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.75;
+    background: #f9fafb;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 20px;
+    border-left: 3px solid var(--primary);
+}
+
+.modal-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.btn-primary:hover { background: var(--primary-dark); }
+
+.btn-secondary {
+    border: none;
+    background: #eef2f5;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 13px;
+    transition: .2s;
+}
+
+.btn-secondary:hover { background: #dde5ea; }
+
+/* ── Stats strip ── */
+.stats-strip {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.stat-pill {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+}
+
+.stat-pill i { font-size: 18px; }
+.stat-num { font-size: 20px; font-weight: 700; }
+.stat-lbl { font-size: 11px; color: var(--text-gray); }
+
+</style>
+{% endblock %}
+
+
+{% block admin_content %}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Testimonials</h2>
+        <p class="page-subtitle">Review and approve submitted testimonials</p>
+    </div>
+</div>
+
+<!-- Stats strip -->
+<div class="stats-strip">
+    <div class="stat-pill">
+        <i class="ti ti-message-2" style="color:var(--primary)"></i>
+        <div>
+            <div class="stat-num">{{ total_count }}</div>
+            <div class="stat-lbl">Total</div>
+        </div>
+    </div>
+    <div class="stat-pill">
+        <i class="ti ti-circle-check" style="color:#1a7a4a"></i>
+        <div>
+            <div class="stat-num">{{ active_count }}</div>
+            <div class="stat-lbl">Published</div>
+        </div>
+    </div>
+    <div class="stat-pill">
+        <i class="ti ti-clock" style="color:#b86800"></i>
+        <div>
+            <div class="stat-num">{{ pending_count }}</div>
+            <div class="stat-lbl">Pending</div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter tabs -->
+<div class="filter-tabs">
+    <button class="filter-tab active" onclick="filterTable('all', this)">All</button>
+    <button class="filter-tab" onclick="filterTable('active', this)">Published</button>
+    <button class="filter-tab" onclick="filterTable('pending', this)">Pending</button>
+</div>
+
+<!-- Table -->
+<div class="card table-card">
+    <table class="custom-table">
+        <thead>
+            <tr>
+                <th>Author</th>
+                <th>Rating</th>
+                <th>Testimonial</th>
+                <th>Status</th>
+                <th>Publish</th>
+                <th width="80">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="testimonialTable">
+
+            {% for t in testimonials %}
+            <tr id="row-{{ t.id }}"
+                data-id="{{ t.id }}"
+                data-status="{{ t.is_active|yesno:'active,pending' }}">
+
+                <!-- Author -->
+                <td>
+                    <div class="author-cell">
+                        <div class="avatar">{{ t.avatar_initials }}</div>
+                        <div>
+                            <div class="author-name">{{ t.author_name }}</div>
+                            <div class="author-role">{{ t.author_role }}</div>
+                        </div>
+                    </div>
+                </td>
+
+                <!-- Rating -->
+                <td>
+                    <div class="stars">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= t.rating %}★{% else %}<span class="off">★</span>{% endif %}
+                        {% endfor %}
+                    </div>
+                </td>
+
+                <!-- Content preview -->
+                <td>
+                    <div class="content-preview">{{ t.content }}</div>
+                </td>
+
+                <!-- Badge -->
+                <td class="status-cell">
+                    {% if t.is_active %}
+                        <span class="badge badge-active">Published</span>
+                    {% else %}
+                        <span class="badge badge-pending">Pending</span>
+                    {% endif %}
+                </td>
+
+                <!-- Toggle -->
+                <td>
+                    <label class="toggle" title="Toggle publish">
+                        <input type="checkbox"
+                               class="toggle-input"
+                               data-id="{{ t.id }}"
+                               {% if t.is_active %}checked{% endif %}
+                               onchange="toggleTestimonial(this)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </td>
+
+                <!-- Actions -->
+                <td>
+                    <div style="display:flex;gap:6px;">
+                        <button class="table-btn" title="View full"
+                                onclick="viewTestimonial({{ t.id }}, '{{ t.author_name|escapejs }}', '{{ t.author_role|escapejs }}', '{{ t.avatar_initials }}', {{ t.rating }}, `{{ t.content|escapejs }}`, {{ t.is_active|yesno:'true,false' }})">
+                            <i class="ti ti-eye"></i>
+                        </button>
+                        <button class="table-btn danger" title="Delete"
+                                onclick="deleteTestimonial({{ t.id }})">
+                            <i class="ti ti-trash"></i>
+                        </button>
+                    </div>
+                </td>
+
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">
+                    <div class="empty-state">
+                        <i class="ti ti-message-off"></i>
+                        No testimonials submitted yet.
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+
+<!-- ── View Modal ── -->
+<div class="modal-overlay" id="viewModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Testimonial</h3>
+            <button class="close-btn" onclick="closeViewModal()"><i class="ti ti-x"></i></button>
+        </div>
+
+        <div class="modal-author">
+            <div class="modal-avatar" id="mAvatar"></div>
+            <div>
+                <div style="font-weight:700;font-size:15px;" id="mName"></div>
+                <div style="color:var(--text-gray);font-size:13px;" id="mRole"></div>
+            </div>
+        </div>
+
+        <div class="stars" id="mStars" style="margin-bottom:14px;font-size:16px;"></div>
+
+        <div class="modal-content-text" id="mContent"></div>
+
+        <div class="modal-meta">
+            <span id="mBadge"></span>
+            <div style="display:flex;gap:8px;">
+                <button class="btn-secondary" onclick="closeViewModal()">Close</button>
+                <button class="btn-primary" id="mToggleBtn" onclick="toggleFromModal()"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+
+const CSRF = "{{ csrf_token }}";
+let currentModalId = null;
+let currentModalActive = null;
+
+/* ── Toast ── */
+function showToast(msg, type='success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast toast-${type} show`;
+    setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+/* ── Filter tabs ── */
+function filterTable(status, btn) {
+    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    document.querySelectorAll('#testimonialTable tr[data-id]').forEach(row => {
+        if (status === 'all' || row.dataset.status === status) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+/* ── Toggle publish ── */
+function toggleTestimonial(input) {
+    const id = input.dataset.id;
+    const is_active = input.checked;
+
+    fetch(`/icode-admin/testimonials/${id}/toggle/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': CSRF
+        },
+        body: JSON.stringify({ is_active })
+    })
+    .then(r => r.json())
+    .then(res => {
+        if (res.success) {
+            const row = document.getElementById(`row-${id}`);
+            row.dataset.status = is_active ? 'active' : 'pending';
+
+            row.querySelector('.status-cell').innerHTML = is_active
+                ? '<span class="badge badge-active">Published</span>'
+                : '<span class="badge badge-pending">Pending</span>';
+
+            showToast(is_active ? 'Testimonial published.' : 'Testimonial unpublished.');
+        } else {
+            input.checked = !is_active; // revert on failure
+            showToast('Something went wrong.', 'error');
+        }
+    })
+    .catch(() => {
+        input.checked = !is_active;
+        showToast('Network error.', 'error');
+    });
+}
+
+/* ── Delete ── */
+function deleteTestimonial(id) {
+    if (!confirm('Delete this testimonial? This cannot be undone.')) return;
+
+    fetch(`/icode-admin/testimonials/${id}/delete/`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': CSRF }
+    })
+    .then(r => r.json())
+    .then(res => {
+        if (res.success) {
+            document.getElementById(`row-${id}`)?.remove();
+            showToast('Testimonial deleted.');
+        } else {
+            showToast('Delete failed.', 'error');
+        }
+    });
+}
+
+/* ── View modal ── */
+function viewTestimonial(id, name, role, initials, rating, content, isActive) {
+    currentModalId = id;
+    currentModalActive = isActive;
+
+    document.getElementById('mAvatar').textContent = initials;
+    document.getElementById('mName').textContent = name;
+    document.getElementById('mRole').textContent = role;
+    document.getElementById('mContent').textContent = content;
+
+    // Stars
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+        stars += i <= rating ? '★' : '<span class="off">★</span>';
+    }
+    document.getElementById('mStars').innerHTML = stars;
+
+    // Badge & button
+    document.getElementById('mBadge').innerHTML = isActive
+        ? '<span class="badge badge-active">Published</span>'
+        : '<span class="badge badge-pending">Pending</span>';
+
+    document.getElementById('mToggleBtn').textContent = isActive ? 'Unpublish' : 'Publish';
+
+    document.getElementById('viewModal').classList.add('show');
+}
+
+function closeViewModal() {
+    document.getElementById('viewModal').classList.remove('show');
+}
+
+function toggleFromModal() {
+    const newState = !currentModalActive;
+
+    // Sync the real toggle in the table
+    const realToggle = document.querySelector(`.toggle-input[data-id="${currentModalId}"]`);
+    if (realToggle) realToggle.checked = newState;
+
+    // Call the API directly (don't pass a fake input object)
+    fetch(`/icode-admin/testimonials/${currentModalId}/toggle/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': CSRF
+        },
+        body: JSON.stringify({ is_active: newState })
+    })
+    .then(r => r.json())
+    .then(res => {
+        if (res.success) {
+            // Update table row badge
+            const row = document.getElementById(`row-${currentModalId}`);
+            if (row) {
+                row.dataset.status = newState ? 'active' : 'pending';
+                row.querySelector('.status-cell').innerHTML = newState
+                    ? '<span class="badge badge-active">Published</span>'
+                    : '<span class="badge badge-pending">Pending</span>';
+            }
+            // Update modal UI
+            currentModalActive = newState;
+            document.getElementById('mBadge').innerHTML = newState
+                ? '<span class="badge badge-active">Published</span>'
+                : '<span class="badge badge-pending">Pending</span>';
+            document.getElementById('mToggleBtn').textContent = newState ? 'Unpublish' : 'Publish';
+
+            showToast(newState ? 'Testimonial published.' : 'Testimonial unpublished.');
+        } else {
+            if (realToggle) realToggle.checked = !newState; // revert
+            showToast('Something went wrong.', 'error');
+        }
+    })
+    .catch(() => {
+        if (realToggle) realToggle.checked = !newState;
+        showToast('Network error.', 'error');
+    });
+}
+
+/* Close modal on backdrop click */
+document.getElementById('viewModal').addEventListener('click', function(e) {
+    if (e.target === this) closeViewModal();
+});
+
+</script>
+{% endblock %}

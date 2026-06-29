@@ -1,7 +1,6 @@
-{% extends 'icode-admin/base_admin.html' %}
-{% load static %}
-
-{% block extra_css %}
+{% extends 'icode-admin/base_admin.html' %} 
+{% load static %} 
+{% block extra_css%}
 <style>
   .ft-auth-wrapper {
     min-height: 70vh;
@@ -10,7 +9,7 @@
     justify-content: center;
     background: #f0f4f4;
     padding: 100px 16px;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: "Segoe UI", sans-serif;
   }
 
   .ft-auth-card {
@@ -19,7 +18,7 @@
     background: #fff;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
   }
 
   .ft-auth-form-panel {
@@ -44,7 +43,9 @@
     text-align: center;
   }
 
-  .ft-auth-form-group { margin-bottom: 16px; }
+  .ft-auth-form-group {
+    margin-bottom: 16px;
+  }
 
   .ft-auth-form-group label {
     display: block;
@@ -54,7 +55,9 @@
     margin-bottom: 6px;
   }
 
-  .ft-auth-input-wrap { position: relative; }
+  .ft-auth-input-wrap {
+    position: relative;
+  }
 
   .ft-auth-input-wrap input,
   .ft-auth-input-wrap select {
@@ -66,7 +69,9 @@
     color: #333;
     background: #fff;
     outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
     appearance: none;
     -webkit-appearance: none;
     box-sizing: border-box;
@@ -75,10 +80,12 @@
   .ft-auth-input-wrap input:focus,
   .ft-auth-input-wrap select:focus {
     border-color: #3ecfcf;
-    box-shadow: 0 0 0 3px rgba(62,207,207,0.15);
+    box-shadow: 0 0 0 3px rgba(62, 207, 207, 0.15);
   }
 
-  .ft-auth-input-wrap input::placeholder { color: #bbb; }
+  .ft-auth-input-wrap input::placeholder {
+    color: #bbb;
+  }
 
   /* Role pill selector */
   .ft-role-selector {
@@ -102,13 +109,15 @@
     user-select: none;
   }
 
-  .ft-role-pill:hover { border-color: #3ecfcf; }
+  .ft-role-pill:hover {
+    border-color: #3ecfcf;
+  }
 
   .ft-role-pill.selected {
     background: #3ecfcf;
     border-color: #3ecfcf;
     color: #fff;
-    box-shadow: 0 3px 10px rgba(62,207,207,0.35);
+    box-shadow: 0 3px 10px rgba(62, 207, 207, 0.35);
   }
 
   .ft-auth-btn {
@@ -122,18 +131,23 @@
     font-weight: 600;
     cursor: pointer;
     letter-spacing: 0.3px;
-    transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
-    box-shadow: 0 4px 14px rgba(62,207,207,0.4);
+    transition:
+      background 0.2s,
+      box-shadow 0.2s,
+      transform 0.1s;
+    box-shadow: 0 4px 14px rgba(62, 207, 207, 0.4);
     margin-top: 10px;
   }
 
   .ft-auth-btn:hover {
     background: #2ab5b5;
-    box-shadow: 0 6px 18px rgba(62,207,207,0.5);
+    box-shadow: 0 6px 18px rgba(62, 207, 207, 0.5);
     transform: translateY(-1px);
   }
 
-  .ft-auth-btn:active { transform: translateY(0); }
+  .ft-auth-btn:active {
+    transform: translateY(0);
+  }
 
   .ft-back-link {
     display: inline-flex;
@@ -146,19 +160,21 @@
     font-weight: 500;
   }
 
-  .ft-back-link:hover { text-decoration: underline; }
+  .ft-back-link:hover {
+    text-decoration: underline;
+  }
 
   @media (max-width: 620px) {
-    .ft-auth-form-panel { padding: 28px 24px 24px; }
+    .ft-auth-form-panel {
+      padding: 28px 24px 24px;
+    }
   }
 </style>
-{% endblock %}
-
+{% endblock %} 
 {% block admin_content %}
 <div class="ft-auth-wrapper">
   <div class="ft-auth-card">
     <div class="ft-auth-form-panel">
-
       <a href="{% url 'admin_dashboard' %}" class="ft-back-link">
         ← Back to dashboard
       </a>
@@ -169,14 +185,16 @@
       </p>
 
       {% if messages %}
-      <div style="margin-bottom:16px;">
+      <div style="margin-bottom: 16px">
         {% for message in messages %}
-        <p style="font-size:0.82rem; padding:9px 14px; border-radius:8px; margin-bottom:6px;
+        <p
+          style="font-size:0.82rem; padding:9px 14px; border-radius:8px; margin-bottom:6px;
                   {% if message.tags == 'error' %}
                     color:#e74c3c; background:#fdf0ef;
                   {% else %}
                     color:#1a7a4a; background:#eafaf1;
-                  {% endif %}">
+                  {% endif %}"
+        >
           {{ message }}
         </p>
         {% endfor %}
@@ -185,38 +203,156 @@
 
       <form method="post" action="{% url 'create_user' %}">
         {% csrf_token %}
-        <input type="hidden" name="role" id="reg-role-input" value="student">
+        <input type="hidden" name="role" id="reg-role-input" value="student" />
 
         <!-- Role Selector -->
         <div class="ft-auth-form-group">
           <label>Account role</label>
           <div class="ft-role-selector">
-            <div class="ft-role-pill selected" data-role="student" onclick="selectRole('student')">
+            <div
+              class="ft-role-pill selected"
+              data-role="student"
+              onclick="selectRole('student')"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                <path d="M6 12v5c3 3 9 3 12 0v-5" />
+              </svg>
+              Student
+            </div>
+
+            <div
+              class="ft-role-pill"
+              data-role="parent"
+              onclick="selectRole('parent')"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+              Parent
+            </div>
+
+            <div
+              class="ft-role-pill"
+              data-role="instructor"
+              onclick="selectRole('instructor')"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="2" y="3" width="20" height="14" rx="2" />
+                <path d="M8 21h8M12 17v4" />
+                <path d="M7 9h10M7 12h6" />
+              </svg>
+              Instructor
+            </div>
+
+            <div
+              class="ft-role-pill"
+              data-role="admin"
+              onclick="selectRole('admin')"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+              Admin
+            </div>
+          </div>
+        </div>
+        {% comment %}
+        <div class="ft-auth-form-group">
+          <label>Account role</label>
+          <div class="ft-role-selector">
+            <div
+              class="ft-role-pill selected"
+              data-role="student"
+              onclick="selectRole('student')"
+            >
               🎓 Student
             </div>
-            <div class="ft-role-pill" data-role="parent" onclick="selectRole('parent')">
+            <div
+              class="ft-role-pill"
+              data-role="parent"
+              onclick="selectRole('parent')"
+            >
               👨‍👩‍👧 Parent
             </div>
-            <div class="ft-role-pill" data-role="admin" onclick="selectRole('admin')">
+            <div
+              class="ft-role-pill"
+              data-role="admin"
+              onclick="selectRole('admin')"
+            >
               🛡️ Admin
             </div>
           </div>
         </div>
+        {% endcomment %}
 
         <!-- Name row -->
-        <div style="display:flex; gap:12px;">
-          <div class="ft-auth-form-group" style="flex:1;">
+        <div style="display: flex; gap: 12px">
+          <div class="ft-auth-form-group" style="flex: 1">
             <label for="reg-first-name">First Name</label>
             <div class="ft-auth-input-wrap">
-              <input type="text" id="reg-first-name" name="first_name"
-                     placeholder="First name" required>
+              <input
+                type="text"
+                id="reg-first-name"
+                name="first_name"
+                placeholder="First name"
+                required
+              />
             </div>
           </div>
-          <div class="ft-auth-form-group" style="flex:1;">
+          <div class="ft-auth-form-group" style="flex: 1">
             <label for="reg-last-name">Last Name</label>
             <div class="ft-auth-input-wrap">
-              <input type="text" id="reg-last-name" name="last_name"
-                     placeholder="Last name" required>
+              <input
+                type="text"
+                id="reg-last-name"
+                name="last_name"
+                placeholder="Last name"
+                required
+              />
             </div>
           </div>
         </div>
@@ -224,16 +360,25 @@
         <div class="ft-auth-form-group">
           <label for="reg-email">Email Address</label>
           <div class="ft-auth-input-wrap">
-            <input type="email" id="reg-email" name="email"
-                   placeholder="Enter user's email address" required>
+            <input
+              type="email"
+              id="reg-email"
+              name="email"
+              placeholder="Enter user's email address"
+              required
+            />
           </div>
         </div>
 
         <div class="ft-auth-form-group">
           <label for="reg-phone">Phone Number</label>
           <div class="ft-auth-input-wrap">
-            <input type="text" id="reg-phone" name="phone"
-                   placeholder="e.g. 0712345678">
+            <input
+              type="text"
+              id="reg-phone"
+              name="phone"
+              placeholder="e.g. 0712345678"
+            />
           </div>
         </div>
 
@@ -241,16 +386,15 @@
           Create Account &amp; Send Invite Link
         </button>
       </form>
-
     </div>
   </div>
 </div>
 
 <script>
   function selectRole(role) {
-    document.getElementById('reg-role-input').value = role;
-    document.querySelectorAll('.ft-role-pill').forEach(pill => {
-      pill.classList.toggle('selected', pill.dataset.role === role);
+    document.getElementById("reg-role-input").value = role;
+    document.querySelectorAll(".ft-role-pill").forEach((pill) => {
+      pill.classList.toggle("selected", pill.dataset.role === role);
     });
   }
 </script>

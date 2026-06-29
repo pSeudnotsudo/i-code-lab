@@ -421,6 +421,13 @@
             <i class="ti ti-user-plus"></i> Create User
           </a>
           <a
+            href="{% url 'team_members' %}"
+            class="nav-item"
+            data-url="{% url 'team_members' %}"
+          >
+            <i class="ti ti-user-plus"></i> Team members
+          </a>
+          <a
             href="{% url 'enrollments_list' %}"
             class="nav-item"
             data-url="{% url 'enrollments_list' %}"
@@ -430,6 +437,27 @@
               >{{ pending_count }}</span
             >{% endif %}
           </a>
+          
+          <a
+            href="{% url 'testimonials_admin' %}"
+            class="nav-item"
+            data-url="{% url 'testimonials_admin' %}"
+          >
+            <i class="ti ti-message-2"></i> Testimonials
+          </a>
+          <a href="{% url 'gallery_admin' %}"
+   class="nav-item {% if request.resolver_match.url_name == 'gallery_admin' %}active{% endif %}">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="18" height="18" rx="2"/>
+    <circle cx="8.5" cy="8.5" r="1.5"/>
+    <polyline points="21,15 16,10 5,21"/>
+  </svg>
+  Gallery
+</a>
+          
+          
+          
         </div>
 
         <!-- Settings Nav -->
@@ -566,9 +594,13 @@
         <!-- Footer / User -->
         <div class="sidebar-footer">
           <div class="user-row">
+            
             <div class="user-avatar">
-              {{ request.user.first_name.0|upper }}{{
-              request.user.last_name.0|upper }}
+              {% if request.user.first_name or request.user.last_name %}
+                {{ request.user.first_name.0|upper }}{{ request.user.last_name.0|upper }}
+              {% else %}
+                {{ request.user.username.0|upper }}
+              {% endif %}
             </div>
             <div class="user-info">
               <div class="user-name">
@@ -576,12 +608,21 @@
               </div>
               <div class="user-role">Administrator</div>
             </div>
-            <a href="{% url 'logout' %}" title="Logout"
-              ><i
-                class="ti ti-logout"
-                style="color: rgba(255, 255, 255, 0.3); font-size: 16px"
-              ></i
-            ></a>
+            <a href="{% url 'logout' %}" title="Logout" style="
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: #49bbbd;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+  box-shadow: 0 2px 8px rgba(73,187,189,0.35);
+" onmouseover="this.style.background='#3da4a6';this.style.transform='translateY(-1px)'"
+   onmouseout="this.style.background='#49bbbd';this.style.transform='translateY(0)'">
+  <i class="ti ti-logout" style="color: #fff; font-size: 18px;"></i>
+</a>
           </div>
         </div>
       </aside>

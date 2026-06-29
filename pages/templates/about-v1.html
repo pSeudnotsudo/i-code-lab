@@ -6,6 +6,23 @@
 {% block extra_css %}
 <style>
   /* =============================================
+     ft-about: CSS Variables & Base
+     ============================================= */
+  :root {
+    --primary-teal: #49BBBD;
+    --primary-teal-dark: #3DA4A6;
+    --accent-orange: #F48C06;
+    --accent-purple: #9B59B6;
+    --text-dark: #2C3E50;
+    --text-gray: #5D6C7B;
+    --white: #FFFFFF;
+    --bg-light: #F8FAFB;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.13);
+  }
+
+  /* =============================================
      ft-about: Section Common Styles
      ============================================= */
   .ft-about__section {
@@ -13,7 +30,7 @@
   }
 
   .ft-about__section--light {
-    background-color: var(--soft-mist);
+    background-color: var(--bg-light);
   }
 
   .ft-about__container {
@@ -24,8 +41,7 @@
   .ft-about__section-title {
     font-size: 2rem;
     font-weight: 700;
-    font-family: var(--font-display);
-    color: var(--deep-navy);
+    color: var(--text-dark);
     text-align: center;
     margin-bottom: 12px;
   }
@@ -43,45 +59,44 @@
      ft-about: Section 1 - Hero
      ============================================= */
   .ft-about__hero {
-    background: linear-gradient(135deg, var(--midnight) 0%, var(--deep-navy) 60%, var(--royal-blue) 100%);
+    background: linear-gradient(135deg, var(--primary-teal) 0%, #6DD5DA 100%);
     padding-top: 140px;
     padding-bottom: 64px;
     padding-left: 24px;
     padding-right: 24px;
     text-align: center;
-    color: var(--pure-white);
+    color: var(--white);
   }
 
   .ft-about__hero-title {
     font-size: 2.8rem;
     font-weight: 800;
-    font-family: var(--font-display);
     margin-bottom: 16px;
-    color: var(--pure-white);
+    color: var(--white);
   }
 
   .ft-about__hero-tagline {
     font-size: 1.2rem;
     font-weight: 600;
-    font-family: var(--font-display);
     margin-bottom: 20px;
-    color: var(--tech-teal);
+    opacity: 0.95;
+    color: var(--white);
   }
 
   .ft-about__hero-text {
     font-size: 1.05rem;
     max-width: 640px;
     margin: 0 auto;
-    opacity: 0.88;
+    opacity: 0.90;
     line-height: 1.7;
-    color: var(--soft-mist);
+    color: var(--white);
   }
 
   /* =============================================
      ft-about: Section 2 - Mission
      ============================================= */
   .ft-about__mission {
-    background: var(--pure-white);
+    background: var(--white);
   }
 
   .ft-about__mission-grid {
@@ -94,8 +109,7 @@
   .ft-about__mission-title {
     font-size: 2rem;
     font-weight: 700;
-    font-family: var(--font-display);
-    color: var(--deep-navy);
+    color: var(--text-dark);
     margin-bottom: 20px;
     text-align: left;
   }
@@ -112,27 +126,18 @@
     box-shadow: var(--shadow-lg);
   }
 
-  /*.ft-about__mission-img {*/
-  /*  width: 100%;*/
-  /*  height: 380px;*/
-  /*  object-fit: cover;*/
-  /*  display: block;*/
   .ft-about__mission-img {
     width: 100%;
-    height: 300px;
-    object-fit: contain;
-    object-position: center;
+    height: 380px;
+    object-fit: cover;
     display: block;
-    background: #fff;
-    padding: 10px;
-  }
   }
 
   /* =============================================
      ft-about: Section 3 - What We Offer
      ============================================= */
   .ft-about__offers {
-    background: var(--soft-mist);
+    background: var(--bg-light);
   }
 
   .ft-about__offer-cards {
@@ -143,11 +148,10 @@
   }
 
   .ft-about__offer-card {
-    background: var(--pure-white);
-    border-radius: var(--radius);
+    background: var(--white);
+    border-radius: 16px;
     box-shadow: var(--shadow-md);
     padding: 36px 28px;
-    border: 1px solid var(--border);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
   }
 
@@ -166,28 +170,26 @@
     margin-bottom: 20px;
   }
 
-  .ft-about__offer-icon--orange { background: rgba(245, 166, 35, 0.12); color: var(--innovation-gold); }
-  .ft-about__offer-icon--teal   { background: rgba(30, 191, 191, 0.12); color: var(--tech-teal); }
-  .ft-about__offer-icon--purple { background: rgba(43, 82, 150, 0.12);  color: var(--royal-blue); }
+  .ft-about__offer-icon--orange { background: rgba(244, 140, 6, 0.12); color: var(--accent-orange); }
+  .ft-about__offer-icon--teal   { background: rgba(73, 187, 189, 0.12); color: var(--primary-teal); }
+  .ft-about__offer-icon--purple { background: rgba(155, 89, 182, 0.12); color: var(--accent-purple); }
 
   .ft-about__offer-age {
-    font-size: 0.78rem;
-    font-weight: 700;
-    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.07em;
+    letter-spacing: 0.06em;
     margin-bottom: 8px;
   }
 
-  .ft-about__offer-age--orange { color: var(--innovation-gold); }
-  .ft-about__offer-age--teal   { color: var(--tech-teal); }
-  .ft-about__offer-age--purple { color: var(--royal-blue); }
+  .ft-about__offer-age--orange { color: var(--accent-orange); }
+  .ft-about__offer-age--teal   { color: var(--primary-teal-dark); }
+  .ft-about__offer-age--purple { color: var(--accent-purple); }
 
   .ft-about__offer-title {
     font-size: 1.15rem;
     font-weight: 700;
-    font-family: var(--font-display);
-    color: var(--deep-navy);
+    color: var(--text-dark);
     margin-bottom: 12px;
   }
 
@@ -213,11 +215,11 @@
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: var(--tech-teal);
+    background: var(--primary-teal);
   }
 
-  .ft-about__offer-card--orange .ft-about__offer-list li::before { background: var(--innovation-gold); }
-  .ft-about__offer-card--purple .ft-about__offer-list li::before { background: var(--royal-blue); }
+  .ft-about__offer-card--orange .ft-about__offer-list li::before { background: var(--accent-orange); }
+  .ft-about__offer-card--purple .ft-about__offer-list li::before { background: var(--accent-purple); }
 
   .ft-about__offer-cta {
     text-align: center;
@@ -231,8 +233,7 @@
     padding: 14px 36px;
     border-radius: 999px;
     font-size: 1rem;
-    font-weight: 700;
-    font-family: var(--font-display);
+    font-weight: 600;
     text-decoration: none;
     transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;
@@ -240,30 +241,29 @@
   }
 
   .ft-about__btn--primary {
-    background: var(--tech-teal);
-    color: var(--pure-white);
-    box-shadow: 0 4px 14px rgba(30, 191, 191, 0.35);
+    background: var(--primary-teal);
+    color: var(--white);
+    box-shadow: 0 4px 14px rgba(73, 187, 189, 0.35);
   }
 
   .ft-about__btn--primary:hover {
-    background: var(--primary-dark);
+    background: var(--primary-teal-dark);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(30, 191, 191, 0.45);
-    color: var(--pure-white);
+    box-shadow: 0 6px 20px rgba(73, 187, 189, 0.45);
+    color: var(--white);
     text-decoration: none;
   }
 
   .ft-about__btn--outline-white {
     background: transparent;
-    color: var(--pure-white);
-    border: 2px solid rgba(255, 255, 255, 0.65);
+    color: var(--white);
+    border: 2px solid rgba(255, 255, 255, 0.75);
   }
 
   .ft-about__btn--outline-white:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: var(--tech-teal);
-    color: var(--tech-teal);
+    background: rgba(255, 255, 255, 0.15);
     transform: translateY(-2px);
+    color: var(--white);
     text-decoration: none;
   }
 
@@ -271,7 +271,7 @@
      ft-about: Section 4 - Contact & Location
      ============================================= */
   .ft-about__location {
-    background: var(--pure-white);
+    background: var(--white);
   }
 
   .ft-about__location-grid {
@@ -284,8 +284,7 @@
   .ft-about__location-title {
     font-size: 2rem;
     font-weight: 700;
-    font-family: var(--font-display);
-    color: var(--deep-navy);
+    color: var(--text-dark);
     margin-bottom: 8px;
     text-align: left;
   }
@@ -316,7 +315,7 @@
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: rgba(30, 191, 191, 0.10);
+    background: rgba(73, 187, 189, 0.12);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -326,7 +325,7 @@
   .ft-about__contact-icon svg {
     width: 20px;
     height: 20px;
-    stroke: var(--tech-teal);
+    stroke: var(--primary-teal-dark);
     fill: none;
     stroke-width: 2;
     stroke-linecap: round;
@@ -335,11 +334,10 @@
 
   .ft-about__contact-label {
     font-size: 0.78rem;
-    font-weight: 700;
-    font-family: var(--font-display);
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: var(--tech-teal);
+    color: var(--primary-teal-dark);
     margin-bottom: 3px;
   }
 
@@ -351,7 +349,7 @@
   }
 
   .ft-about__contact-value:hover {
-    color: var(--tech-teal);
+    color: var(--primary-teal-dark);
     text-decoration: none;
   }
 
@@ -365,27 +363,26 @@
      ft-about: Section 5 - CTA
      ============================================= */
   .ft-about__cta {
-    background: linear-gradient(135deg, var(--midnight) 0%, var(--deep-navy) 60%, var(--royal-blue) 100%);
+    background: linear-gradient(135deg, var(--primary-teal) 0%, #6DD5DA 100%);
     padding: 80px 24px;
     text-align: center;
-    color: var(--pure-white);
+    color: var(--white);
   }
 
   .ft-about__cta-title {
     font-size: 2.2rem;
     font-weight: 800;
-    font-family: var(--font-display);
     margin-bottom: 16px;
-    color: var(--pure-white);
+    color: var(--white);
   }
 
   .ft-about__cta-text {
     font-size: 1.05rem;
     max-width: 540px;
     margin: 0 auto 36px;
-    opacity: 0.85;
+    opacity: 0.92;
     line-height: 1.6;
-    color: var(--soft-mist);
+    color: var(--white);
   }
 
   .ft-about__cta-buttons {
@@ -399,7 +396,9 @@
      ft-about: Responsive — 768px
      ============================================= */
   @media (max-width: 768px) {
-    .ft-about__hero-title { font-size: 2rem; }
+    .ft-about__hero-title {
+      font-size: 2rem;
+    }
 
     .ft-about__mission-grid,
     .ft-about__location-grid {
@@ -407,39 +406,71 @@
       gap: 36px;
     }
 
-    .ft-about__mission-img-wrap { order: -1; }
+    .ft-about__mission-img-wrap {
+      order: -1;
+    }
 
     .ft-about__mission-title,
-    .ft-about__location-title { text-align: center; }
+    .ft-about__location-title {
+      text-align: center;
+    }
 
-    .ft-about__location-lead { text-align: center; }
+    .ft-about__location-lead {
+      text-align: center;
+    }
 
-    .ft-about__offer-cards { grid-template-columns: 1fr; }
+    .ft-about__offer-cards {
+      grid-template-columns: 1fr;
+    }
 
-    .ft-about__cta-title { font-size: 1.7rem; }
-
-    .ft-about__section { padding: 60px 20px; }
+    .ft-about__cta-title {
+      font-size: 1.7rem;
+    }
   }
 
   /* =============================================
      ft-about: Responsive — 480px
      ============================================= */
   @media (max-width: 480px) {
-    .ft-about__hero { padding-top: 120px; padding-bottom: 48px; }
-    .ft-about__hero-title   { font-size: 1.7rem; }
-    .ft-about__hero-tagline { font-size: 1rem; }
-    .ft-about__section      { padding: 48px 16px; }
-    .ft-about__section-title{ font-size: 1.4rem; }
-    .ft-about__cta-title    { font-size: 1.35rem; }
-    .ft-about__btn          { padding: 12px 28px; font-size: 0.95rem; }
-    .ft-about__cta-buttons  { flex-direction: column; align-items: center; }
+    .ft-about__hero {
+      padding-top: 120px;
+      padding-bottom: 48px;
+    }
+
+    .ft-about__hero-title {
+      font-size: 1.7rem;
+    }
+
+    .ft-about__hero-tagline {
+      font-size: 1rem;
+    }
+
+    .ft-about__section {
+      padding: 56px 16px;
+    }
+
+    .ft-about__section-title {
+      font-size: 1.6rem;
+    }
+
+    .ft-about__btn {
+      padding: 12px 28px;
+      font-size: 0.95rem;
+    }
+
+    .ft-about__cta-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
   }
 </style>
 {% endblock %}
 
 {% block content %}
 
-<!-- ft-about: Section 1 - Hero -->
+<!-- =============================================
+     ft-about: Section 1 - Hero
+     ============================================= -->
 <section class="ft-about__hero">
   <div class="ft-about__container">
     <h1 class="ft-about__hero-title">About I-Code</h1>
@@ -451,7 +482,9 @@
   </div>
 </section>
 
-<!-- ft-about: Section 2 - Our Mission -->
+<!-- =============================================
+     ft-about: Section 2 - Our Mission
+     ============================================= -->
 <section class="ft-about__section ft-about__mission">
   <div class="ft-about__container">
     <div class="ft-about__mission-grid">
@@ -459,14 +492,14 @@
         <h2 class="ft-about__mission-title">Our Mission</h2>
         <p class="ft-about__mission-text">
           To empower the next generation with future-ready tech skills through hands-on, project-based
-          learning. We believe every student — from age 6 to professional — deserves access to quality
+          learning. We believe every student — from age 9 to professional — deserves access to quality
           technology education that opens doors to real career opportunities.
         </p>
       </div>
       <div class="ft-about__mission-img-wrap">
-          <img
-          src="{% static 'images/rollup_banner.jpeg' %}"
-          alt="i-CODE Robotics & AI Lab — One Stop Arcade, Karen Nairobi"
+        <img
+          src="{% static 'images/robotic_signage_landscape.JPG' %}"
+          alt="Students learning technology at I-Code Lab"
           class="ft-about__mission-img"
           loading="lazy"
         />
@@ -475,7 +508,9 @@
   </div>
 </section>
 
-<!-- ft-about: Section 3 - What We Offer -->
+<!-- =============================================
+     ft-about: Section 3 - What We Offer
+     ============================================= -->
 <section class="ft-about__section ft-about__offers">
   <div class="ft-about__container">
     <h2 class="ft-about__section-title">What We Offer</h2>
@@ -486,12 +521,12 @@
 
     <div class="ft-about__offer-cards">
 
-      <!-- Kids (6-12) -->
+      <!-- Kids (9-12) -->
       <div class="ft-about__offer-card ft-about__offer-card--orange">
         <div class="ft-about__offer-icon ft-about__offer-icon--orange">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
         </div>
-        <p class="ft-about__offer-age ft-about__offer-age--orange">Ages 6 – 12</p>
+        <p class="ft-about__offer-age ft-about__offer-age--orange">Ages 9 – 12</p>
         <h3 class="ft-about__offer-title">Kids</h3>
         <ul class="ft-about__offer-list">
           <li>Scratch Coding</li>
@@ -537,7 +572,9 @@
   </div>
 </section>
 
-<!-- ft-about: Section 4 - Contact & Location -->
+<!-- =============================================
+     ft-about: Section 4 - Contact & Location
+     ============================================= -->
 <section class="ft-about__section ft-about__location">
   <div class="ft-about__container">
     <div class="ft-about__location-grid">
@@ -551,6 +588,7 @@
         </p>
         <ul class="ft-about__contact-list">
 
+          <!-- Location -->
           <li class="ft-about__contact-item">
             <div class="ft-about__contact-icon">
               <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -564,6 +602,7 @@
             </div>
           </li>
 
+          <!-- Phone -->
           <li class="ft-about__contact-item">
             <div class="ft-about__contact-icon">
               <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -572,10 +611,11 @@
             </div>
             <div>
               <p class="ft-about__contact-label">Phone</p>
-              <a href="tel:+254141054939" class="ft-about__contact-value">+25414 1054 939</a>
+              <a href="tel:+254748982170" class="ft-about__contact-value">+2547 48 982 170</a>
             </div>
           </li>
 
+          <!-- Email -->
           <li class="ft-about__contact-item">
             <div class="ft-about__contact-icon">
               <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -585,7 +625,7 @@
             </div>
             <div>
               <p class="ft-about__contact-label">Email</p>
-              <a href="mailto:info@icodeailab.com" class="ft-about__contact-value">info@icodeailab.com</a>
+              <a href="mailto:info@icodeaillab.com" class="ft-about__contact-value">info@icodeaillab.com</a>
             </div>
           </li>
 
@@ -594,30 +634,24 @@
 
       <!-- Right: Map Embed -->
       <div class="ft-about__map-wrap">
-        <!--<iframe-->
-        <!--  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15955.27!2d36.7!3d-1.32!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f1b0000000001%3A0x0!2zMcKwMTknMTIuMCJTIDM2wrA0MicwMC4wIkU!5e0!3m2!1sen!2ske!4v1"-->
-        <!--  width="100%"-->
-        <!--  height="350"-->
-        <!--  style="border:0; border-radius:16px;"-->
-        <!--  allowfullscreen-->
-        <!--  loading="lazy"-->
-        <!--  title="I-Code Lab location — OneStop Arcade Karen, Nairobi"-->
-        <!-- </iframe> -->
-        
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.7262282533325!2d36.747714675447504!3d-1.3406042986466884!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f1b1b561847cf%3A0x8225db8ffea4400d!2sI-CODE%20ROBOTICS%20AND%20AI%20LAB!5e0!3m2!1sen!2ske!4v1780949116028!5m2!1sen!2ske"
-        width="600" 
-        height="450" 
-        style="border:0; border-radius:16px;"
-        allowfullscreen="" loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade">
-            </iframe>
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15955.27!2d36.7!3d-1.32!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f1b0000000001%3A0x0!2zMcKwMTknMTIuMCJTIDM2wrA0MicwMC4wIkU!5e0!3m2!1sen!2ske!4v1"
+          width="100%"
+          height="350"
+          style="border:0; border-radius:16px;"
+          allowfullscreen
+          loading="lazy"
+          title="I-Code Lab location — OneStop Arcade Karen, Nairobi"
+        ></iframe>
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- ft-about: Section 5 - CTA -->
+<!-- =============================================
+     ft-about: Section 5 - CTA
+     ============================================= -->
 <section class="ft-about__cta">
   <div class="ft-about__container">
     <h2 class="ft-about__cta-title">Ready to Join I-Code?</h2>

@@ -1,0 +1,25 @@
+# robots.txt for icodeailab.com
+# Invent the Code. Ignite the Future.
+
+# Default: allow all good bots
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /cgi-bin/
+Disallow: /wp-admin/
+
+# Block known aggressive SEO scrapers
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# Sitemap
+Sitemap: https://icodeailab.com/seo/icode-site-map-2026.xml

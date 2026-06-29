@@ -41,6 +41,7 @@ urlpatterns = [
     path("timelines/store/",views.timeline_store,name="timeline_store"),
     path("timelines/<int:pk>/update/",views.timeline_update,name="timeline_update"),
     
+    
     # ENROLLMENT
     path("enrollments/store/", views.enrollment_store, name="enrollment_store"),
     
@@ -48,6 +49,7 @@ urlpatterns = [
     path('dashboard/student/', views.student_dashboard, name='student_dashboard'),
     path('dashboard/parent/',  views.parent_dashboard,  name='parent_dashboard'),
     # path('dashboard/admin/',   views.admin_dashboard,   name='admin_dashboard'),
+
     
     # MORE ADMIN URLS 
     path("icode-admin/fees/", views.fees_manager, name="fees_manager"),
@@ -77,6 +79,13 @@ urlpatterns = [
     path("icode-admin/program-tool-list/",            views.program_tool_list,       name="program_tool_list"),
     path("icode-admin/program-tool-store/store/",      views.program_tool_store,  name="program_tool_store"),
     path("icode-admin/program-tool-update/<int:pk>/update/", views.program_tool_update, name="program_tool_update"),
+    # TESTIMONIALS ADMIN
+      path("icodeadmin/testimonials/",                views.testimonials_admin,  name="testimonials_admin"),
+    path("icode-admin/testimonials/<int:pk>/toggle/", views.testimonial_toggle,  name="testimonial_toggle"),
+    path("icode-admin/testimonials/<int:pk>/delete/", views.testimonial_delete,  name="testimonial_delete"),
+    
+    #summer-bootcamp
+    path('summer-bootcamp/', views.bootcamp_2026, name='bootcamp_2026'),
 
     
     # PUBLIC URLS
@@ -84,10 +93,12 @@ urlpatterns = [
     path('programs/', views.programs, name='programs'),
     path('about/', views.about, name='about'),
     path('logout/', views.logout_view, name='logout'),
-    path('pricing/', views.pricing, name='pricing'),
+    path('our-team/', views.team, name='team'),
     path('socials/', views.socials, name='socials'),
     path('privacy-policy/', views.serve_privacy_policy, name='serve_privacy_policy'),
     path('programs/<slug:slug>/', views.program_detail, name='programme-detail'),
+    # TESTIMONIALS
+    path("testimonial/submit/", views.submit_testimonial, name="submit_testimonial"),
     # UPLOAD IMAGES $ VIDEOS.
     path('gallery/upload/', views.gallery_upload, name='gallery_upload'),
     
@@ -114,6 +125,21 @@ urlpatterns = [
     # NEWSLETTER SUBSCRIBE
     path('newsletter/subscribe/', views.newsletter_subscribe, name='newsletter_subscribe'),
     path('newsletter/unsubscribe/<str:email>/', views.newsletter_unsubscribe, name='newsletter_unsubscribe'),
+    path('secure-control-9x7a2k-panel/gallery/', views.gallery_admin, name='gallery_admin'),
+    path('secure-control-9x7a2k-panel/gallery/upload/', views.gallery_upload, name='gallery_upload'),
+    path('secure-control-9x7a2k-panel/gallery/delete/<int:pk>/', views.gallery_delete, name='gallery_delete'),
+    
+    
+    # ADMIN MEMBER PAGE UPLOAD
+
+    # ── Team admin ──────────────────────────────────────────────────────
+    path('team/',views.team_icode,name='team_members'),
+    path('icode-admin/team/add/',                     views.team_member_add,      name='team_member_add'),
+    path('icode-admin/team/<int:pk>/detail/',         views.team_member_detail,   name='team_member_detail'),
+    path('icode-admin/team/<int:pk>/update/',         views.team_member_update,   name='team_member_update'),
+    path('icode-admin/team/<int:pk>/toggle/',         views.team_member_toggle,   name='team_member_toggle'),
+    path('icode-admin/team/<int:pk>/delete/',         views.team_member_delete,   name='team_member_delete'),
+
 
 ]
 

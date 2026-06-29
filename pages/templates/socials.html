@@ -123,8 +123,12 @@
     margin-bottom: 10px;
   }
 
-  .stat-item {
+.stat-item {
     text-align: center;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
     color: var(--white);
   }
 
@@ -133,13 +137,16 @@
     font-size: 1.8rem;
     font-weight: 800;
     line-height: 1;
+    color: var(--white);
   }
 
   .stat-item small {
     font-size: 0.72rem;
-    opacity: 0.75;
-    letter-spacing: 0.5px;
-  }
+    opacity: 0.85;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--white);
+   }
 
   /* ── FILTER BAR ── */
   .filter-section {
@@ -787,17 +794,17 @@
   </div>
   <h1>Every <span class="accent">Moment,</span><br>Captured.</h1>
   <p>Relive the energy, creativity, and community that make i-Code unforgettable.</p>
-  <div class="hero-stats">
+<div class="hero-stats">
     <div class="stat-item">
-      <strong>240+</strong>
+      <strong>{{ total_images }}</strong>
       <small>PHOTOS</small>
     </div>
     <div class="stat-item">
-      <strong>36</strong>
+      <strong>{{ total_videos }}</strong>
       <small>VIDEOS</small>
     </div>
     <div class="stat-item">
-      <strong>18</strong>
+      <strong>{{ total_events }}</strong>
       <small>EVENTS</small>
     </div>
   </div>

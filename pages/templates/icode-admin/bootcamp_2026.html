@@ -1,0 +1,520 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Summer Holiday Bootcamp 2026 | i-CODE Robotics & AI Lab{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root {
+    --site-teal: #17c1c8;
+    --deep-navy: #1F3A6E;
+    --site-header-from: #0d2b4e;
+  }
+
+  #bootcamp-page { font-family: 'Poppins', sans-serif; color: #1a1a1a; }
+  #bootcamp-page h1, #bootcamp-page h2, #bootcamp-page h3 { font-family: 'Montserrat', sans-serif; font-weight: 700; margin: 0; }
+  #bootcamp-page section { padding: 70px 20px; }
+  #bootcamp-page .section-inner { max-width: 1100px; margin: 0 auto; }
+  #bootcamp-page .section-title { text-align: center; font-size: 2.1rem; color: var(--deep-navy); margin-bottom: 15px; }
+  #bootcamp-page .section-subtitle { text-align: center; max-width: 750px; margin: 0 auto 50px; color: #555; font-size: 1.05rem; line-height: 1.7; }
+  #bootcamp-page .anchor-nav {
+    background: #fff; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 50;
+  }
+  #bootcamp-page .anchor-nav .section-inner {
+    display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; padding: 14px 20px;
+  }
+  #bootcamp-page .anchor-nav a {
+    color: var(--deep-navy); font-weight: 600; font-size: 0.92rem; text-decoration: none;
+    text-transform: uppercase; letter-spacing: 0.5px; transition: color 0.2s;
+  }
+  #bootcamp-page .anchor-nav a:hover { color: var(--site-teal); }
+
+  /* HERO */
+  #bootcamp-hero {
+    background: linear-gradient(135deg, var(--site-header-from), var(--deep-navy));
+    color: #fff; padding: 90px 20px; text-align: center;
+  }
+  #bootcamp-hero .badge {
+    display: inline-block; background: var(--site-teal); color: #0d2b4e;
+    font-weight: 600; padding: 6px 18px; border-radius: 30px; font-size: 0.85rem;
+    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;
+  }
+  #bootcamp-hero .brand-label {
+    color: var(--site-teal); font-weight: 700; letter-spacing: 2px; font-size: 0.85rem;
+    text-transform: uppercase; margin-bottom: 12px; display: block;
+  }
+  #bootcamp-hero h1 { font-size: 2.8rem; margin-bottom: 10px; }
+  #bootcamp-hero .tagline { font-size: 1.1rem; color: var(--site-teal); font-weight: 600; margin: 12px 0 20px; font-style: italic; }
+  #bootcamp-hero p { max-width: 700px; margin: 0 auto 30px; font-size: 1.05rem; opacity: 0.92; line-height: 1.7; }
+  #bootcamp-hero .btn-group { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+  #bootcamp-hero .btn-primary-icode, #bootcamp-cta .btn-primary-icode {
+    background: var(--site-teal); color: #0d2b4e; border: none; padding: 14px 32px;
+    border-radius: 8px; font-weight: 700; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+    display: inline-block;
+  }
+  #bootcamp-hero .btn-primary-icode:hover, #bootcamp-cta .btn-primary-icode:hover {
+    transform: translateY(-2px); box-shadow: 0 8px 20px rgba(23,193,200,0.4); color: #0d2b4e;
+  }
+
+  /* QUICK FACTS */
+  #bootcamp-facts { background: #f7f9fc; }
+  #bootcamp-facts .facts-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 25px; text-align: center;
+  }
+  #bootcamp-facts .fact-num { font-size: 2.4rem; font-weight: 700; color: var(--deep-navy); font-family: 'Montserrat', sans-serif; }
+  #bootcamp-facts .fact-label { font-size: 0.9rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+
+  /* INTRO */
+  #bootcamp-intro .intro-highlight {
+    margin-top: 35px; text-align: center; background: linear-gradient(135deg, var(--site-header-from), var(--deep-navy));
+    color: #fff; padding: 25px; border-radius: 14px; font-weight: 600;
+  }
+  #bootcamp-intro .intro-highlight strong { color: var(--site-teal); }
+
+  /* REQUIREMENTS TABLE */
+  #bootcamp-requirements { background: #f7f9fc; }
+  #bootcamp-requirements table {
+    width: 100%; border-collapse: collapse; background: #fff;
+    box-shadow: 0 4px 20px rgba(31,58,110,0.08); border-radius: 12px; overflow: hidden;
+  }
+  #bootcamp-requirements td {
+    padding: 16px 20px; border-bottom: 1px solid #eee; color: #333; vertical-align: top;
+  }
+  #bootcamp-requirements tr:last-child td { border-bottom: none; }
+  #bootcamp-requirements td:first-child {
+    font-weight: 700; color: var(--deep-navy); width: 240px; font-family: 'Montserrat', sans-serif;
+  }
+  #bootcamp-requirements .curriculum-tags { margin-top: 40px; text-align: center; }
+  #bootcamp-requirements .curriculum-tags span {
+    display: inline-block; background: #fff; border: 1px solid #e0e6f0; color: var(--deep-navy);
+    padding: 8px 18px; border-radius: 20px; margin: 5px; font-size: 0.9rem; font-weight: 600;
+  }
+
+  /* COHORTS & DATES */
+  #bootcamp-dates .cohorts-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px;
+  }
+  #bootcamp-dates .cohort-card {
+    background: #fff; border-radius: 14px; padding: 30px;
+    box-shadow: 0 4px 20px rgba(31,58,110,0.08); border-top: 5px solid var(--site-teal);
+  }
+  #bootcamp-dates .cohort-card .cohort-tag {
+    display: inline-block; background: var(--deep-navy); color: #fff; font-size: 0.8rem;
+    font-weight: 600; padding: 5px 14px; border-radius: 20px; margin-bottom: 12px;
+  }
+  #bootcamp-dates .cohort-card h3 { color: var(--deep-navy); font-size: 1.25rem; margin-bottom: 6px; }
+  #bootcamp-dates .cohort-card .duration { color: #777; font-size: 0.9rem; margin: 6px 0 0; }
+  #bootcamp-dates .showcase-banner {
+    margin-top: 35px; text-align: center; background: linear-gradient(135deg, var(--site-header-from), var(--deep-navy));
+    color: #fff; padding: 25px; border-radius: 14px;
+  }
+  #bootcamp-dates .showcase-banner strong { color: var(--site-teal); }
+
+  /* AGE TRACK CARDS */
+  #bootcamp-tracks { background: #f7f9fc; }
+  #bootcamp-tracks .tracks-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;
+  }
+  #bootcamp-tracks .track-card {
+    background: #fff; border-radius: 14px; padding: 35px 30px;
+    box-shadow: 0 4px 20px rgba(31,58,110,0.08); border-top: 5px solid var(--site-teal);
+    transition: transform 0.25s, box-shadow 0.25s; position: relative;
+  }
+  #bootcamp-tracks .track-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(31,58,110,0.15); }
+  #bootcamp-tracks .track-card .age-tag {
+    display: inline-block; background: var(--deep-navy); color: #fff; font-size: 0.8rem;
+    font-weight: 600; padding: 5px 14px; border-radius: 20px; margin-bottom: 15px;
+  }
+  #bootcamp-tracks .track-card .popular-tag {
+    position: absolute; top: -12px; right: 20px; background: var(--site-teal); color: #0d2b4e;
+    font-size: 0.75rem; font-weight: 700; padding: 4px 14px; border-radius: 20px; text-transform: uppercase;
+  }
+  #bootcamp-tracks .track-card h3 { color: var(--deep-navy); font-size: 1.4rem; margin-bottom: 5px; }
+  #bootcamp-tracks .track-card ul { padding-left: 20px; color: #444; line-height: 1.8; margin: 15px 0 0; }
+  #bootcamp-tracks .track-card li::marker { color: var(--site-teal); }
+
+  /* PRICING */
+  #bootcamp-pricing table {
+    width: 100%; border-collapse: collapse; background: #fff;
+    box-shadow: 0 4px 20px rgba(31,58,110,0.08); border-radius: 12px; overflow: hidden;
+  }
+  #bootcamp-pricing th {
+    background: var(--deep-navy); color: #fff; padding: 16px; text-align: left; font-family: 'Montserrat', sans-serif;
+  }
+  #bootcamp-pricing td { padding: 16px; border-bottom: 1px solid #eee; color: #333; }
+  #bootcamp-pricing tr:last-child td { border-bottom: none; }
+  #bootcamp-pricing tr.popular-row td:first-child { color: var(--deep-navy); font-weight: 700; }
+  #bootcamp-pricing .popular-pill {
+    display: inline-block; background: var(--site-teal); color: #0d2b4e; font-size: 0.7rem;
+    font-weight: 700; padding: 2px 10px; border-radius: 12px; text-transform: uppercase; margin-left: 8px;
+  }
+  #bootcamp-pricing .included-box {
+    margin-top: 25px; background: #f7f9fc; border-radius: 12px; padding: 20px 25px; color: #444; line-height: 1.7;
+  }
+  #bootcamp-pricing .included-box strong { color: var(--deep-navy); }
+  #bootcamp-pricing .pricing-note {
+    text-align: center; margin-top: 20px; font-size: 0.9rem; color: #777; font-style: italic;
+  }
+
+  /* PAYMENT */
+  #bootcamp-payment { background: #f7f9fc; }
+  #bootcamp-payment .payment-box {
+    background: #fff; border-radius: 14px; padding: 35px; box-shadow: 0 4px 20px rgba(31,58,110,0.08);
+    max-width: 700px; margin: 0 auto; text-align: center; line-height: 1.8; color: #444;
+  }
+  #bootcamp-payment .payment-box a { color: var(--site-teal); font-weight: 600; text-decoration: none; }
+
+  /* PATHWAY */
+  #bootcamp-pathway .pathway-flow {
+    display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 14px;
+    row-gap: 20px; max-width: 950px; margin: 0 auto;
+  }
+  #bootcamp-pathway .pathway-step {
+    background: #fff; border: 2px solid var(--site-teal); color: var(--deep-navy);
+    border-radius: 10px; padding: 14px 20px; font-weight: 600; font-size: 0.9rem; text-align: center;
+    box-shadow: 0 4px 14px rgba(31,58,110,0.06);
+  }
+  #bootcamp-pathway .pathway-arrow { color: var(--site-teal); font-size: 1.4rem; font-weight: 700; }
+  #bootcamp-pathway .pathway-note {
+    text-align: center; max-width: 700px; margin: 35px auto 0; color: #555; line-height: 1.7; font-style: italic;
+  }
+
+  /* FINAL CTA */
+  #bootcamp-cta { background: #f7f9fc; text-align: center; }
+  #bootcamp-cta h2 { color: var(--deep-navy); margin-bottom: 15px; }
+  #bootcamp-cta p { max-width: 600px; margin: 0 auto 30px; color: #555; line-height: 1.7; }
+  #bootcamp-cta .cta-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 35px; }
+  #bootcamp-cta .contact-info {
+    display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; font-size: 0.95rem; color: var(--deep-navy);
+  }
+  #bootcamp-cta .contact-info a { color: var(--deep-navy); text-decoration: none; font-weight: 600; }
+  #bootcamp-cta .contact-info a:hover { color: var(--site-teal); }
+
+  @media (max-width: 576px) {
+    #bootcamp-hero h1 { font-size: 2rem; }
+    #bootcamp-page .section-title { font-size: 1.6rem; }
+    #bootcamp-pathway .pathway-arrow { display: none; }
+    #bootcamp-requirements td:first-child { width: auto; display: block; }
+    #bootcamp-requirements tr { display: flex; flex-direction: column; padding: 12px 0; }
+    #bootcamp-requirements td { padding: 4px 20px; border: none; }
+    #bootcamp-page .anchor-nav .section-inner { gap: 16px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="bootcamp-page">
+
+  <!-- ANCHOR NAV -->
+  <nav class="anchor-nav">
+    <div class="section-inner">
+      <a href="#bootcamp-intro">Introduction</a>
+      <a href="#requirements">Requirements</a>
+      <a href="#bootcamp-dates">Programme</a>
+      <a href="#bootcamp-pricing">Benefits & Pricing</a>
+      <a href="#bootcamp-cta">Enroll</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="bootcamp-hero">
+    <div class="section-inner">
+      <span class="brand-label"><h2>i-CODE Robotics & AI Lab</h2></span>
+            <h1>Summer Holiday Bootcamp 2026</h1>
+      <p class="tagline">"Invent the Code. Ignite the Future."</p>
+      <p>
+        Kenya's Premium Robotics & AI Lab is opening its doors this holiday for an intensive,
+        project-based bootcamp in Robotics, Coding, AI, and Cybersecurity:
+        for ages 6 - 17.
+      </p>
+      <div class="btn-group">
+        <a href="#bootcamp-cta" class="btn-primary-icode" data-bs-toggle="modal" data-bs-target="#enrollModal" id="enroll-cta-top">Book Your Slot — Enroll Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUICK FACTS -->
+  <section id="bootcamp-facts">
+    <div class="section-inner">
+      <div class="facts-grid">
+        <div>
+          <div class="fact-num">Duration 	13 July – 21 August 2026</div>
+        <!--  <div class="fact-label">Per Cohort</div>-->
+        <!--<div>-->
+        <!--  <div class="fact-num">Ages 6–17</div>-->
+        <!--  <div class="fact-label">Three Tracks</div>-->
+        <!--</div>-->
+        <!--<div>-->
+        <!--  <div class="fact-num">Max 15</div>-->
+        <!--  <div class="fact-label">Per Class</div>-->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTRODUCTION -->
+  <section id="bootcamp-intro">
+    <div class="section-inner">
+      <h2 class="section-title">Introduction</h2>
+      <p class="section-subtitle" style="margin-bottom:25px;">
+        This isn't a holiday camp. It's a <strong>Premium Innovation Experience.</strong>
+      </p>
+      <p style="max-width:750px;margin:0 auto;color:#444;line-height:1.8;font-size:1.05rem;padding-top:10px;">
+        Over 3 action-packed weeks, your child will join one of three innovation tracks —
+        Explorers, Builders, or Innovators — building real robots, writing real code, and
+        exploring real AI tools, six hours a day. It all leads to Showcase Day, where every
+        student presents their own project to family, mentors, and guests at our Mega Innovation
+        Showcase. Every child leaves with a certificate of completion, a project portfolio, a
+        personalised placement report, and a clear recommendation for their next step on the
+        Future Innovator Pathway.
+      </p>
+      <div class="intro-highlight">
+        Showcase Day — <strong>22 August 2026</strong> · "The Future We Build"
+      </div>
+    </div>
+  </section>
+
+  <!-- REQUIREMENTS -->
+  <section id="requirements" style="padding:0;">
+    <div id="bootcamp-requirements" style="padding:70px 20px;">
+      <div class="section-inner">
+        <h2 class="section-title">Requirements</h2>
+        <p class="section-subtitle">Everything you need to know before you book.</p>
+
+        <table>
+          <tr>
+            <td>Age Range</td>
+            <td>6 – 17 years</td>
+          </tr>
+          <tr>
+            <td>Duration</td>
+            <td>13 July – 21 August 2026</td>
+          </tr>
+          <tr>
+            <td>Location</td>
+            <td>i-CODE Robotics & AI Lab, One Stop Arcade, off Langata Road, Karen, Nairobi</td>
+          </tr>
+          <tr>
+            <td>What to Bring</td>
+            <td>Comfortable clothing, water bottle, and snacks</td>
+          </tr>
+          <tr>
+            <td>Curriculum Alignment</td>
+            <td>Cambridge IGCSE Computing & ICT · Kenya CBC/CBE Digital Literacy & STEM</td>
+          </tr>
+        </table>
+
+        <div class="curriculum-tags">
+          <span>Cambridge IGCSE Computing & ICT</span>
+          <span>Kenya CBC/CBE Digital Literacy & STEM</span>
+          <span>Robotics and Drone Engineering</span>
+          <span>AI & Design Thinking</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRAMME STRUCTURE: COHORTS & DATES -->
+  <section id="bootcamp-dates">
+    <div class="section-inner">
+      <h2 class="section-title">Programme Structure</h2>
+      <p class="section-subtitle">Three premium cohorts, one consistent standard — choose the dates that work for your family.</p>
+
+      <div class="cohorts-grid">
+        <div class="cohort-card">
+          <span class="cohort-tag">Cohort 1 · IGCSE Bootcamp</span>
+          <h3>13 July – 21 August 2026</h3>
+          <p class="duration">6 Weeks · Ages 6–17</p>
+        </div>
+        <div class="cohort-card">
+          <span class="cohort-tag">Cohort 2 · CBC / CBE Bootcamp</span>
+          <h3>3 – 21 August 2026</h3>
+          <p class="duration">3 Weeks · Ages 6–17</p>
+        </div>
+      </div>
+
+      <div class="showcase-banner">
+        <strong>Showcase Day — 22 August 2026</strong><br>
+        All Groups · "The Future We Build"
+      </div>
+    </div>
+  </section>
+
+  <!-- AGE TRACKS -->
+  <section id="bootcamp-tracks">
+    <div class="section-inner">
+      <h2 class="section-title">The Three Tracks</h2>
+      <p class="section-subtitle">Choose the track that fits your child's age and ambition.</p>
+
+      <div class="tracks-grid">
+        <div class="track-card">
+          
+          <span class="age-tag">Ages 6–9 · Explorers</span>
+          <h3>Explorers</h3>
+          <p style="color:#666;font-size:0.92rem;margin-top:6px;">First steps into robotics and coding through play-based, hands-on missions.</p>
+          <ul>
+            <li>LEGO Spike & EV3 robotics challenges</li>
+            <li>Scratch coding fundamentals</li>
+            <li>First steps into AI tools</li>
+            <li>Fun team challenges & innovation games</li>
+          </ul>
+        </div>
+
+        <div class="track-card">
+          <span class="popular-tag">Most Popular</span>
+          
+          <span class="age-tag">Ages 10–13 · Builders</span>
+          <h3>Builders</h3>
+          <p style="color:#666;font-size:0.92rem;margin-top:6px;">Where curiosity becomes capability — building, coding, and creating with intention.</p>
+          <ul>
+            <li>LEGO Spike, EV3 & VEX IQ robotics</li>
+            <li>Scratch → Python introduction</li>
+            <li>AI tools & prompt basics</li>
+            <li>Digital safety fundamentals</li>
+          </ul>
+        </div>
+
+        <div class="track-card">
+          
+          <span class="age-tag">Ages 14–17 · Innovators</span>
+          <h3>Innovators</h3>
+          <p style="color:#666;font-size:0.92rem;margin-top:6px;">Advanced, real-world systems thinking for the next generation of engineers.</p>
+          <ul>
+            <li>Arduino & IoT systems</li>
+            <li>VEX robotics (EXP/V5)</li>
+            <li>Python programming</li>
+            <li>AI prompt engineering & automation</li>
+            <li>Cybersecurity & ethical hacking basics</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFITS & PRICING -->
+  <section id="bootcamp-pricing">
+    <div class="section-inner">
+      <h2 class="section-title">Benefits & Pricing</h2>
+      <p class="section-subtitle">Transparent pricing, premium inclusions — no hidden costs.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Track</th>
+            <th>Age</th>
+            <th>Weekly Rate</th>
+            <th>Full 3-Week Rate (~15% savings)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Explorers</td>
+            <td>6–9</td>
+            <td>KES 4,500/week</td>
+            <td>KES 11,500</td>
+          </tr>
+          <tr class="popular-row">
+            <td>Builders <span class="popular-pill">Most Popular</span></td>
+            <td>10–13</td>
+            <td>KES 5,500/week</td>
+            <td>KES 14,000</td>
+          </tr>
+          <tr>
+            <td>Innovators</td>
+            <td>14–17</td>
+            <td>KES 6,500/week</td>
+            <td>KES 16,500</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="included-box">
+        <strong>All fees include:</strong> certificate of completion, progress report &
+        project portfolio, official i-CODE Bootcamp T-shirt, full participation in the Mega
+        Innovation Showcase, all learning materials and equipment use, and a personalised
+        placement report with a September term recommendation.
+      </div>
+
+      <p class="pricing-note">Sibling discounts and bring-a-friend credits available — contact us for details.</p>
+    </div>
+  </section>
+
+  <!-- PAYMENT DETAILS -->
+  <!--<section id="bootcamp-payment">-->
+  <!--  <div class="section-inner">-->
+  <!--    <h2 class="section-title">Payment Details</h2>-->
+  <!--    <div class="payment-box">-->
+  <!--      <p style="margin:0 0 10px;"><strong>Payment options to be confirmed.</strong></p>-->
+  <!--      <p style="margin:0;">-->
+  <!--        Send your payment confirmation (including your child's name) to-->
+  <!--        <a href="mailto:info@icodeailab.com">info@icodeailab.com</a>-->
+  <!--        or call-->
+  <!--        <a href="tel:+254141054939">+254 14 1054939</a>.-->
+  <!--      </p>-->
+  <!--    </div>-->
+  <!--  </div>-->
+  <!--</section>-->
+
+  <!-- THE PATHWAY -->
+  <section id="bootcamp-pathway">
+    <div class="section-inner">
+      <h2 class="section-title">Beyond the Bootcamp — The Future Innovator Pathway</h2>
+      <p class="section-subtitle">What you're really investing in — a journey, not just a holiday.</p>
+
+      <div class="pathway-flow">
+        <div class="pathway-step">Summer Bootcamp</div>
+        <div class="pathway-arrow">→</div>
+        <div class="pathway-step">After-School / Weekend Term</div>
+        <div class="pathway-arrow">→</div>
+        <div class="pathway-step">Advanced Robotics / AI</div>
+        <div class="pathway-arrow">→</div>
+        <div class="pathway-step">Innovation Competition</div>
+        <div class="pathway-arrow">→</div>
+        <div class="pathway-step">Internship / Mentorship</div>
+      </div>
+
+      <p class="pathway-note">
+        This is the front door to a multi-year journey with i-CODE — building real skills,
+        a strong portfolio, and a clear path toward advanced programmes and recognition.
+      </p>
+    </div>
+  </section>
+
+  <!-- FINAL CTA / ENROLL -->
+  <section id="bootcamp-cta">
+    <div class="section-inner">
+      <h2>Enroll Now</h2>
+      <p>
+        Spaces are limited to 15 students per class to preserve our premium mentor-to-student ratio.
+        Secure your child's seat in the i-CODE Summer Holiday Bootcamp 2026 today.
+      </p>
+
+      <div class="cta-buttons">
+        <a href="#" class="btn-primary-icode" data-bs-toggle="modal" data-bs-target="#enrollModal">Enroll Now</a>
+      </div>
+
+      <!--<div class="contact-info">-->
+      <!--  <span>One Stop Arcade, off Langata Road, Karen, Nairobi</span>-->
+      <!--  <a href="tel:+254141054939">+254 14 1054939</a>-->
+      <!--  <a href="mailto:info@icodeailab.com">info@icodeailab.com</a>-->
+      <!--  <a href="https://icodeailab.com/" target="_blank">icodeailab.com</a>-->
+      <!--</div>-->
+    </div>
+  </section>
+
+</div>
+
+<!-- ═══════════════════════════════════════════
+     WHATSAPP BUTTON
+═══════════════════════════════════════════ -->
+<a href="https://wa.me/254141054939" 
+   class="whatsapp-float" 
+   target="_blank" 
+   rel="noopener noreferrer" 
+   aria-label="Chat on WhatsApp">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" />
+</a>
+
+{% include "partials/enrollment_modal.html" %}
+{% endblock %}

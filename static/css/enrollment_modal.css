@@ -9,12 +9,12 @@
     border: none;
     border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(73, 187, 189, 0.15);
+    box-shadow: 0 32px 80px rgba(13, 27, 46, 0.40), 0 0 0 1px rgba(30, 191, 191, 0.15);
 }
 
 /* ── Header ── */
 .modal-content .modal-header {
-    background: linear-gradient(135deg, #0d9488 0%, #0f6e56 100%);
+    background: linear-gradient(135deg, var(--midnight) 0%, var(--deep-navy) 60%, var(--royal-blue) 100%);
     border-radius: 0;
     overflow: hidden;
     position: relative;
@@ -27,7 +27,7 @@
     top: -50px; right: -50px;
     width: 180px; height: 180px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.07);
+    background: rgba(30, 191, 191, 0.08);
 }
 
 .modal-header::after {
@@ -36,7 +36,7 @@
     bottom: -70px; right: 80px;
     width: 140px; height: 140px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(30, 191, 191, 0.05);
 }
 
 .modal-header-inner {
@@ -50,15 +50,16 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(30, 191, 191, 0.15);
+    border: 1px solid rgba(30, 191, 191, 0.30);
     border-radius: 20px;
     padding: 4px 12px;
     font-size: 0.72rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    font-family: var(--font-display);
+    color: var(--tech-teal);
     margin-bottom: 10px;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
 }
 
@@ -78,15 +79,16 @@
 .modal-content .modal-title {
     font-size: 1.5rem;
     font-weight: 800;
-    color: #ffffff;
+    font-family: var(--font-display);
+    color: var(--pure-white);
     letter-spacing: -0.3px;
     background: none;
-    -webkit-text-fill-color: #ffffff;
+    -webkit-text-fill-color: var(--pure-white);
 }
 
 .modal-subtitle {
     font-size: 0.82rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(234, 246, 246, 0.70);
     margin-top: 4px;
     margin-bottom: 0;
 }
@@ -104,20 +106,20 @@
     height: 3px;
     border-radius: 2px;
     flex: 1;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15);
     transition: background 0.3s;
 }
 
-.modal-step.active { background: #ffffff; }
-.modal-step.done   { background: rgba(255, 255, 255, 0.55); }
+.modal-step.active { background: var(--tech-teal); }
+.modal-step.done   { background: rgba(30, 191, 191, 0.45); }
 
 /* ── Close button ── */
 .modal-content .modal-close {
     width: 34px; height: 34px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    color: #ffffff;
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    color: var(--pure-white);
     font-size: 14px;
     cursor: pointer;
     display: flex;
@@ -129,21 +131,21 @@
 }
 
 .modal-content .modal-close:hover {
-    background: rgba(255, 255, 255, 0.28);
+    background: rgba(30, 191, 191, 0.25);
     transform: rotate(90deg);
 }
 
 /* ── Body ── */
 .modal-body {
     padding: 28px 32px;
-    background: #ffffff;
+    background: var(--pure-white);
 }
 
 /* ── Footer ── */
 .modal-footer {
     padding: 20px 32px;
-    border-top: 1px solid #f3f4f6;
-    background: #ffffff;
+    border-top: 1px solid var(--border);
+    background: var(--pure-white);
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -151,7 +153,7 @@
 
 .modal-privacy {
     font-size: 0.75rem;
-    color: #9ca3af;
+    color: var(--text-light);
     text-align: center;
     display: flex;
     align-items: center;
@@ -159,25 +161,25 @@
     gap: 5px;
 }
 
-/* ── Standard form controls (text inputs, textarea) ── */
+/* ── Standard form controls ── */
 .modal-content .form-control {
     padding: 10px 14px;
-    border: 1.5px solid #e5e7eb;
+    border: 1.5px solid var(--border);
     border-radius: 10px;
-    background: #ffffff;
+    background: var(--pure-white);
     font-size: 0.9rem;
-    color: #111827;
+    color: var(--text-dark);
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .modal-content .form-control:focus {
-    border-color: #0d9488;
-    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
+    border-color: var(--tech-teal);
+    box-shadow: 0 0 0 3px rgba(30, 191, 191, 0.12);
     outline: none;
 }
 
 .modal-content .form-control::placeholder {
-    color: #9ca3af;
+    color: var(--text-light);
 }
 
 .modal-content textarea.form-control {
@@ -187,11 +189,11 @@
 
 /* ── Input group (date pickers) ── */
 .modal-content .input-group .input-group-text {
-    border: 1.5px solid #e5e7eb;
+    border: 1.5px solid var(--border);
     border-right: none;
     border-radius: 10px 0 0 10px;
-    color: #0d9488;
-    background: #ffffff;
+    color: var(--tech-teal);
+    background: var(--pure-white);
 }
 
 .modal-content .input-group .form-control {
@@ -200,20 +202,21 @@
 }
 
 .modal-content .input-group .form-control:focus {
-    border-color: #0d9488;
+    border-color: var(--tech-teal);
     box-shadow: none;
 }
 
 .modal-content .input-group:focus-within .input-group-text {
-    border-color: #0d9488;
+    border-color: var(--tech-teal);
 }
 
 /* ── Labels ── */
 .modal-content .form-label {
     font-size: 0.76rem;
     font-weight: 700;
-    color: #374151;
-    letter-spacing: 0.03em;
+    font-family: var(--font-display);
+    color: var(--deep-navy);
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     margin-bottom: 5px;
 }
@@ -223,9 +226,9 @@
 ══════════════════════════════════════════ */
 
 .modal-content .row.g-2.p-3.border {
-    border: 1.5px solid #e5e7eb !important;
+    border: 1.5px solid var(--border) !important;
     border-radius: 14px !important;
-    background: #f9fafb !important;
+    background: var(--soft-mist) !important;
     padding: 12px !important;
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
@@ -260,13 +263,13 @@
     align-items: center;
     gap: 10px;
     padding: 11px 14px;
-    border: 1.5px solid #e5e7eb;
+    border: 1.5px solid var(--border);
     border-radius: 11px;
-    background: #ffffff;
+    background: var(--pure-white);
     cursor: pointer;
     font-size: 0.875rem !important;
     font-weight: 500;
-    color: #374151;
+    color: var(--text-gray);
     width: 100%;
     transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, color 0.2s;
     user-select: none;
@@ -275,8 +278,8 @@
 }
 
 .modal-content .row.g-2.p-3.border .form-check-label:hover {
-    border-color: #0d9488;
-    background: #f0fdfa;
+    border-color: var(--tech-teal);
+    background: var(--soft-mist);
 }
 
 /* Pseudo tick-box */
@@ -286,8 +289,8 @@
     width: 18px;
     height: 18px;
     border-radius: 5px;
-    border: 1.5px solid #d1d5db;
-    background: #fff;
+    border: 1.5px solid var(--border);
+    background: var(--pure-white);
     transition: border-color 0.2s, background 0.2s;
 }
 
@@ -310,16 +313,16 @@
 
 /* Checked — card */
 .modal-content .row.g-2.p-3.border .form-check-input:checked + .form-check-label {
-    border-color: #0d9488;
-    background: #f0fdfa;
-    color: #0f766e;
-    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.10);
+    border-color: var(--tech-teal);
+    background: var(--soft-mist);
+    color: var(--primary-dark);
+    box-shadow: 0 0 0 3px rgba(30, 191, 191, 0.10);
 }
 
 /* Checked — tick box fill */
 .modal-content .row.g-2.p-3.border .form-check-input:checked + .form-check-label::before {
-    background: #0d9488;
-    border-color: #0d9488;
+    background: var(--tech-teal);
+    border-color: var(--tech-teal);
 }
 
 /* Checked — tick visible + animated */
@@ -336,17 +339,17 @@
     appearance: none !important;
     -webkit-appearance: none !important;
     padding: 11px 40px 11px 14px !important;
-    border: 1.5px solid #e5e7eb !important;
+    border: 1.5px solid var(--border) !important;
     border-radius: 12px !important;
-    background-color: #ffffff !important;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none'%3e%3cpath d='M2.5 5l4.5 4.5 4.5-4.5' stroke='%236b7280' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e") !important;
+    background-color: var(--pure-white) !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none'%3e%3cpath d='M2.5 5l4.5 4.5 4.5-4.5' stroke='%234A5568' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e") !important;
     background-repeat: no-repeat !important;
     background-position: right 13px center !important;
     background-size: 14px !important;
     font-size: 0.9rem !important;
-    color: #9ca3af !important;
+    color: var(--text-light) !important;
     cursor: pointer !important;
-    font-family: inherit !important;
+    font-family: var(--font-body) !important;
     transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s, color 0.2s !important;
     outline: none !important;
     box-shadow: none !important;
@@ -355,37 +358,37 @@
 }
 
 .modal-content .form-select:focus {
-    border-color: #0d9488 !important;
-    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12) !important;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none'%3e%3cpath d='M2.5 5l4.5 4.5 4.5-4.5' stroke='%230d9488' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e") !important;
+    border-color: var(--tech-teal) !important;
+    box-shadow: 0 0 0 3px rgba(30, 191, 191, 0.12) !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none'%3e%3cpath d='M2.5 5l4.5 4.5 4.5-4.5' stroke='%231EBFBF' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e") !important;
     outline: none !important;
 }
 
 .modal-content .form-select.has-value {
-    color: #0f766e !important;
-    border-color: #0d9488 !important;
-    background-color: #f0fdfa !important;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none'%3e%3cpath d='M2.5 5l4.5 4.5 4.5-4.5' stroke='%230d9488' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e") !important;
-    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.08) !important;
+    color: var(--primary-dark) !important;
+    border-color: var(--tech-teal) !important;
+    background-color: var(--soft-mist) !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none'%3e%3cpath d='M2.5 5l4.5 4.5 4.5-4.5' stroke='%231EBFBF' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e") !important;
+    box-shadow: 0 0 0 3px rgba(30, 191, 191, 0.08) !important;
     font-weight: 500 !important;
 }
 
 .modal-content .form-select.has-value:focus {
-    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.18) !important;
+    box-shadow: 0 0 0 3px rgba(30, 191, 191, 0.18) !important;
 }
 
 .modal-content .form-select option {
-    color: #111827 !important;
-    background-color: #ffffff !important;
+    color: var(--text-dark) !important;
+    background-color: var(--pure-white) !important;
     font-weight: 400 !important;
 }
 
 .modal-content .form-select option[value=""][disabled] {
-    color: #9ca3af !important;
+    color: var(--text-light) !important;
 }
 
 /* ══════════════════════════════════════════
-   RADIO PILL CARDS  (customised course)
+   RADIO PILL CARDS
 ══════════════════════════════════════════ */
 
 .modal-content .d-flex.gap-3 .form-check {
@@ -407,13 +410,13 @@
     align-items: center;
     gap: 8px;
     padding: 10px 18px;
-    border: 1.5px solid #e5e7eb;
+    border: 1.5px solid var(--border);
     border-radius: 10px;
-    background: #ffffff;
+    background: var(--pure-white);
     cursor: pointer;
     font-size: 0.875rem !important;
     font-weight: 500;
-    color: #374151;
+    color: var(--text-gray);
     transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, color 0.2s;
     user-select: none;
     white-space: nowrap;
@@ -421,8 +424,8 @@
 }
 
 .modal-content .d-flex.gap-3 .form-check-label:hover {
-    border-color: #0d9488;
-    background: #f0fdfa;
+    border-color: var(--tech-teal);
+    background: var(--soft-mist);
 }
 
 /* Radio dot pseudo */
@@ -432,38 +435,39 @@
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    border: 1.5px solid #d1d5db;
-    background: #fff;
+    border: 1.5px solid var(--border);
+    background: var(--pure-white);
     transition: border-color 0.2s, background 0.2s;
 }
 
 /* Checked — card */
 .modal-content .d-flex.gap-3 .form-check-input:checked + .form-check-label {
-    border-color: #0d9488;
-    background: #f0fdfa;
-    color: #0f766e;
-    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.10);
+    border-color: var(--tech-teal);
+    background: var(--soft-mist);
+    color: var(--primary-dark);
+    box-shadow: 0 0 0 3px rgba(30, 191, 191, 0.10);
 }
 
 /* Checked — filled dot */
 .modal-content .d-flex.gap-3 .form-check-input:checked + .form-check-label::before {
-    border-color: #0d9488;
+    border-color: var(--tech-teal);
     border-width: 5px;
-    background: #ffffff;
+    background: var(--pure-white);
 }
 
 /* ── Submit button ── */
 .btn-submit {
     width: 100%;
-    background: linear-gradient(135deg, #0d9488, #0f6e56);
-    color: #fff;
+    background: linear-gradient(135deg, var(--tech-teal) 0%, var(--deep-navy) 100%);
+    color: var(--pure-white);
     border: none;
     padding: 14px;
     border-radius: 12px;
     font-size: 1rem;
     font-weight: 700;
+    font-family: var(--font-display);
     cursor: pointer;
-    box-shadow: 0 4px 16px rgba(13, 148, 136, 0.3);
+    box-shadow: 0 4px 16px rgba(30, 191, 191, 0.30);
     transition: transform 0.2s, box-shadow 0.2s;
     display: flex;
     align-items: center;
@@ -473,7 +477,7 @@
 
 .btn-submit:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(13, 148, 136, 0.42);
+    box-shadow: 0 8px 28px rgba(30, 191, 191, 0.42);
 }
 
 .btn-submit:disabled {
@@ -485,7 +489,7 @@
 #loader {
     display: none;
     text-align: center;
-    color: #6b7280;
+    color: var(--text-gray);
     font-size: 0.88rem;
     padding: 8px;
 }

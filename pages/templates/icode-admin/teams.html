@@ -1,0 +1,1189 @@
+{% extends 'icode-admin/base_admin.html' %}
+{% load static %}
+
+{% block page_title %}Team Members{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── Page header ── */
+  .tm-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .tm-header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+  .tm-header p {
+    font-size: 13px;
+    color: var(--text-gray);
+    margin-top: 2px;
+  }
+
+  /* ── Stats bar ── */
+  .tm-stats {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+  .tm-stat {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    min-width: 130px;
+    flex: 1;
+  }
+  .tm-stat__num {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-dark);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .tm-stat__lbl {
+    font-size: 11px;
+    color: var(--text-gray);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .tm-stat--teal .tm-stat__num  { color: var(--primary); }
+  .tm-stat--orange .tm-stat__num { color: var(--accent-orange); }
+  .tm-stat--purple .tm-stat__num { color: var(--accent-purple); }
+
+  /* ── Table card ── */
+  .tm-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .tm-card-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .tm-search {
+    position: relative;
+    flex: 1;
+    min-width: 180px;
+    max-width: 280px;
+  }
+  .tm-search input {
+    width: 100%;
+    padding: 7px 10px 7px 30px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 13px;
+    outline: none;
+    background: var(--bg-light);
+  }
+  .tm-search i {
+    position: absolute;
+    left: 8px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-gray);
+    font-size: 14px;
+  }
+  .tm-filter-tabs {
+    display: flex;
+    gap: 6px;
+  }
+  .tm-tab {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-gray);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tm-tab:hover, .tm-tab.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    background: var(--bg-light);
+    padding: 10px 16px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #f8fafb; }
+  td { padding: 12px 16px; font-size: 13px; vertical-align: middle; }
+
+  /* Member cell */
+  .tm-member {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .tm-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .tm-avatar img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  .tm-avatar--teal   { background: rgba(73,187,189,0.15); color: var(--primary-dark); }
+  .tm-avatar--gold   { background: #fff4e3; color: #b86800; }
+  .tm-avatar--navy   { background: #e6f1fb; color: #185fa5; }
+  .tm-avatar--purple { background: #f0eeff; color: #6c50c8; }
+
+  .tm-member-name { font-weight: 600; color: var(--text-dark); }
+  .tm-member-title { font-size: 12px; color: var(--text-gray); margin-top: 1px; }
+
+  /* Dept badge */
+  .tm-dept {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .tm-dept--tech       { background: rgba(73,187,189,0.12); color: var(--primary-dark); }
+  .tm-dept--education  { background: #fff4e3; color: #b86800; }
+  .tm-dept--ops        { background: #e6f1fb; color: #185fa5; }
+  .tm-dept--leadership { background: #f0eeff; color: #6c50c8; }
+
+  /* Status toggle */
+  .tm-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+  .tm-toggle input { display: none; }
+  .tm-switch {
+    width: 34px; height: 18px;
+    border-radius: 9px;
+    background: #d0d7de;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .tm-switch::after {
+    content: '';
+    position: absolute;
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    background: #fff;
+    top: 2.5px; left: 2.5px;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .tm-toggle input:checked + .tm-switch { background: var(--primary); }
+  .tm-toggle input:checked + .tm-switch::after { transform: translateX(16px); }
+  .tm-toggle-lbl { font-size: 12px; color: var(--text-gray); }
+
+  /* Featured star */
+  .tm-star {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #d0d7de;
+    transition: color 0.15s, transform 0.15s;
+    padding: 0;
+  }
+  .tm-star.on { color: var(--accent-orange); }
+  .tm-star:hover { transform: scale(1.2); }
+
+  /* Action buttons */
+  .tm-actions { display: flex; gap: 6px; align-items: center; }
+  .tm-btn {
+    width: 30px; height: 30px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--bg-light);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text-gray);
+    font-size: 14px;
+    transition: all 0.15s;
+  }
+  .tm-btn:hover { background: var(--primary-light); color: var(--primary-dark); border-color: var(--primary); }
+  .tm-btn--del:hover { background: #fdecea; color: #c0392b; border-color: #e8a09b; }
+
+  /* Order drag handle */
+  .tm-handle {
+    color: #c5cdd5;
+    cursor: grab;
+    font-size: 16px;
+    padding: 4px;
+  }
+  .tm-handle:active { cursor: grabbing; }
+
+  /* Empty state */
+  .tm-empty {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--text-gray);
+  }
+  .tm-empty i { font-size: 40px; display: block; margin-bottom: 12px; opacity: 0.35; }
+  .tm-empty p { font-size: 14px; }
+
+  /* ════ MODAL ════ */
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(15, 37, 53, 0.55);
+    z-index: 500;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .modal-backdrop.open {
+    opacity: 1; pointer-events: all;
+  }
+  .modal {
+    background: var(--white);
+    border-radius: 14px;
+    width: 100%;
+    max-width: 680px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    transform: translateY(16px);
+    transition: transform 0.22s ease;
+  }
+  .modal-backdrop.open .modal { transform: translateY(0); }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0;
+    background: var(--white);
+    z-index: 2;
+  }
+  .modal-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-dark);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .modal-title i { color: var(--primary); font-size: 18px; }
+  .modal-close {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text-gray);
+    font-size: 16px;
+    transition: all 0.15s;
+  }
+  .modal-close:hover { background: #fdecea; color: #c0392b; border-color: #e8a09b; }
+
+  .modal-body { padding: 24px; }
+  .modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    position: sticky; bottom: 0;
+    background: var(--white);
+  }
+
+  /* Form grid */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .form-col-full { grid-column: 1 / -1; }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-dark);
+    letter-spacing: 0.02em;
+  }
+  .form-label span { color: #e74c3c; margin-left: 2px; }
+  .form-input, .form-select, .form-textarea {
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-family: "Poppins", sans-serif;
+    color: var(--text-dark);
+    background: var(--bg-light);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    width: 100%;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(73,187,189,0.15);
+    background: #fff;
+  }
+  .form-textarea { resize: vertical; min-height: 90px; }
+  .form-hint {
+    font-size: 11px;
+    color: var(--text-gray);
+    margin-top: -2px;
+  }
+  .form-error {
+    font-size: 11px;
+    color: #c0392b;
+    margin-top: -2px;
+    display: none;
+  }
+  .form-group.has-error .form-input,
+  .form-group.has-error .form-select,
+  .form-group.has-error .form-textarea {
+    border-color: #e74c3c;
+  }
+  .form-group.has-error .form-error { display: block; }
+
+  /* Photo upload zone */
+  .photo-zone {
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    background: var(--bg-light);
+  }
+  .photo-zone:hover, .photo-zone.drag-over {
+    border-color: var(--primary);
+    background: var(--primary-light);
+  }
+  .photo-zone input[type=file] { display: none; }
+  .photo-preview-wrap {
+    position: relative;
+    display: inline-block;
+  }
+  .photo-preview {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary);
+    display: none;
+  }
+  .photo-preview.visible { display: block; }
+  .photo-remove {
+    position: absolute; top: -4px; right: -4px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: #e74c3c; color: #fff;
+    border: none; cursor: pointer;
+    font-size: 12px;
+    display: none; align-items: center; justify-content: center;
+  }
+  .photo-remove.visible { display: flex; }
+  .photo-zone-icon { font-size: 28px; color: var(--text-gray); opacity: 0.5; margin-bottom: 8px; }
+  .photo-zone-text { font-size: 13px; color: var(--text-gray); }
+  .photo-zone-sub  { font-size: 11px; color: var(--text-gray); opacity: 0.7; margin-top: 4px; }
+
+  /* Checkbox toggles inside form */
+  .form-check-row {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .form-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-dark);
+  }
+  .form-check input { display: none; }
+  .form-check-box {
+    width: 18px; height: 18px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    font-size: 11px;
+    color: #fff;
+  }
+  .form-check input:checked + .form-check-box {
+    background: var(--primary);
+    border-color: var(--primary);
+  }
+  .form-check input:checked + .form-check-box::after { content: '✓'; }
+
+  /* Stripe colour picker */
+  .stripe-picker {
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+  .stripe-opt {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: transform 0.15s, border-color 0.15s;
+    position: relative;
+  }
+  .stripe-opt:hover { transform: scale(1.1); }
+  .stripe-opt.selected { border-color: var(--text-dark); }
+  .stripe-opt[data-val="teal"]   { background: #49bbbd; }
+  .stripe-opt[data-val="gold"]   { background: #f48c06; }
+  .stripe-opt[data-val="navy"]   { background: #1a3a6b; }
+  .stripe-opt[data-val="purple"] { background: #9b59b6; }
+  #stripe-hidden { display: none; }
+
+  /* Buttons */
+  .btn-secondary {
+    background: var(--bg-light);
+    color: var(--text-dark);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-secondary:hover { background: var(--border); }
+
+  .btn-danger {
+    background: #fdecea;
+    color: #c0392b;
+    border: 1px solid #e8a09b;
+    border-radius: var(--radius);
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-danger:hover { background: #c0392b; color: #fff; }
+
+  .btn-primary[disabled] { opacity: 0.6; pointer-events: none; }
+
+  /* Loading spinner inside button */
+  .btn-spinner {
+    display: none;
+    width: 14px; height: 14px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
+  .btn-loading .btn-spinner { display: block; }
+  .btn-loading .btn-label  { display: none; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Delete confirm modal */
+  .del-modal { max-width: 420px; }
+  .del-modal-body {
+    padding: 28px 24px;
+    text-align: center;
+  }
+  .del-icon {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: #fdecea;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 24px;
+    color: #c0392b;
+  }
+  .del-modal-body h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .del-modal-body p  { font-size: 13px; color: var(--text-gray); line-height: 1.6; }
+
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .form-col-full { grid-column: 1; }
+    .tm-stats { flex-direction: column; }
+  }
+</style>
+{% endblock %}
+
+{% block admin_content %}
+
+<!-- Page header -->
+<div class="tm-header">
+  <div>
+    <h1>Team Members</h1>
+    <p>Manage instructors, directors, and support staff</p>
+  </div>
+  <button class="btn-primary" onclick="openAddModal()">
+    <i class="ti ti-plus"></i> Add Member
+  </button>
+</div>
+
+<!-- Stats -->
+<div class="tm-stats">
+  <div class="tm-stat tm-stat--teal">
+    <div class="tm-stat__num">{{ total }}</div>
+    <div class="tm-stat__lbl">Total Members</div>
+  </div>
+  <div class="tm-stat">
+    <div class="tm-stat__num">{{ active_count }}</div>
+    <div class="tm-stat__lbl">Active</div>
+  </div>
+  <div class="tm-stat tm-stat--orange">
+    <div class="tm-stat__num">{{ featured_count }}</div>
+    <div class="tm-stat__lbl">Featured</div>
+  </div>
+  <div class="tm-stat tm-stat--purple">
+    <div class="tm-stat__num">{{ dept_counts.tech|default:"0" }}</div>
+    <div class="tm-stat__lbl">Tech Staff</div>
+  </div>
+</div>
+
+<!-- Table card -->
+<div class="tm-card">
+  <div class="tm-card-toolbar">
+    <div class="tm-search">
+      <i class="ti ti-search"></i>
+      <input type="text" id="tm-search-input" placeholder="Search members…" oninput="filterTable()">
+    </div>
+    <div class="tm-filter-tabs">
+      <button class="tm-tab active" onclick="filterDept('all', this)">All</button>
+      <button class="tm-tab" onclick="filterDept('tech', this)">Tech</button>
+      <button class="tm-tab" onclick="filterDept('education', this)">Education</button>
+      <button class="tm-tab" onclick="filterDept('ops', this)">Operations</button>
+      <button class="tm-tab" onclick="filterDept('leadership', this)">Leadership</button>
+    </div>
+  </div>
+
+  <table id="tm-table">
+    <thead>
+      <tr>
+        <th style="width:32px"></th>
+        <th>Member</th>
+        <th>Role</th>
+        <th>Dept</th>
+        <th>Featured</th>
+        <th>Active</th>
+        <th>Order</th>
+        <th style="width:100px">Actions</th>
+      </tr>
+    </thead>
+    <tbody id="tm-tbody">
+      {% for member in members %}
+      <tr data-id="{{ member.id }}" data-dept="{{ member.dept }}" data-name="{{ member.name|lower }}">
+        <td><span class="tm-handle"><i class="ti ti-grip-vertical"></i></span></td>
+
+        <!-- Member info -->
+        <td>
+          <div class="tm-member">
+            <div class="tm-avatar tm-avatar--{{ member.stripe }}">
+              {% if member.photo %}
+                <img src="{{ member.photo.url }}" alt="{{ member.name }}">
+              {% else %}
+                {{ member.initials }}
+              {% endif %}
+            </div>
+            <div>
+              <div class="tm-member-name">{{ member.name }}</div>
+              <div class="tm-member-title">{{ member.title }}</div>
+            </div>
+          </div>
+        </td>
+
+        <!-- Role -->
+        <td>{{ member.get_role_display }}</td>
+
+        <!-- Dept badge -->
+        <td>
+          <span class="tm-dept tm-dept--{{ member.dept }}">
+            {{ member.get_dept_display }}
+          </span>
+        </td>
+
+        <!-- Featured star -->
+        <td>
+          <button
+            class="tm-star {% if member.is_featured %}on{% endif %}"
+            title="Toggle featured"
+            onclick="toggleField({{ member.id }}, 'is_featured', this)"
+          >★</button>
+        </td>
+
+        <!-- Active toggle -->
+        <td>
+          <label class="tm-toggle">
+            <input
+              type="checkbox"
+              {% if member.is_active %}checked{% endif %}
+              onchange="toggleField({{ member.id }}, 'is_active', this)"
+            >
+            <span class="tm-switch"></span>
+            <span class="tm-toggle-lbl">{{ member.is_active|yesno:"Active,Inactive" }}</span>
+          </label>
+        </td>
+
+        <!-- Order -->
+        <td style="color:var(--text-gray);font-size:12px;">{{ member.order }}</td>
+
+        <!-- Actions -->
+        <td>
+          <div class="tm-actions">
+            <button class="tm-btn" title="Edit" onclick="openEditModal({{ member.id }})">
+              <i class="ti ti-pencil"></i>
+            </button>
+            <button class="tm-btn tm-btn--del" title="Delete" onclick="openDeleteModal({{ member.id }}, '{{ member.name|escapejs }}')">
+              <i class="ti ti-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="8">
+          <div class="tm-empty">
+            <i class="ti ti-users"></i>
+            <p>No team members yet. Click <strong>Add Member</strong> to get started.</p>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- ════════════════════════════════════════
+     ADD / EDIT MODAL
+════════════════════════════════════════ -->
+<div class="modal-backdrop" id="member-modal" onclick="closeModalOnBackdrop(event, 'member-modal')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="ti ti-user-circle"></i>
+        <span id="modal-title-text">Add Team Member</span>
+      </div>
+      <button class="modal-close" onclick="closeModal('member-modal')">
+        <i class="ti ti-x"></i>
+      </button>
+    </div>
+
+    <form id="member-form" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="hidden" id="member-id" name="id" value="">
+
+      <div class="modal-body">
+        <div class="form-grid">
+
+          <!-- Photo upload -->
+          <div class="form-group form-col-full">
+            <label class="form-label">Profile Photo</label>
+            <div class="photo-zone" id="photo-zone" onclick="document.getElementById('photo-input').click()"
+                 ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragleave="this.classList.remove('drag-over')">
+              <input type="file" id="photo-input" name="photo" accept="image/*" onchange="previewPhoto(event)">
+              <div id="photo-placeholder">
+                <div class="photo-zone-icon"><i class="ti ti-camera"></i></div>
+                <div class="photo-zone-text">Click or drag a photo here</div>
+                <div class="photo-zone-sub">JPG, PNG, WEBP · Max 2 MB</div>
+              </div>
+              <div class="photo-preview-wrap" id="photo-preview-wrap" style="display:none">
+                <img class="photo-preview" id="photo-preview" src="" alt="Preview">
+                <button type="button" class="photo-remove" id="photo-remove" onclick="removePhoto(event)">
+                  <i class="ti ti-x"></i>
+                </button>
+              </div>
+            </div>
+            <!-- shown when editing and member already has a photo -->
+            <div id="current-photo-hint" class="form-hint" style="display:none">
+              Current photo on file — upload a new one to replace it.
+            </div>
+          </div>
+
+          <!-- Name -->
+          <div class="form-group" id="fg-name">
+            <label class="form-label" for="f-name">Full Name <span>*</span></label>
+            <input class="form-input" id="f-name" name="name" type="text" placeholder="e.g. Balala Sheikh">
+            <div class="form-error" id="err-name">Name is required.</div>
+          </div>
+
+          <!-- Title -->
+          <div class="form-group" id="fg-title">
+            <label class="form-label" for="f-title">Job Title <span>*</span></label>
+            <input class="form-input" id="f-title" name="title" type="text" placeholder="e.g. Lead Instructor">
+            <div class="form-error" id="err-title">Title is required.</div>
+          </div>
+
+          <!-- Role -->
+          <div class="form-group">
+            <label class="form-label" for="f-role">Role</label>
+            <select class="form-select" id="f-role" name="role">
+              <option value="founder">Founder &amp; CEO</option>
+              <option value="instructor">Instructor</option>
+              <option value="lead">Programme Lead</option>
+              <option value="support">Support Staff</option>
+            </select>
+          </div>
+
+          <!-- Dept -->
+          <div class="form-group">
+            <label class="form-label" for="f-dept">Department</label>
+            <select class="form-select" id="f-dept" name="dept">
+              <option value="tech">Tech</option>
+              <option value="education">Education</option>
+              <option value="ops">Operations</option>
+              <option value="leadership">Leadership</option>
+            </select>
+          </div>
+
+          <!-- Initials -->
+          <div class="form-group">
+            <label class="form-label" for="f-initials">Initials</label>
+            <input class="form-input" id="f-initials" name="initials" type="text" maxlength="3" placeholder="Auto-generated">
+            <div class="form-hint">Leave blank to auto-generate from name.</div>
+          </div>
+
+          <!-- Order -->
+          <div class="form-group">
+            <label class="form-label" for="f-order">Display Order</label>
+            <input class="form-input" id="f-order" name="order" type="number" min="0" placeholder="0">
+            <div class="form-hint">Lower numbers appear first.</div>
+          </div>
+
+          <!-- Stripe colour -->
+          <div class="form-group form-col-full">
+            <label class="form-label">Avatar Colour</label>
+            <div class="stripe-picker">
+              <div class="stripe-opt selected" data-val="teal"   title="Teal"   onclick="selectStripe('teal',   this)"></div>
+              <div class="stripe-opt"          data-val="gold"   title="Gold"   onclick="selectStripe('gold',   this)"></div>
+              <div class="stripe-opt"          data-val="navy"   title="Navy"   onclick="selectStripe('navy',   this)"></div>
+              <div class="stripe-opt"          data-val="purple" title="Purple" onclick="selectStripe('purple', this)"></div>
+            </div>
+            <input type="hidden" id="stripe-hidden" name="stripe" value="teal">
+          </div>
+
+          <!-- Bio -->
+          {% comment %} <div class="form-group form-col-full">
+            <label class="form-label" for="f-bio">Bio <span>*</span></label>
+            <textarea class="form-textarea" id="f-bio" name="bio" rows="4" placeholder="A short bio about this team member…"></textarea>
+            <div class="form-error" id="err-bio">Bio is required.</div>
+          </div> {% endcomment %}
+          <div class="form-group form-col-full" id="fg-bio">
+    <label class="form-label" for="f-bio">Bio <span>*</span></label>
+    <textarea class="form-textarea" id="f-bio" name="bio" rows="4" placeholder="A short bio about this team member…"></textarea>
+    <div class="form-error" id="err-bio">Bio is required.</div>
+</div>
+
+          <!-- Credentials -->
+          <div class="form-group form-col-full">
+            <label class="form-label" for="f-credentials">Credentials</label>
+            <input class="form-input" id="f-credentials" name="credentials" type="text" placeholder="MSc Computer Science, AWS Certified, …">
+            <div class="form-hint">Comma-separated list of qualifications.</div>
+          </div>
+
+          <!-- Specialisms -->
+          <div class="form-group form-col-full">
+            <label class="form-label" for="f-specialisms">Specialisms / Skills</label>
+            <textarea class="form-textarea" id="f-specialisms" name="specialisms" rows="3" placeholder="One skill per line&#10;e.g. Curriculum design&#10;Python &amp; Django"></textarea>
+            <div class="form-hint">One skill per line — these appear as tags in the spotlight section.</div>
+          </div>
+
+          <!-- Checkboxes -->
+          <div class="form-group form-col-full">
+            <label class="form-label">Flags</label>
+            <div class="form-check-row">
+              <label class="form-check">
+                <input type="checkbox" id="f-active" name="is_active" checked>
+                <span class="form-check-box"></span>
+                Active
+              </label>
+              <label class="form-check">
+                <input type="checkbox" id="f-featured" name="is_featured">
+                <span class="form-check-box"></span>
+                Featured (Spotlight)
+              </label>
+            </div>
+          </div>
+
+        </div><!-- /.form-grid -->
+      </div><!-- /.modal-body -->
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="closeModal('member-modal')">Cancel</button>
+        <button type="button" class="btn-primary" id="save-btn" onclick="submitMemberForm()">
+          <span class="btn-spinner"></span>
+          <span class="btn-label"><i class="ti ti-check"></i> Save Member</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     DELETE CONFIRM MODAL
+════════════════════════════════════════ -->
+<div class="modal-backdrop" id="delete-modal" onclick="closeModalOnBackdrop(event, 'delete-modal')">
+  <div class="modal del-modal">
+    <div class="modal-header">
+      <div class="modal-title"><i class="ti ti-alert-triangle" style="color:#e74c3c"></i> Delete Member</div>
+      <button class="modal-close" onclick="closeModal('delete-modal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="del-modal-body">
+      <div class="del-icon"><i class="ti ti-trash"></i></div>
+      <h3>Are you sure?</h3>
+      <p>You're about to permanently delete <strong id="del-member-name"></strong>. This action cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('delete-modal')">Cancel</button>
+      <button class="btn-danger" id="confirm-delete-btn" onclick="confirmDelete()">
+        <span class="btn-spinner"></span>
+        <span class="btn-label"><i class="ti ti-trash"></i> Yes, delete</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+  /* ═══════════════════════════════════════
+     State
+  ═══════════════════════════════════════ */
+  const URLS = {
+    add:    "{% url 'team_member_add' %}",
+    update: "{% url 'team_member_update' 0 %}".replace('/0/', '/{id}/'),
+    delete: "{% url 'team_member_delete' 0 %}".replace('/0/', '/{id}/'),
+    detail: "{% url 'team_member_detail' 0 %}".replace('/0/', '/{id}/'),
+    toggle: "{% url 'team_member_toggle' 0 %}".replace('/0/', '/{id}/'),
+  };
+
+  function buildUrl(template, id) {
+    return template.replace('{id}', id);
+  }
+
+  const CSRF = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  let activeDept = 'all';
+  let deleteTargetId = null;
+
+  /* ═══════════════════════════════════════
+     Modal helpers
+  ═══════════════════════════════════════ */
+  function openModal(id)  { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+  function closeModalOnBackdrop(e, id) {
+    if (e.target === document.getElementById(id)) closeModal(id);
+  }
+
+  /* ═══════════════════════════════════════
+     Add modal
+  ═══════════════════════════════════════ */
+  function openAddModal() {
+    resetForm();
+    document.getElementById('modal-title-text').textContent = 'Add Team Member';
+    document.getElementById('save-btn').querySelector('.btn-label').innerHTML =
+      '<i class="ti ti-plus"></i> Add Member';
+    openModal('member-modal');
+  }
+
+  /* ═══════════════════════════════════════
+     Edit modal — fetch member JSON first
+  ═══════════════════════════════════════ */
+  async function openEditModal(id) {
+    resetForm();
+    document.getElementById('modal-title-text').textContent = 'Edit Team Member';
+    document.getElementById('save-btn').querySelector('.btn-label').innerHTML =
+      '<i class="ti ti-check"></i> Save Changes';
+    openModal('member-modal');
+
+    try {
+      const res = await fetch(buildUrl(URLS.detail, id));
+      const data = await res.json();
+      populateForm(data);
+    } catch {
+      showToast('Could not load member data', 'error');
+      closeModal('member-modal');
+    }
+  }
+
+  function populateForm(m) {
+    document.getElementById('member-id').value     = m.id;
+    document.getElementById('f-name').value        = m.name;
+    document.getElementById('f-title').value       = m.title;
+    document.getElementById('f-role').value        = m.role;
+    document.getElementById('f-dept').value        = m.dept;
+    document.getElementById('f-initials').value    = m.initials;
+    document.getElementById('f-order').value       = m.order;
+    document.getElementById('f-bio').value         = m.bio;
+    document.getElementById('f-credentials').value = m.credentials;
+    document.getElementById('f-specialisms').value = m.specialisms;
+    document.getElementById('f-active').checked    = m.is_active;
+    document.getElementById('f-featured').checked  = m.is_featured;
+    selectStripe(m.stripe);
+    if (m.photo_url) {
+      document.getElementById('current-photo-hint').style.display = 'block';
+      showPhotoPreview(m.photo_url);
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     Form reset
+  ═══════════════════════════════════════ */
+  function resetForm() {
+    document.getElementById('member-form').reset();
+    document.getElementById('member-id').value = '';
+    selectStripe('teal');
+    removePhoto();
+    document.getElementById('current-photo-hint').style.display = 'none';
+    document.querySelectorAll('.form-group.has-error').forEach(g => g.classList.remove('has-error'));
+    setBtnLoading('save-btn', false);
+  }
+
+  /* ═══════════════════════════════════════
+     Photo upload
+  ═══════════════════════════════════════ */
+  function previewPhoto(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    showPhotoPreview(URL.createObjectURL(file));
+  }
+  function showPhotoPreview(src) {
+    const img  = document.getElementById('photo-preview');
+    const wrap = document.getElementById('photo-preview-wrap');
+    const ph   = document.getElementById('photo-placeholder');
+    const rm   = document.getElementById('photo-remove');
+    img.src = src;
+    img.classList.add('visible');
+    rm.classList.add('visible');
+    wrap.style.display = 'block';
+    ph.style.display   = 'none';
+  }
+  function removePhoto(e) {
+    if (e) { e.stopPropagation(); e.preventDefault(); }
+    const img  = document.getElementById('photo-preview');
+    const wrap = document.getElementById('photo-preview-wrap');
+    const ph   = document.getElementById('photo-placeholder');
+    const rm   = document.getElementById('photo-remove');
+    const inp  = document.getElementById('photo-input');
+    img.src = ''; img.classList.remove('visible');
+    rm.classList.remove('visible');
+    wrap.style.display = 'none';
+    ph.style.display   = 'block';
+    inp.value = '';
+  }
+  function handleDragOver(e) {
+    e.preventDefault();
+    document.getElementById('photo-zone').classList.add('drag-over');
+  }
+  function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('photo-zone').classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const inp = document.getElementById('photo-input');
+      const dt  = new DataTransfer();
+      dt.items.add(file);
+      inp.files = dt.files;
+      showPhotoPreview(URL.createObjectURL(file));
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     Stripe colour picker
+  ═══════════════════════════════════════ */
+  function selectStripe(val, el) {
+    document.querySelectorAll('.stripe-opt').forEach(o => o.classList.remove('selected'));
+    const target = el || document.querySelector(`.stripe-opt[data-val="${val}"]`);
+    if (target) target.classList.add('selected');
+    document.getElementById('stripe-hidden').value = val || 'teal';
+  }
+
+  /* ═══════════════════════════════════════
+     Form submit (add + edit)
+  ═══════════════════════════════════════ */
+  async function submitMemberForm() {
+    if (!validateForm()) return;
+    const id  = document.getElementById('member-id').value;
+    const url = id ? buildUrl(URLS.update, id) : URLS.add;  // ← fixed
+    const fd  = new FormData(document.getElementById('member-form'));
+
+    fd.set('is_active',   document.getElementById('f-active').checked   ? '1' : '0');
+    fd.set('is_featured', document.getElementById('f-featured').checked ? '1' : '0');
+
+    setBtnLoading('save-btn', true);
+    try {
+      const res  = await fetch(url, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': CSRF, 'X-Requested-With': 'XMLHttpRequest' },
+        body: fd,
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(data.message || 'Saved!', 'success');
+        closeModal('member-modal');
+        setTimeout(() => location.reload(), 800);
+      } else {
+        showToast(data.error || 'Something went wrong', 'error');
+      }
+    } catch {
+      showToast('Network error', 'error');
+    } finally {
+      setBtnLoading('save-btn', false);
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     Validation
+  ═══════════════════════════════════════ */
+  function validateForm() {
+    let ok = true;
+    [['f-name','fg-name','err-name'], ['f-title','fg-title','err-title'], ['f-bio','fg-bio','err-bio']]
+      .forEach(([fid, gid]) => {
+        const fg = document.getElementById(gid);
+        const f  = document.getElementById(fid);
+        if (!f.value.trim()) {
+          fg.classList.add('has-error');
+          ok = false;
+        } else {
+          fg.classList.remove('has-error');
+        }
+      });
+    return ok;
+  }
+
+  /* ═══════════════════════════════════════
+     Toggle: is_active / is_featured
+  ═══════════════════════════════════════ */
+  async function toggleField(id, field, el) {
+    const isCheckbox = el.type === 'checkbox';
+    const newVal     = isCheckbox ? el.checked : !el.classList.contains('on');
+
+    try {
+      const res = await fetch(buildUrl(URLS.toggle, id), {  // ← fixed
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': CSRF,
+          'X-Requested-With': 'XMLHttpRequest',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ field, value: newVal }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        if (!isCheckbox) el.classList.toggle('on', newVal);
+        if (isCheckbox) {
+          el.closest('.tm-toggle').querySelector('.tm-toggle-lbl').textContent =
+            newVal ? 'Active' : 'Inactive';
+        }
+        showToast(data.message || 'Updated', 'success');
+      } else {
+        if (isCheckbox) el.checked = !newVal;
+        showToast(data.error || 'Failed', 'error');
+      }
+    } catch {
+      if (isCheckbox) el.checked = !newVal;
+      showToast('Network error', 'error');
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     Delete
+  ═══════════════════════════════════════ */
+  function openDeleteModal(id, name) {
+    deleteTargetId = id;
+    document.getElementById('del-member-name').textContent = name;
+    openModal('delete-modal');
+  }
+  async function confirmDelete() {
+    if (!deleteTargetId) return;
+    setBtnLoading('confirm-delete-btn', true);
+    try {
+      const res = await fetch(buildUrl(URLS.delete, deleteTargetId), {  // ← fixed
+        method: 'POST',
+        headers: { 'X-CSRFToken': CSRF, 'X-Requested-With': 'XMLHttpRequest' },
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast('Member deleted', 'success');
+        closeModal('delete-modal');
+        const row = document.querySelector(`tr[data-id="${deleteTargetId}"]`);
+        if (row) row.remove();
+      } else {
+        showToast(data.error || 'Delete failed', 'error');
+      }
+    } catch {
+      showToast('Network error', 'error');
+    } finally {
+      setBtnLoading('confirm-delete-btn', false);
+      deleteTargetId = null;
+    }
+  }
+
+  /* ═══════════════════════════════════════
+     Table filtering
+  ═══════════════════════════════════════ */
+  function filterDept(dept, btn) {
+    activeDept = dept;
+    document.querySelectorAll('.tm-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+  }
+  function filterTable() { applyFilters(); }
+  function applyFilters() {
+    const q = document.getElementById('tm-search-input').value.toLowerCase();
+    document.querySelectorAll('#tm-tbody tr[data-id]').forEach(row => {
+      const matchDept = activeDept === 'all' || row.dataset.dept === activeDept;
+      const matchName = row.dataset.name.includes(q);
+      row.style.display = (matchDept && matchName) ? '' : 'none';
+    });
+  }
+
+  /* ═══════════════════════════════════════
+     Button loading state
+  ═══════════════════════════════════════ */
+  function setBtnLoading(btnId, on) {
+    const btn = document.getElementById(btnId);
+    btn.classList.toggle('btn-loading', on);
+    btn.disabled = on;
+  }
+
+  /* ═══════════════════════════════════════
+     ESC to close
+  ═══════════════════════════════════════ */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closeModal('member-modal');
+      closeModal('delete-modal');
+    }
+  });
+</script>
+{% endblock %}

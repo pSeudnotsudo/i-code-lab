@@ -1,263 +1,268 @@
-<footer class="ft-footer">
-  <div class="ft-footer__container">
-    <div class="ft-footer__top">
-      <div class="ft-footer__left">
-        <!-- Logo and Tagline -->
-        <div class="ft-footer__brand">
-          <div class="ft-footer__logo">
-            <svg
-              width="60"
-              height="60"
-              viewBox="0 0 60 60"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect
-                x="15"
-                y="15"
-                width="30"
-                height="30"
-                rx="5"
-                stroke="white"
-                stroke-width="2"
-                transform="rotate(45 30 30)"
-              />
-              <circle cx="30" cy="30" r="5" fill="white" />
-            </svg>
-            <span class="ft-footer__logo-text">ICODE</span>
-          </div>
-          <div class="ft-footer__tagline">
-            <p>Invent the Code.</p>
-            <p>Ignite the Future.</p>
-          </div>
-        </div>
+<!DOCTYPE html><html dir="ltr" class="jodit" lang="en"><head><title>ICODE</title><style>html{margin:0;padding:0;min-height: 100%;}body{box-sizing:border-box;font-size:13px;line-height:1.6;padding:10px;margin:0;background:transparent;color:#000;position:relative;z-index:2;user-select:auto;margin:0px;overflow:auto;outline:none;}table{width:100%;border:none;border-collapse:collapse;empty-cells: show;max-width: 100%;}th,td{padding: 2px 5px;border:1px solid #ccc;-webkit-user-select:text;-moz-user-select:text;-ms-user-select:text;user-select:text}p{margin-top:0;}.jodit_editor .jodit_iframe_wrapper{display: block;clear: both;user-select: none;position: relative;}.jodit_editor .jodit_iframe_wrapper:after {position:absolute;content:"";z-index:1;top:0;left:0;right: 0;bottom: 0;cursor: pointer;display: block;background: rgba(0, 0, 0, 0);} .jodit_disabled{user-select: none;-o-user-select: none;-moz-user-select: none;-khtml-user-select: none;-webkit-user-select: none;-ms-user-select: none}</style></head><body class="jodit-wysiwyg" dir="ltr" style="direction: ltr; min-height: 901px;" spellcheck="false"><footer class="ft-footer">
+  <div class="ft-footer__inner">
+    <div class="ft-footer__grid">
 
-        <!-- Newsletter -->
-        <div class="ft-footer__newsletter">
-          <h3 class="ft-footer__newsletter-title">Subscribe to get our Newsletter</h3>
-          <form class="ft-footer__newsletter-form" id="newsletterForm">
-            {% csrf_token %}
-            <input
-              type="email"
-              placeholder="Your Email"
-              class="ft-footer__input"
-              id="newsletterEmail"
-              required
-            />
-            <button type="submit" class="ft-footer__button">Subscribe</button>
-          </form>
-          <p id="newsletterMessage" style="display:none; margin-top: 8px; font-size: 14px;"></p>
+      <!-- Brand + Social -->
+      <div class="ft-footer__brand">
+        <div class="ft-footer__logo">
+          <svg width="40" height="40" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="15" y="15" width="30" height="30" rx="5" stroke="white" stroke-width="2" transform="rotate(45 30 30)"></rect>
+            <circle cx="30" cy="30" r="5" fill="white"></circle>
+          </svg>
+          <span class="ft-footer__logo-text">ICODE</span>
         </div>
-        {% comment %} <div class="ft-footer__newsletter">
-          <h3 class="ft-footer__newsletter-title">
-            Subscribe to get our Newsletter
-          </h3>
-          <form class="ft-footer__newsletter-form">
-            <input
-              type="email"
-              placeholder="Your Email"
-              class="ft-footer__input"
-              required
-            />
-            <button type="submit" class="ft-footer__button">Subscribe</button>
-          </form>
-        </div> {% endcomment %}
+        <div class="ft-footer__tagline">
+          <p>Invent the Code.</p>
+          <p>Ignite the Future.</p>
+        </div>
+        <div class="ft-footer__social">
+             <a href="https://www.facebook.com/share/1avyoVVABR/?mibextid=wwXIfr" aria-label="Facebook" target="_blank"><i class="ti ti-brand-facebook"></i></a>
+          <a href="https://www.instagram.com/icode_lab?igsh=cnhpOHFuYWd0dHE%3D&utm_source=qr" aria-label="Instagram" target="_blank"><i class="ti ti-brand-instagram"></i></a>
+          <a href="https://www.tiktok.com/@icode.robotics.ai?_r=1&_t=ZS-95RV6xgEg6e" aria-label="TikTok" target="_blank"><i class="ti ti-brand-tiktok"></i></a>
+          <a href="https://youtube.com/@icoderoboticsailab?si=Dku-hxJd0lXrS3_8" aria-label="YouTube" target="_blank"><i class="ti ti-brand-youtube"></i></a>
+          <a href="https://www.threads.com/@icode_lab?invite=0" aria-label="Threads" target="_blank"><i class="ti ti-brand-threads"></i></a>
+          
+          
+          
+          
+          
+          
+        <br></div>
+      </div>
 
-        <!-- Footer Links -->
-        <div class="ft-footer__links">
-          <a
-            href="#"
-            class="ft-footer__link"
-            data-bs-toggle="modal"
-            data-bs-target="#privacyModal"
-            >Privacy Policy</a
-          >
-          <span class="ft-footer__divider">|</span>
-          <a href="{% url 'terms' %}" class="ft-footer__link">Terms & Conditions</a>
+      <!-- Quick Links -->
+      <div class="ft-footer__col">
+        <p class="ft-footer__col-title">Quick Links</p>
+        <ul class="ft-footer__links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Programs</a></li>
+          <li><a href="#">Events</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div class="ft-footer__col">
+        <p class="ft-footer__col-title">Contact</p>
+        <div class="ft-footer__contact-item">
+          <strong>Location</strong>
+          <p>OneStop Arcade Karen, Nairobi</p>
+        </div>
+        <div class="ft-footer__contact-item">
+          <strong>Phone</strong>
+          <p>+254141054939</p>
+        </div>
+        <div class="ft-footer__contact-item">
+          <strong>Email</strong>
+          <p>info@icodeailab.com</p>
         </div>
       </div>
 
-      <div class="ft-footer__right">
-        <div class="ft-footer__contact">
-          <h3 class="ft-footer__contact-title">Contact Details</h3>
-          <div class="ft-footer__contact-item">
-            <strong>Location</strong>
-            <p>OneStop Arcade Karen, Nairobi</p>
-          </div>
-          <div class="ft-footer__contact-item">
-            <strong>Phone</strong>
-            <p>+2547 48 982 170</p>
-          </div>
-          <div class="ft-footer__contact-item">
-            <strong>Email</strong>
-            <p>info@icodeaillab.com</p>
-          </div>
-        </div>
+      <!-- Newsletter -->
+      <div class="ft-footer__col">
+        <p class="ft-footer__col-title">Newsletter</p>
+        <p class="ft-footer__news-sub">Get updates on programs, events, and robotics news.</p>
+        <form class="ft-footer__form" id="newsletterForm">
+          {% csrf_token %}
+          <input type="email" placeholder="Your email address" class="ft-footer__input" id="newsletterEmail" required="">
+          <button type="submit" class="ft-footer__button">Subscribe</button>
+          <p id="newsletterMessage" style="display:none; margin-top: 6px; font-size: 12px;"><br></p>
+        </form>
       </div>
+
     </div>
 
-    <!-- Copyright -->
-    <div class="ft-footer__copyright">
-      <p>© {% now "Y" %} I-Code Robotics & AI Lab. All rights reserved.</p>
+    <!-- Bottom Bar -->
+    <div class="ft-footer__bottom">
+      <p class="ft-footer__copyright">© {% now "Y" %} I-Code Robotics &amp; AI Lab. All rights reserved.</p>
+      <div class="ft-footer__policy">
+        <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy Policy</a>
+        <span>|</span>
+        <a href="{% url 'terms' %}">Terms &amp; Conditions</a>
+      </div>
     </div>
   </div>
 </footer>
 
+
 <!-- Privacy Policy Modal -->
-<div
-  class="modal fade"
-  id="privacyModal"
-  tabindex="-1"
-  aria-labelledby="privacyModalLabel"
-  aria-hidden="true"
->
-  <div
-    class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable"
-  >
+<div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="privacyModalLabel">Privacy Policy</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-0">
-        <iframe
-          src="{% url 'serve_privacy_policy' %}"
-          width="100%"
-          height="600px"
-          style="border: none"
-        >
-        </iframe>
+        <iframe src="{% url 'serve_privacy_policy' %}" width="100%" height="600px" style="border: none"></iframe>
       </div>
       <div class="modal-footer">
-        <a
-          href="{% url 'serve_privacy_policy' %}"
-          target="_blank"
-          class="btn btn-outline-secondary btn-sm"
-        >
+        <a href="{% url 'serve_privacy_policy' %}" target="_blank" class="btn btn-outline-secondary btn-sm">
           Open in new tab
         </a>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Close
-        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 
+
 <style>
   .ft-footer {
     background-color: #2f3649;
-    padding: 60px 20px 40px;
-    color: var(--white);
+    color: #fff;
+    padding: 56px 24px 32px;
+    font-family: inherit;
   }
 
-  .ft-footer__container {
-    max-width: 1200px;
+  .ft-footer__inner {
+    max-width: 1100px;
     margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 40px;
   }
 
-  .ft-footer__top {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 40px;
-    width: 100%;
+  .ft-footer__grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1.4fr;
+    gap: 48px;
+    align-items: start;
+    margin-bottom: 48px;
   }
 
-  .ft-footer__left {
-    flex: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 40px;
-  }
-
-  .ft-footer__right {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  /* Brand Section */
-  .ft-footer__brand {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-  }
-
+  /* Brand */
   .ft-footer__logo {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+    margin-bottom: 12px;
   }
 
   .ft-footer__logo-text {
-    font-size: 32px;
+    font-size: 26px;
     font-weight: 700;
-    color: var(--white);
+    color: #fff;
     letter-spacing: 2px;
   }
 
   .ft-footer__tagline {
-    text-align: left;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.8);
-    line-height: 1.5;
-    border-left: 2px solid rgba(255, 255, 255, 0.3);
-    padding-left: 20px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.7;
+    border-left: 2px solid rgba(255, 255, 255, 0.2);
+    padding-left: 14px;
+    margin-bottom: 24px;
   }
 
   .ft-footer__tagline p {
     margin: 0;
   }
 
-  /* Newsletter Section */
-  .ft-footer__newsletter {
-    text-align: center;
-    width: 100%;
-    max-width: 600px;
-  }
-
-  .ft-footer__newsletter-title {
-    font-size: 18px;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 20px;
-  }
-
-  .ft-footer__newsletter-form {
+  /* Social Icons */
+  .ft-footer__social {
     display: flex;
-    gap: 12px;
-    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .ft-footer__social a {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
     align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 16px;
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+  }
+
+  .ft-footer__social a:hover {
+    background-color: var(--primary-teal);
+    border-color: var(--primary-teal);
+    color: #fff;
+  }
+
+  /* Columns */
+  .ft-footer__col-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  .ft-footer__links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ft-footer__links a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 13.5px;
+    transition: color 0.2s;
+  }
+
+  .ft-footer__links a:hover {
+    color: var(--primary-teal);
+  }
+
+  /* Contact */
+  .ft-footer__contact-item {
+    margin-bottom: 14px;
+  }
+
+  .ft-footer__contact-item strong {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--primary-teal);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+
+  .ft-footer__contact-item p {
+    font-size: 13.5px;
+    color: rgba(255, 255, 255, 0.75);
+    margin: 0;
+  }
+
+  /* Newsletter */
+  .ft-footer__news-sub {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+
+  .ft-footer__form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .ft-footer__input {
-    flex: 1;
-    max-width: 400px;
-    padding: 14px 24px;
-    background-color: transparent;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    padding: 11px 18px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 50px;
-    color: var(--white);
-    font-size: 14px;
+    color: #fff;
+    font-size: 13px;
     outline: none;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.2s;
   }
 
   .ft-footer__input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.4);
   }
 
   .ft-footer__input:focus {
@@ -265,209 +270,94 @@
   }
 
   .ft-footer__button {
-    padding: 14px 32px;
+    padding: 11px 24px;
     background-color: var(--primary-teal);
-    color: var(--white);
+    color: #fff;
     border: none;
     border-radius: 50px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    transition:
-      background-color 0.3s ease,
-      transform 0.2s ease;
-    white-space: nowrap;
+    transition: background-color 0.2s, transform 0.15s;
   }
 
   .ft-footer__button:hover {
     background-color: var(--primary-teal-dark);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
 
-  /* Footer Links */
-  .ft-footer__links {
+  .ft-footer__button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Bottom Bar */
+  .ft-footer__bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 24px;
     display: flex;
     align-items: center;
-    gap: 15px;
+    justify-content: space-between;
     flex-wrap: wrap;
-    justify-content: center;
+    gap: 12px;
   }
 
-  .ft-footer__link {
-    color: rgba(255, 255, 255, 0.7);
-    text-decoration: none;
-    font-size: 14px;
-    transition: color 0.3s ease;
-  }
-
-  .ft-footer__link:hover {
-    color: var(--primary-teal);
-  }
-
-  .ft-footer__divider {
-    color: rgba(255, 255, 255, 0.3);
-    font-size: 14px;
-  }
-
-  /* Copyright */
   .ft-footer__copyright {
-    text-align: center;
-  }
-
-  .ft-footer__copyright p {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 13px;
+    font-size: 12.5px;
+    color: rgba(255, 255, 255, 0.45);
     margin: 0;
   }
 
-  /* Contact Section */
-  .ft-footer__contact {
-    text-align: left;
+  .ft-footer__policy {
+    display: flex;
+    align-items: center;
+    gap: 16px;
   }
 
-  .ft-footer__contact-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--white);
-    margin-bottom: 20px;
+  .ft-footer__policy a {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12.5px;
+    text-decoration: none;
+    transition: color 0.2s;
   }
 
-  .ft-footer__contact-item {
-    margin-bottom: 15px;
-  }
-
-  .ft-footer__contact-item strong {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
+  .ft-footer__policy a:hover {
     color: var(--primary-teal);
-    margin-bottom: 5px;
   }
 
-  .ft-footer__contact-item p {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.8);
-    margin: 0;
+  .ft-footer__policy span {
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 12px;
   }
 
   /* Responsive */
-  @media (max-width: 768px) {
-    .ft-footer {
-      padding: 40px 20px 30px;
+  @media (max-width: 860px) {
+    .ft-footer__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 36px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .ft-footer__grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
     }
 
-    .ft-footer__container {
-      gap: 30px;
-    }
-
-    .ft-footer__top {
+    .ft-footer__bottom {
       flex-direction: column;
-      align-items: center;
-      gap: 40px;
-    }
-
-    .ft-footer__left,
-    .ft-footer__right {
-      flex: none;
-      width: 100%;
-    }
-
-    .ft-footer__brand {
-      flex-direction: column;
-      gap: 20px;
-      text-align: center;
+      align-items: flex-start;
     }
 
     .ft-footer__tagline {
       border-left: none;
-      border-top: 2px solid rgba(255, 255, 255, 0.3);
+      border-top: 2px solid rgba(255, 255, 255, 0.2);
       padding-left: 0;
-      padding-top: 15px;
-      text-align: center;
-    }
-
-    .ft-footer__newsletter-form {
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .ft-footer__input {
-      max-width: 100%;
-    }
-
-    .ft-footer__button {
-      width: 100%;
-    }
-
-    .ft-footer__links {
-      gap: 10px;
-    }
-
-    .ft-footer__contact {
-      text-align: center;
-      margin-top: 0;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .ft-footer__logo-text {
-      font-size: 28px;
-    }
-
-    .ft-footer__newsletter-title {
-      font-size: 16px;
-    }
-
-    .ft-footer__links {
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .ft-footer__divider {
-      display: none;
+      padding-top: 12px;
     }
   }
 </style>
 
-<script>
-  document.getElementById('newsletterForm').addEventListener('submit', async function (e) {
-  e.preventDefault();
 
-  const email = document.getElementById('newsletterEmail').value;
-  const message = document.getElementById('newsletterMessage');
-  const button = this.querySelector('button');
-
-  button.disabled = true;
-  button.textContent = 'Subscribing...';
-
-  try {
-    const response = await fetch('/newsletter/subscribe/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-      },
-      body: JSON.stringify({ email }),
-    });
-
-    const data = await response.json();
-
-    message.style.display = 'block';
-    if (data.success) {
-      message.style.color = 'green';
-      message.textContent = '' + data.message;
-      this.reset();
-    } else {
-      message.style.color = 'red';
-      message.textContent = ' ' + data.message;
-    }
-  } catch (err) {
-    message.style.display = 'block';
-    message.style.color = 'red';
-    message.textContent = 'Something went wrong. Please try again.';
-  } finally {
-    button.disabled = false;
-    button.textContent = 'Subscribe';
-  }
-});
-</script>
+</body></html>

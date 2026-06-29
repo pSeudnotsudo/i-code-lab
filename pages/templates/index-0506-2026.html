@@ -6,75 +6,10 @@
 
 {% block content %}
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="{% static 'css/home.css' %}">
 
 <!-- ═══════════════════════════════════════════
      HERO
 ═══════════════════════════════════════════ -->
-<!--Banner  -->
-
-{% now "Y-m-d" as today %}
-{% if today <= "2026-07-14" %}
-
-<div class="bc-widget" id="bcWidget">
-
-  <!-- Mobile tab (visible only on mobile) -->
-  <button class="bc-mobile-tab" onclick="bcToggle()" aria-label="Toggle bootcamp alert">
-    <i class="ti ti-rocket"></i>
-    <span>Bootcamp</span>
-    <i class="ti ti-chevron-up bc-tab-arrow"></i>
-  </button>
-
-  <!-- Header -->
-  <div class="bc-widget-header">
-    <div class="pulse-dot"></div>
-    <i class="ti ti-rocket" aria-hidden="true"></i>
-    <span>Bootcamp Alert</span>
-    <button class="bc-close" onclick="bcDismiss()" aria-label="Dismiss">
-      <i class="ti ti-x"></i>
-    </button>
-  </div>
-
-  <!-- Program pills -->
-  <div class="bc-widget-programs">
-    {% for p in programs %}
-    <span class="bc-pill">{{ p.code }}</span>
-    {% endfor %}
-  </div>
-
-  <!-- Tagline -->
-  <div class="bc-widget-tagline">🚀 Seats are filling fast — don't miss out!</div>
-
-  <!-- Countdown -->
-  <div class="bc-countdown">
-    <div class="bc-unit"><span class="bc-num" id="bcd">--</span><span class="bc-lbl">days</span></div>
-    <div class="bc-colon">:</div>
-    <div class="bc-unit"><span class="bc-num" id="bch">--</span><span class="bc-lbl">hrs</span></div>
-    <div class="bc-colon">:</div>
-    <div class="bc-unit"><span class="bc-num" id="bcm">--</span><span class="bc-lbl">min</span></div>
-    <div class="bc-colon">:</div>
-    <div class="bc-unit"><span class="bc-num" id="bcs">--</span><span class="bc-lbl">sec</span></div>
-  </div>
-
-  <!-- Enroll -->
-  <a href="{% url 'bootcamp_2026' %}" class="bc-enroll" id="bcEnroll">
-    <i class="ti ti-arrow-right" aria-hidden="true"></i>
-    Enroll Now
-  </a>
-
-</div>
-
-
-
-{% endif %}
-
-
-
 <section class="hero">
   <div class="hero-orb hero-orb--1"></div>
   <div class="hero-orb hero-orb--2"></div>
@@ -101,7 +36,7 @@
 
       <div class="hero-actions">
         <button class="btn-hero-primary" onclick="openEnrollmentModal()">
-            Enroll Now <i class="ti ti-arrow-right" aria-hidden="true"></i>
+            Book a Trial <i class="ti ti-arrow-right" aria-hidden="true"></i>
         </button>
        <a href="{% url 'programs' %}" class="btn-hero-ghost">
     <i class="ti ti-compass" aria-hidden="true"></i>
@@ -111,7 +46,7 @@
 
       <div class="hero-stats">
         <div class="hero-stat-item">
-          <div class="hero-stat-num">40+</div>
+          <div class="hero-stat-num">50+</div>
           <div class="hero-stat-lbl">Students Trained</div>
         </div>
         <div class="hero-stat-item">
@@ -124,6 +59,8 @@
         </div>
       </div>
     </div>
+    
+    
 
     <!-- Right: Self-Drawing Robot -->
     <div class="hero-visual">
@@ -134,10 +71,10 @@
         <svg class="robot-svg" viewBox="0 0 300 380" fill="none" xmlns="http://www.w3.org/2000/svg">
           <!-- Antenna -->
           <line class="draw-path d0" x1="150" y1="60" x2="150" y2="20"
-            stroke="#F5A623" stroke-width="3" stroke-linecap="round"
+            stroke="#F48C06" stroke-width="3" stroke-linecap="round"
             style="--path-len:40"/>
-          <circle class="robot-fill f0" cx="150" cy="14" r="8" fill="#F5A623"
-            style="filter:drop-shadow(0 0 8px #F5A623)"/>
+          <circle class="robot-fill f0" cx="150" cy="14" r="8" fill="#F48C06"
+            style="filter:drop-shadow(0 0 8px #F48C06)"/>
 
           <!-- Head -->
           <rect class="draw-path d1" x="80" y="60" width="140" height="110" rx="24"
@@ -169,9 +106,9 @@
             fill="rgba(255,255,255,0.06)"
             style="--path-len:230"/>
           <rect class="robot-fill f3" x="104" y="151" width="36" height="8" rx="4"
-            fill="#1EBFBF" style="filter:drop-shadow(0 0 6px #1EBFBF)"/>
+            fill="#49BBBD" style="filter:drop-shadow(0 0 6px #49BBBD)"/>
           <rect class="robot-fill f3" x="148" y="151" width="24" height="8" rx="4"
-            fill="#F5A623" style="filter:drop-shadow(0 0 6px #F5A623)"/>
+            fill="#F48C06" style="filter:drop-shadow(0 0 6px #F48C06)"/>
 
           <!-- Neck -->
           <rect class="draw-path d4" x="130" y="170" width="40" height="20" rx="8"
@@ -192,19 +129,19 @@
             style="--path-len:440"/>
 
           <!-- Chest lights -->
-          <circle class="robot-fill f4" cx="110" cy="250" r="10" fill="#1EBFBF"
-            style="filter:drop-shadow(0 0 10px #1EBFBF)"/>
+          <circle class="robot-fill f4" cx="110" cy="250" r="10" fill="#49BBBD"
+            style="filter:drop-shadow(0 0 10px #49BBBD)"/>
           <circle class="robot-fill f4" cx="150" cy="250" r="10" fill="#3DA4A6"
             style="filter:drop-shadow(0 0 10px #3DA4A6)"/>
-          <circle class="robot-fill f4" cx="190" cy="250" r="10" fill="#F5A623"
-            style="filter:drop-shadow(0 0 10px #F5A623)"/>
+          <circle class="robot-fill f4" cx="190" cy="250" r="10" fill="#F48C06"
+            style="filter:drop-shadow(0 0 10px #F48C06)"/>
 
           <!-- Progress bar -->
           <rect class="draw-path d6" x="90" y="275" width="120" height="10" rx="5"
             stroke="rgba(255,255,255,0.25)" stroke-width="1.2"
             style="--path-len:270"/>
           <rect class="robot-fill f4" x="92" y="277" width="70" height="6" rx="3"
-            fill="#1EBFBF"/>
+            fill="#49BBBD"/>
 
           <!-- Left arm -->
           <rect class="draw-path d7" x="12" y="200" width="44" height="100" rx="22"
@@ -284,46 +221,29 @@
         </div>
       </div>
 
-      <!--<div class="floating-card card-congrats">-->
-      <!--  <div class="card-icon email-icon">-->
-      <!--    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">-->
-      <!--      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="white" stroke-width="2"/>-->
-      <!--      <path d="M22 6l-10 7L2 6" stroke="white" stroke-width="2"/>-->
-      <!--    </svg>-->
-      <!--  </div>-->
-      <!--  <div>-->
-      <!--    <div class="card-title">Congratulations!</div>-->
-      <!--    <div class="card-subtitle">Admission completed</div>-->
-      <!--  </div>-->
-      <!--</div>-->
       <div class="floating-card card-congrats">
-  <div class="card-icon congrats-icon">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-        fill="rgba(255,255,255,0.9)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
-    </svg>
-  </div>
-  <div class="congrats-body">
-    <div class="congrats-label">Enrollment Confirmed</div>
-    <div class="card-title">
-      Congratulations!
-      <i class="ti ti-confetti"></i>
-    </div>
-    <div class="card-subtitle">Admission completed</div>
-  </div>
-  <div class="congrats-badge">✓</div>
-</div>
+        <div class="card-icon email-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="white" stroke-width="2"/>
+            <path d="M22 6l-10 7L2 6" stroke="white" stroke-width="2"/>
+          </svg>
+        </div>
+        <div>
+          <div class="card-title">Congratulations!</div>
+          <div class="card-subtitle">Admission completed</div>
+        </div>
+      </div>
 
-      <!--<div class="floating-card card-class">-->
-      <!--  <div class="user-avatar">-->
-      <!--    <img src="{% static 'images/img.jpg' %}" alt="User" />-->
-      <!--  </div>-->
-      <!--  <div>-->
-      <!--    <div class="card-title" style="font-size:.78rem;">UX Design Class</div>-->
-      <!--    <div class="card-subtitle">Today at 12:00 PM</div>-->
-      <!--    <button class="btn-join-now">Join Now</button>-->
-      <!--  </div>-->
-      <!--</div>-->
+      <div class="floating-card card-class">
+        <div class="user-avatar">
+          <img src="{% static 'images/img.jpg' %}" alt="User" />
+        </div>
+        <div>
+          <div class="card-title" style="font-size:.78rem;">UX Design Class</div>
+          <div class="card-subtitle">Today at 12:00 PM</div>
+          <button class="btn-join-now">Join Now</button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -391,19 +311,30 @@
       <h2 class="section-title">What is <span class="hl">I-CODE?</span></h2>
       <div class="section-divider"></div>
       <p class="section-desc">
-        i-Code is a next-generation tech lab that empower future skills to students from childhood to career level by combining robotics, AI,Coding,Drone and cybersecurity into a hands-on learning experience.
+        i-Code is a next-generation tech lab that trains students from childhood to career level by combining robotics, AI, and cybersecurity into a hands-on learning experience.
       </p>
     </div>
 
     <div class="what-grid">
-      <div class="what-image-wrap">
-        <video autoplay muted loop playsinline 
-          style="width:100%;display:block;border-radius:15px;">
-          <source src="/media/videos/icode.mp4" type="video/mp4">
-        </video>
-        <!--<div class="what-badge">🚀 A Real Innovation Lab</div>-->
-        <div class="what-badge"><i class="ti ti-rocket"></i> A Real Innovation Lab</div>
-      </div>
+      {% comment %} <div class="what-image-wrap">
+        <img src="{% static 'images/i-code-classroom.JPG' %}" alt="Students learning at I-Code Innovation Lab">
+        <div class="what-badge">🚀 A Real Innovation Lab</div>
+      </div> {% endcomment %}
+        <div class="what-image-wrap">
+  <video autoplay muted loop playsinline 
+    style="width:100%;display:block;border-radius:15px;">
+    <source src="/media/videos/icode.mp4" type="video/mp4">
+  </video>
+  <div class="what-badge">🚀 A Real Innovation Lab</div>
+</div>
+
+      {% comment %} <div class="what-image-wrap">
+  <video autoplay muted loop playsinline 
+    style="width:100%;display:block;border-radius:15px;max-height:500px;object-fit:cover;">
+    <source src="{% static 'images/icode.mp4' %}" type="video/mp4">
+  </video>
+  <div class="what-badge">🚀 A Real Innovation Lab</div>
+</div> {% endcomment %}
 
       <div>
         <h3 style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;margin-bottom:8px;">A real innovation lab,<br><span style="color:var(--primary-dark);">not just a classroom</span></h3>
@@ -428,33 +359,31 @@
           </li>
         </ul>
 
-        <!--<div class="what-cards" style="margin-top:28px;">-->
-        <!--  <div class="what-role-card">-->
-        <!--    <div class="what-role-card__body">-->
-        <!--      <div class="what-role-card__title">FOR INSTRUCTORS</div>-->
-        <!--      <button class="what-role-card__btn">Start a class today</button>-->
-        <!--    </div>-->
-        <!--  </div>-->
-        <!--  <div class="what-role-card what-role-card--students">-->
-        <!--    <div class="what-role-card__body">-->
-        <!--      <div class="what-role-card__title">FOR STUDENTS</div>-->
-        <!--      <button class="what-role-card__btn">Enter access code</button>-->
-        <!--    </div>-->
-        <!--  </div>-->
-        <!--</div>-->
+        <div class="what-cards" style="margin-top:28px;">
+          <div class="what-role-card">
+            <div class="what-role-card__body">
+              <div class="what-role-card__title">FOR INSTRUCTORS</div>
+              <button class="what-role-card__btn">Start a class today</button>
+            </div>
+          </div>
+          <div class="what-role-card what-role-card--students">
+            <div class="what-role-card__body">
+              <div class="what-role-card__title">FOR STUDENTS</div>
+              <button class="what-role-card__btn">Enter access code</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════
-     PROGRAMS
-═══════════════════════════════════════════ -->
+
 <section class="programs-section">
   <div style="max-width:1200px;margin:0 auto;text-align:center;position:relative;z-index:1;">
     <div class="section-eyebrow">What We Offer</div>
     <h2 class="section-title">Our <span class="hl">Programs</span></h2>
-    <div class="section-divider" style="background:linear-gradient(90deg,#F5A623,#1EBFBF);"></div>
+    <div class="section-divider" style="background:linear-gradient(90deg,#F48C06,#49BBBD);"></div>
     <p class="section-desc" style="color:rgba(255,255,255,.6);margin:14px auto 0;">
       Explore our hands-on tech programs — designed for every age and skill level.
     </p>
@@ -462,38 +391,36 @@
 
   <div class="programs-grid">
     {% for program in programs %}
-    <div class="prog-card" onclick="location.href='{{ program.get_absolute_url }}'" style="cursor:pointer;">
-      <div class="go-corner"><span class="go-arrow">&#10140;</span></div>
-    
-      <div class="prog-card__icon">
-  {% with code=program.code|lower %}
-    {% if 'cod' in code or 'web' in code or 'programming' in code %}
-      <i class="ti ti-code"></i>
-    {% elif 'robot' in code or 'arduino' in code %}
-      <i class="ti ti-robot"></i>
-    {% elif 'ai' in code or 'machine' in code or 'ml' in code %}
-      <i class="ti ti-brain"></i>
-    {% elif 'drone' in code or 'uav' in code %}
-      <i class="ti ti-drone"></i>
-    {% elif 'kid' in code or 'junior' in code or 'scratch' in code %}
-      <i class="ti ti-device-gamepad-2"></i>
-    {% elif 'cyber' in code or 'security' in code or 'hack' in code %}
-      <i class="ti ti-lock"></i>
-    {% else %}
-      <i class="ti ti-bulb"></i>
-    {% endif %}
-  {% endwith %}
-</div>
-      <div class="prog-card__title">{{ program.name }}</div>
-      <p class="prog-card__desc">{{ program.hero_copy }}</p>
-      {% if program.age_range %}
-        <span class="prog-card__badge">{{ program.age_range.title }}</span>
-      {% endif %}
-    </div>
-    {% empty %}
-    <p style="color:rgba(255,255,255,.6);text-align:center;">No programs available yet.</p>
-    {% endfor %}
+<div class="prog-card" onclick="location.href='{{ program.get_absolute_url }}'" style="cursor:pointer;">
+  {% comment %} <a href="{{ program.get_absolute_url }}" class="prog-card" style="text-decoration:none;"> {% endcomment %}
+  
+
+  <div class="go-corner"><span class="go-arrow">&#10140;</span></div>
+  <div class="prog-card__icon">
+    {% with code=program.code|lower %}
+  {% if 'cod' in code or 'web' in code %}💻
+  {% elif 'robot' in code or 'arduino' in code %}🤖
+  {% elif 'ai' in code or 'machine' in code or 'ml' in code %}🧠
+  {% elif 'drone' in code or 'uav' in code %}🚁
+  {% elif 'kid' in code or 'junior' in code or 'scratch' in code %}🎮
+  {% elif 'cyber' in code or 'security' in code or 'hack' in code %}🔐
+  {% else %}💡
+  {% endif %}
+{% endwith %}
   </div>
+  <div class="prog-card__title">{{ program.name }}</div>
+  <p class="prog-card__desc">{{ program.hero_copy }}</p>
+  {% if program.age_range %}
+    <span class="prog-card__badge">{{ program.age_range.title }}</span>
+  {% endif %}
+</div>
+{% empty %}
+<p style="color:rgba(255,255,255,.6);text-align:center;">No programs available yet.</p>
+{% endfor %}
+  </div>
+  {% comment %} </a> {% endcomment %}
+
+
 
   <div class="programs-cta" style="position:relative;z-index:1;">
     <a href="{% url 'programs' %}" class="btn-programs">
@@ -505,10 +432,7 @@
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════
-     VIDEO
-═══════════════════════════════════════════ -->
-<section style="padding:80px 24px;background:#0D1B2E;text-align:center;">
+<section style="padding:80px 24px;background:#0d3b3c;text-align:center;">
   <div style="max-width:900px;margin:0 auto;">
     <div class="section-eyebrow" style="background:rgba(73,187,189,.22);color:#7fd8da;">See It Live</div>
     <h2 class="section-title" style="color:#fff;margin-bottom:28px;">Watch a Class <span class="hl">In Session</span></h2>
@@ -522,12 +446,15 @@
 <!-- ═══════════════════════════════════════════
      PARTNERS
 ═══════════════════════════════════════════ -->
+
+
 <section class="partners-section">
   <p class="partners-label">Our Partners</p>
   <h2 class="partners-title">Trusted platforms we work with</h2>
   <p class="partners-sub">We partner with industry-leading platforms to deliver the best learning experience.</p>
 
   <div class="partners-grid">
+
     <div class="partner-card vex">
       <div class="partner-card-deco"></div>
       <div class="partner-card-deco2"></div>
@@ -581,12 +508,29 @@
         </a>
       </div>
     </div>
+
   </div>
 </section>
 
+
+
 <!-- ═══════════════════════════════════════════
-     TESTIMONIALS
+     TESTIMONIAL
 ═══════════════════════════════════════════ -->
+<!--<section class="testimonial-section">-->
+<!--  <div class="testimonial-section__inner">-->
+<!--    <div class="section-eyebrow">Testimonials</div>-->
+<!--    <h2 class="section-title">What They <span class="hl">Say?</span></h2>-->
+<!--    <div class="section-divider"></div>-->
+<!--    <p class="testimonial-quote" style="margin-top:28px;">-->
+<!--      I-CODE has received overwhelmingly positive feedback from students, parents, and professionals. Our learners consistently report newfound confidence, practical skills, and a passion for technology that extends far beyond the classroom.-->
+<!--    </p>-->
+<!--    <a href="#" class="testimonial-cta">-->
+<!--      Write your assessment-->
+<!--      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>-->
+<!--    </a>-->
+<!--  </div>-->
+<!--</section>-->
 <section class="testimonial-section">
   <div class="testimonial-section__inner">
 
@@ -600,43 +544,44 @@
       practical skills, and a passion for technology that extends far beyond the classroom.
     </p>
 
-    <!-- ★ Assessment CTA Button -->
+    <!--<a href="#" class="testimonial-cta">-->
+    <!--  Write your assessment-->
+    <!--  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"-->
+    <!--       stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">-->
+    <!--    <path d="M5 12h14M12 5l7 7-7 7"/>-->
+    <!--  </svg>-->
+    <!--</a>-->
     <button class="testimonial-cta" id="openModal" type="button">
-      <span class="cta-icon" aria-hidden="true">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-        </svg>
-      </span>
-      Write your assessment
-      <svg class="cta-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
-        <path d="M5 12h14M12 5l7 7-7 7"/>
-      </svg>
-    </button>
+  Write your assessment
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+       stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+    <path d="M5 12h14M12 5l7 7-7 7"/>
+  </svg>
+</button>
 
-    {% if messages %}
-      {% for message in messages %}
-        <div class="t-toast t-toast--{{ message.tags }}" role="alert">
-          {{ message }}
-        </div>
-      {% endfor %}
-    {% endif %}
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="t-toast t-toast--{{ message.tags }}" role="alert">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
 
     {% if testimonials %}
     <div class="t-carousel">
       <div class="t-carousel__track" id="tTrack">
+
         {% for t in testimonials %}
         <article class="t-card">
           <div class="t-card__quote" aria-hidden="true">&ldquo;</div>
-<div class="t-card__stars" aria-label="{{ t.rating }} out of 5 stars">
-  {% for i in "12345" %}
-    <i class="ti {% if forloop.counter <= t.rating %}ti-star-filled t-star--on{% else %}ti-star t-star--off{% endif %}"
-       aria-hidden="true"></i>
-  {% endfor %}
-</div>
 
+          <div class="t-card__stars" aria-label="{{ t.rating }} out of 5 stars">
+            {% for i in "12345" %}
+              <span class="t-star {% if forloop.counter <= t.rating %}t-star--on{% endif %}"
+                    aria-hidden="true">★</span>
+            {% endfor %}
+          </div>
 
           <p class="t-card__text">{{ t.content }}</p>
 
@@ -649,6 +594,7 @@
           </footer>
         </article>
         {% endfor %}
+
       </div>
 
       <div class="t-carousel__controls">
@@ -672,64 +618,65 @@
     {% endif %}
 
   </div>
+  
+<div class="t-modal-backdrop" id="tModal" aria-modal="true" role="dialog"
+     aria-labelledby="tModalTitle" hidden>
+  <div class="t-modal">
+    <button class="t-modal__close" id="closeModal" aria-label="Close">&times;</button>
 
-  <!-- Assessment Modal -->
-  <div class="t-modal-backdrop" id="tModal" aria-modal="true" role="dialog"
-       aria-labelledby="tModalTitle" hidden>
-    <div class="t-modal">
-      <button class="t-modal__close" id="closeModal" aria-label="Close">&times;</button>
+    <div class="t-modal__header">
+      <div class="section-eyebrow">Share your experience</div>
+      <h3 class="t-modal__title" id="tModalTitle">Write an Assessment today</h3>
+    </div>
 
-      <div class="t-modal__header">
-        <div class="section-eyebrow">Share your experience</div>
-        <h3 class="t-modal__title" id="tModalTitle">Write an Assessment today</h3>
+    <form class="t-form" method="post" action="{% url 'submit_testimonial' %}">
+      {% csrf_token %}
+
+      <div class="t-form__group">
+        <label class="t-form__label" for="author_name">Full name <span aria-hidden="true">*</span></label>
+        <input class="t-form__input" type="text" id="author_name" name="author_name"
+               placeholder="Jane Doe" required maxlength="100">
       </div>
 
-      <form class="t-form" method="post" action="{% url 'submit_testimonial' %}">
-        {% csrf_token %}
+      <div class="t-form__group">
+        <label class="t-form__label" for="author_role">Your role <span aria-hidden="true">*</span></label>
+        <input class="t-form__input" type="text" id="author_role" name="author_role"
+               placeholder="e.g. Parent of student, Career switcher" required maxlength="100">
+      </div>
 
-        <div class="t-form__group">
-          <label class="t-form__label" for="author_name">Full name <span aria-hidden="true">*</span></label>
-          <input class="t-form__input" type="text" id="author_name" name="author_name"
-                 placeholder="Jane Doe" required maxlength="100">
+      <div class="t-form__group">
+        <label class="t-form__label">Rating <span aria-hidden="true">*</span></label>
+        <div class="t-star-picker" role="radiogroup" aria-label="Rating">
+          {% for i in "12345" %}
+          <label class="t-star-pick">
+            <input type="radio" name="rating" value="{{ forloop.counter }}"
+                   {% if forloop.counter == 5 %}checked{% endif %}>
+            <span class="t-star-pick__icon" aria-hidden="true">★</span>
+          </label>
+          {% endfor %}
         </div>
+      </div>
 
-        <div class="t-form__group">
-          <label class="t-form__label" for="author_role">Your role <span aria-hidden="true">*</span></label>
-          <input class="t-form__input" type="text" id="author_role" name="author_role"
-                 placeholder="e.g. Parent of student, Career switcher" required maxlength="100">
-        </div>
+      <div class="t-form__group">
+        <label class="t-form__label" for="content">Your testimonial <span aria-hidden="true">*</span></label>
+        <textarea class="t-form__input t-form__textarea" id="content" name="content"
+                  placeholder="Tell us about your experience…" required maxlength="600"
+                  rows="4"></textarea>
+        <div class="t-form__counter"><span id="charCount">0</span> / 600</div>
+      </div>
 
-       <div class="t-form__group">
-  <label class="t-form__label">Rating <span aria-hidden="true">*</span></label>
-  <div class="t-star-picker" role="radiogroup" aria-label="Rating">
-    {% for i in "12345" %}
-    <label class="t-star-pick">
-      <input type="radio" name="rating" value="{{ forloop.counter }}"
-             {% if forloop.counter == 5 %}checked{% endif %}>
-      <i class="ti ti-star-filled t-star-pick__icon" aria-hidden="true"></i>
-    </label>
-    {% endfor %}
+      <button class="t-form__submit" type="submit">Submit assessment</button>
+    </form>
   </div>
 </div>
-
-        <div class="t-form__group">
-          <label class="t-form__label" for="content">Your testimonial <span aria-hidden="true">*</span></label>
-          <textarea class="t-form__input t-form__textarea" id="content" name="content"
-                    placeholder="Tell us about your experience…" required maxlength="600"
-                    rows="4"></textarea>
-          <div class="t-form__counter"><span id="charCount">0</span> / 600</div>
-        </div>
-
-        <button class="t-form__submit" type="submit">Submit assessment</button>
-      </form>
-    </div>
-  </div>
 </section>
+
+
 
 <!-- ═══════════════════════════════════════════
      WHATSAPP BUTTON
 ═══════════════════════════════════════════ -->
-<a href="https://wa.me/254141054939" 
+<a href="https://wa.me/254723987838" 
    class="whatsapp-float" 
    target="_blank" 
    rel="noopener noreferrer" 

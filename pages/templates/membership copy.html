@@ -181,6 +181,9 @@
     line-height: 1.55;
   }
 
+  /* =============================================
+     ft-team: Section Header
+     ============================================= */
   .ft-team-section {
     padding: 60px 24px 0;
     max-width: 1100px;
@@ -251,18 +254,12 @@
     gap: 28px;
     align-items: start;
     box-shadow: var(--shadow-sm);
-    margin-bottom: 18px;
   }
 
-  .ft-team-spotlight:last-child {
-    margin-bottom: 0;
-  }
-
-  /* Avatar — base */
   .ft-team-spotlight__avatar {
     width: 96px; height: 96px;
     border-radius: 50%;
-    object-fit: cover;       /* for <img> */
+    object-fit: cover;
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -270,13 +267,9 @@
     font-size: 2rem;
     font-weight: 800;
     font-family: var(--font-display);
+    background: #EEEDFE;
+    color: #534AB7;
   }
-
-  /* Stripe colour variants */
-  .ft-team-spotlight__avatar--teal   { background: rgba(30,191,191,0.10); color: var(--tech-teal); }
-  .ft-team-spotlight__avatar--gold   { background: rgba(245,166,35,0.12); color: var(--innovation-gold); }
-  .ft-team-spotlight__avatar--navy   { background: rgba(26,58,107,0.08);  color: var(--deep-navy); }
-  .ft-team-spotlight__avatar--purple { background: #EEEDFE; color: #534AB7; }
 
   .ft-team-spotlight__name {
     font-size: 1.3rem;
@@ -296,18 +289,14 @@
     display: inline-block;
     padding: 3px 12px;
     border-radius: 999px;
+    background: #EEEDFE;
+    color: #534AB7;
     font-size: 0.72rem;
     font-weight: 700;
     font-family: var(--font-display);
     letter-spacing: 0.05em;
     margin-bottom: 16px;
   }
-
-  /* Badge stripe variants */
-  .ft-team-spotlight__badge--teal   { background: rgba(30,191,191,0.10); color: var(--tech-teal); }
-  .ft-team-spotlight__badge--gold   { background: rgba(245,166,35,0.12); color: var(--innovation-gold); }
-  .ft-team-spotlight__badge--navy   { background: rgba(26,58,107,0.08);  color: var(--deep-navy); }
-  .ft-team-spotlight__badge--purple { background: #EEEDFE; color: #534AB7; }
 
   .ft-team-spotlight__bio {
     font-size: 0.9rem;
@@ -370,28 +359,20 @@
     width: 78px; height: 78px;
     border-radius: 50%;
     object-fit: cover;
-    object-position: top center;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
     font-weight: 800;
     font-family: var(--font-display);
-    overflow: hidden;
   }
 
   .ft-team-card__avatar img {
     width: 100%; height: 100%;
     border-radius: 50%;
-    object-fit: contain;
+    object-fit: cover;
     display: block;
   }
-
-  /* Card avatar stripe variants */
-  .ft-team-card__avatar--teal   { background: rgba(30,191,191,0.10); color: var(--tech-teal); }
-  .ft-team-card__avatar--gold   { background: rgba(245,166,35,0.12); color: var(--innovation-gold); }
-  .ft-team-card__avatar--navy   { background: rgba(26,58,107,0.08);  color: var(--deep-navy); }
-  .ft-team-card__avatar--purple { background: #EEEDFE; color: #534AB7; }
 
   .ft-team-card__online {
     position: absolute;
@@ -509,17 +490,6 @@
   }
 
   /* =============================================
-     ft-team: Empty state
-     ============================================= */
-  .ft-team-empty {
-    grid-column: 1 / -1;
-    padding: 48px 24px;
-    text-align: center;
-    color: var(--text-gray);
-    font-size: 0.9rem;
-  }
-
-  /* =============================================
      ft-team: Responsive — 1024px
      ============================================= */
   @media (max-width: 1024px) {
@@ -562,12 +532,11 @@
 
 {% block content %}
 
-<!-- =============================================
-     ft-team: Hero
-     ============================================= -->
+<!-- ft-team: Hero -->
 <section class="ft-team-hero">
   <div class="ft-team-hero__inner">
     <div class="ft-team-hero__eyebrow">
+      <!-- icon: replace with your preferred SVG or font icon -->
       &#9670; i-Code Innovation Lab
     </div>
     <h1 class="ft-team-hero__title">
@@ -578,43 +547,39 @@
     </p>
     <div class="ft-team-hero__stats">
       <div class="ft-team-hero__stat">
-        <span class="ft-team-hero__stat-num">{{ total }}+</span>
+        <span class="ft-team-hero__stat-num">12+</span>
         <span class="ft-team-hero__stat-lbl">Team Members</span>
       </div>
       <div class="ft-team-hero__stat">
-        <span class="ft-team-hero__stat-num">40+</span>
+        <span class="ft-team-hero__stat-num">500+</span>
         <span class="ft-team-hero__stat-lbl">Students Trained</span>
       </div>
       <div class="ft-team-hero__stat">
-        <span class="ft-team-hero__stat-num">{{age_count}}</span>
+        <span class="ft-team-hero__stat-num">3</span>
         <span class="ft-team-hero__stat-lbl">Age Programs</span>
       </div>
       <div class="ft-team-hero__stat">
-        <span class="ft-team-hero__stat-num">{{courses_count}}</span>
+        <span class="ft-team-hero__stat-num">6+</span>
         <span class="ft-team-hero__stat-lbl">Courses Offered</span>
       </div>
     </div>
   </div>
 </section>
 
-
+<!-- ft-team: About Strip -->
 <div class="ft-team-about">
   <div class="ft-team-about__grid">
 
     <div class="ft-team-about__chip">
-      <div class="ft-team-about__icon ft-team-about__icon--teal">
-        <i class="ti ti-rocket"></i>
-      </div>
+      <div class="ft-team-about__icon ft-team-about__icon--teal">&#128640;</div>
       <div>
         <div class="ft-team-about__chip-title">Our Mission</div>
-        <div class="ft-team-about__chip-body">To empower the next generation with future-ready tech skills through hands-on, project-based learning.</div>
+        <div class="ft-team-about__chip-body">Empowering Kenyan youth with real-world tech skills through hands-on learning.</div>
       </div>
     </div>
 
     <div class="ft-team-about__chip">
-      <div class="ft-team-about__icon ft-team-about__icon--gold">
-        <i class="ti ti-bulb"></i>
-      </div>
+      <div class="ft-team-about__icon ft-team-about__icon--gold">&#128161;</div>
       <div>
         <div class="ft-team-about__chip-title">Our Approach</div>
         <div class="ft-team-about__chip-body">Project-based learning, practical labs, and industry-aligned curricula.</div>
@@ -622,9 +587,7 @@
     </div>
 
     <div class="ft-team-about__chip">
-      <div class="ft-team-about__icon ft-team-about__icon--navy">
-        <i class="ti ti-map-pin"></i>
-      </div>
+      <div class="ft-team-about__icon ft-team-about__icon--navy">&#128205;</div>
       <div>
         <div class="ft-team-about__chip-title">Where We Are</div>
         <div class="ft-team-about__chip-body">Located in Nairobi, Kenya — serving Kids, Teens, and Professionals.</div>
@@ -632,9 +595,7 @@
     </div>
 
     <div class="ft-team-about__chip">
-      <div class="ft-team-about__icon ft-team-about__icon--purple">
-        <i class="ti ti-certificate"></i>
-      </div>
+      <div class="ft-team-about__icon ft-team-about__icon--purple">&#127881;</div>
       <div>
         <div class="ft-team-about__chip-title">Certified</div>
         <div class="ft-team-about__chip-body">Accredited programs with certificates recognised across the tech industry.</div>
@@ -643,10 +604,8 @@
 
   </div>
 </div>
-<!-- =============================================
-     ft-team: Director Spotlight — all featured members stacked
-     ============================================= -->
-{% if featured %}
+
+<!-- ft-team: Director Spotlight -->
 <div class="ft-team-section">
   <div class="ft-team-section__hd">
     <div class="ft-team-section__hd-text">
@@ -655,115 +614,186 @@
     </div>
   </div>
 
-  {% for member in featured %}
   <div class="ft-team-spotlight">
-
-   
-    {% if member.photo %}
-      <img src="{{ member.photo.url }}"
-           alt="{{ member.name }}"
-           class="ft-team-spotlight__avatar">
-    {% else %}
-      <div class="ft-team-spotlight__avatar ft-team-spotlight__avatar--{{ member.stripe }}">
-        {{ member.initials }}
-      </div>
-    {% endif %}
-
+    <!--
+      Replace the initials div below with an <img> tag when you have a real photo:
+      <img src="{% static 'images/team/amina.jpg' %}" alt="Amina Mwangi" class="ft-team-spotlight__avatar">
+    -->
+    <div class="ft-team-spotlight__avatar">AM</div>
     <div>
-      <div class="ft-team-spotlight__name">{{ member.name }}</div>
-      <div class="ft-team-spotlight__role">{{ member.title }}</div>
-
-      <span class="ft-team-spotlight__badge ft-team-spotlight__badge--{{ member.stripe }}">
-        {{ member.get_role_display|upper }}
-      </span>
-
-      {% if member.bio %}
-        <p class="ft-team-spotlight__bio">{{ member.bio }}</p>
-      {% endif %}
-
-      {% if member.specialisms %}
-        <div class="ft-team-spotlight__skills">
-          {% for skill in member.specialisms_list %}
-            <span class="ft-team-spotlight__skill">{{ skill }}</span>
-          {% endfor %}
-        </div>
-      {% endif %}
+      <div class="ft-team-spotlight__name">Amina Mwangi</div>
+      <div class="ft-team-spotlight__role">Founder &amp; Executive Director</div>
+      <span class="ft-team-spotlight__badge">LEADERSHIP</span>
+      <p class="ft-team-spotlight__bio">
+        Amina founded i-Code Innovation Lab with a clear goal: close the digital skills gap for Kenyan youth. With over 14 years of experience in software engineering and education policy, she has guided the lab from a small weekend workshop into a multi-programme institution serving hundreds of students each term. She holds an MSc in Computer Science from the University of Nairobi and is a fellow of the African Leadership Initiative.
+      </p>
+      <div class="ft-team-spotlight__skills">
+        <span class="ft-team-spotlight__skill">Curriculum design</span>
+        <span class="ft-team-spotlight__skill">Software engineering</span>
+        <span class="ft-team-spotlight__skill">Education policy</span>
+        <span class="ft-team-spotlight__skill">Fundraising</span>
+        <span class="ft-team-spotlight__skill">Community building</span>
+      </div>
     </div>
-
   </div>
-  {% endfor %}
-
 </div>
-{% endif %}
 
-<!-- =============================================
-     ft-team: Full Team Grid
-     ============================================= -->
+<!-- ft-team: Full Team Grid -->
 <div class="ft-team-section">
   <div class="ft-team-section__hd">
     <div class="ft-team-section__hd-text">
       <h2>Our Full Team</h2>
       <p>Educators, engineers &amp; mentors</p>
     </div>
-
     <div class="ft-team-filters">
-      <button class="ft-team-filter active"
-              onclick="ftFilterTeam('all', this)">All</button>
-      <button class="ft-team-filter"
-              onclick="ftFilterTeam('tech', this)">Tech</button>
-      <button class="ft-team-filter"
-              onclick="ftFilterTeam('education', this)">Education</button>
-      <button class="ft-team-filter"
-              onclick="ftFilterTeam('ops', this)">Operations</button>
-      <button class="ft-team-filter"
-              onclick="ftFilterTeam('leadership', this)">Leadership</button>
+      <button class="ft-team-filter active" onclick="ftFilterTeam('all', this)">All</button>
+      <button class="ft-team-filter" onclick="ftFilterTeam('tech', this)">Tech</button>
+      <button class="ft-team-filter" onclick="ftFilterTeam('education', this)">Education</button>
+      <button class="ft-team-filter" onclick="ftFilterTeam('ops', this)">Operations</button>
     </div>
   </div>
 
   <div class="ft-team-grid" id="ft-team-grid">
-    {% for member in members %}
-    <div class="ft-team-card{% if member.is_featured %} ft-team-card--featured{% endif %}"
-         data-dept="{{ member.dept }}">
 
+    <!-- Card 1 -->
+    <div class="ft-team-card" data-dept="tech">
       <div class="ft-team-card__avatar-wrap">
-        <div class="ft-team-card__avatar ft-team-card__avatar--{{ member.stripe }}">
-          {% if member.photo %}
-            <img src="{{ member.photo.url }}" alt="{{ member.name }}">
-          {% else %}
-            {{ member.initials }}
-          {% endif %}
+        <div class="ft-team-card__avatar" style="background:#E1F5EE; color:#0F6E56;">
+          <!--
+            Replace the img src with a real photo or keep the initials fallback:
+            <img src="{% static 'images/team/brian.jpg' %}" alt="Brian Otieno">
+          -->
+          <img src="https://api.dicebear.com/7.x/initials/svg?seed=Brian+Otieno&backgroundColor=1D9E75&fontFamily=Arial&textColor=ffffff" alt="Brian Otieno">
         </div>
-        {# Green dot = active / available #}
-        {% if member.is_active %}
-          <div class="ft-team-card__online"></div>
-        {% endif %}
+        <div class="ft-team-card__online"></div>
       </div>
-
-      <div class="ft-team-card__name">{{ member.name }}</div>
-      <div class="ft-team-card__role">{{ member.title }}</div>
-
-      <span class="ft-team-card__dept ft-team-card__dept--{{ member.dept }}">
-        {{ member.get_dept_display }}
-      </span>
-
-      {% comment %} <div class="ft-team-card__links">
-        
+      <div class="ft-team-card__name">Brian Otieno</div>
+      <div class="ft-team-card__role">Lead Software Instructor</div>
+      <span class="ft-team-card__dept ft-team-card__dept--tech">Tech</span>
+      <div class="ft-team-card__links">
         <a href="#" class="ft-team-card__link" aria-label="LinkedIn">in</a>
-        <a href="#" class="ft-team-card__link" aria-label="Email">@</a>
-      </div> {% endcomment %}
-
+        <a href="mailto:brian@icode.co.ke" class="ft-team-card__link" aria-label="Email">@</a>
+      </div>
     </div>
-    {% empty %}
-    <div class="ft-team-empty">
-      No team members found for now.
-    </div>
-    {% endfor %}
-  </div>
-</div>
 
-<!-- =============================================
-     ft-team: Values (static — edit in template)
-     ============================================= -->
+    <!-- Card 2 -->
+    <div class="ft-team-card" data-dept="education">
+      <div class="ft-team-card__avatar-wrap">
+        <div class="ft-team-card__avatar" style="background:#FAEEDA; color:#854F0B;">
+          <img src="https://api.dicebear.com/7.x/initials/svg?seed=Grace+Wanjiku&backgroundColor=EF9F27&fontFamily=Arial&textColor=ffffff" alt="Grace Wanjiku">
+        </div>
+        <div class="ft-team-card__online"></div>
+      </div>
+      <div class="ft-team-card__name">Grace Wanjiku</div>
+      <div class="ft-team-card__role">Kids Programme Lead</div>
+      <span class="ft-team-card__dept ft-team-card__dept--education">Education</span>
+      <div class="ft-team-card__links">
+        <a href="#" class="ft-team-card__link" aria-label="LinkedIn">in</a>
+        <a href="mailto:grace@icode.co.ke" class="ft-team-card__link" aria-label="Email">@</a>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="ft-team-card" data-dept="tech">
+      <div class="ft-team-card__avatar-wrap">
+        <div class="ft-team-card__avatar" style="background:#E1F5EE; color:#0F6E56;">
+          <img src="https://api.dicebear.com/7.x/initials/svg?seed=Kevin+Kamau&backgroundColor=5DCAA5&fontFamily=Arial&textColor=ffffff" alt="Kevin Kamau">
+        </div>
+      </div>
+      <div class="ft-team-card__name">Kevin Kamau</div>
+      <div class="ft-team-card__role">Robotics &amp; Hardware Tutor</div>
+      <span class="ft-team-card__dept ft-team-card__dept--tech">Tech</span>
+      <div class="ft-team-card__links">
+        <a href="#" class="ft-team-card__link" aria-label="LinkedIn">in</a>
+        <a href="#" class="ft-team-card__link" aria-label="GitHub">gh</a>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="ft-team-card" data-dept="education">
+      <div class="ft-team-card__avatar-wrap">
+        <div class="ft-team-card__avatar" style="background:#FAEEDA; color:#854F0B;">
+          <img src="https://api.dicebear.com/7.x/initials/svg?seed=Stella+Adhiambo&backgroundColor=BA7517&fontFamily=Arial&textColor=ffffff" alt="Stella Adhiambo">
+        </div>
+      </div>
+      <div class="ft-team-card__name">Stella Adhiambo</div>
+      <div class="ft-team-card__role">Teen &amp; Adult Instructor</div>
+      <span class="ft-team-card__dept ft-team-card__dept--education">Education</span>
+      <div class="ft-team-card__links">
+        <a href="#" class="ft-team-card__link" aria-label="LinkedIn">in</a>
+        <a href="mailto:stella@icode.co.ke" class="ft-team-card__link" aria-label="Email">@</a>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="ft-team-card" data-dept="ops">
+      <div class="ft-team-card__avatar-wrap">
+        <div class="ft-team-card__avatar" style="background:#E6F1FB; color:#185FA5;">
+          <img src="https://api.dicebear.com/7.x/initials/svg?seed=Njoroge+Mutua&backgroundColor=378ADD&fontFamily=Arial&textColor=ffffff" alt="Njoroge Mutua">
+        </div>
+      </div>
+      <div class="ft-team-card__name">Njoroge Mutua</div>
+      <div class="ft-team-card__role">Student Registrar</div>
+      <span class="ft-team-card__dept ft-team-card__dept--ops">Operations</span>
+      <div class="ft-team-card__links">
+        <a href="mailto:registrar@icode.co.ke" class="ft-team-card__link" aria-label="Email">@</a>
+        <a href="tel:+254700000000" class="ft-team-card__link" aria-label="Phone">&#9742;</a>
+      </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="ft-team-card" data-dept="tech">
+      <div class="ft-team-card__avatar-wrap">
+        <div class="ft-team-card__avatar" style="background:#E1F5EE; color:#0F6E56;">
+          <img src="https://api.dicebear.com/7.x/initials/svg?seed=Linet+Chebet&backgroundColor=1D9E75&fontFamily=Arial&textColor=ffffff" alt="Linet Chebet">
+        </div>
+        <div class="ft-team-card__online"></div>
+      </div>
+      <div class="ft-team-card__name">Linet Chebet</div>
+      <div class="ft-team-card__role">Web Dev &amp; UI/UX Coach</div>
+      <span class="ft-team-card__dept ft-team-card__dept--tech">Tech</span>
+      <div class="ft-team-card__links">
+        <a href="#" class="ft-team-card__link" aria-label="LinkedIn">in</a>
+        <a href="#" class="ft-team-card__link" aria-label="GitHub">gh</a>
+      </div>
+    </div>
+
+    <!-- Card 7 -->
+    <div class="ft-team-card" data-dept="education">
+      <div class="ft-team-card__avatar-wrap">
+        <div class="ft-team-card__avatar" style="background:#FAEEDA; color:#854F0B;">
+          <img src="https://api.dicebear.com/7.x/initials/svg?seed=Moses+Kipkemoi&backgroundColor=EF9F27&fontFamily=Arial&textColor=ffffff" alt="Moses Kipkemoi">
+        </div>
+      </div>
+      <div class="ft-team-card__name">Moses Kipkemoi</div>
+      <div class="ft-team-card__role">Curriculum Developer</div>
+      <span class="ft-team-card__dept ft-team-card__dept--education">Education</span>
+      <div class="ft-team-card__links">
+        <a href="#" class="ft-team-card__link" aria-label="LinkedIn">in</a>
+        <a href="mailto:moses@icode.co.ke" class="ft-team-card__link" aria-label="Email">@</a>
+      </div>
+    </div>
+
+    <!-- Card 8 -->
+    <div class="ft-team-card" data-dept="ops">
+      <div class="ft-team-card__avatar-wrap">
+        <div class="ft-team-card__avatar" style="background:#E6F1FB; color:#185FA5;">
+          <img src="https://api.dicebear.com/7.x/initials/svg?seed=Faith+Nyambura&backgroundColor=85B7EB&fontFamily=Arial&textColor=ffffff" alt="Faith Nyambura">
+        </div>
+      </div>
+      <div class="ft-team-card__name">Faith Nyambura</div>
+      <div class="ft-team-card__role">Finance &amp; Admin Officer</div>
+      <span class="ft-team-card__dept ft-team-card__dept--ops">Operations</span>
+      <div class="ft-team-card__links">
+        <a href="mailto:finance@icode.co.ke" class="ft-team-card__link" aria-label="Email">@</a>
+        <a href="tel:+254700000001" class="ft-team-card__link" aria-label="Phone">&#9742;</a>
+      </div>
+    </div>
+
+  </div><!-- /.ft-team-grid -->
+</div><!-- /.ft-team-section -->
+
+<!-- ft-team: Values -->
 <div class="ft-team-values">
   <div class="ft-team-section__hd">
     <div class="ft-team-section__hd-text">

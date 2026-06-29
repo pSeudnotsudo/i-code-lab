@@ -23,7 +23,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt  
 from django.http import JsonResponse
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 import json
 from django.db.models import Count
 from django.utils import timezone
@@ -35,6 +35,8 @@ from django.template.loader import render_to_string
 from django.db import transaction
 from django.http import FileResponse
 from django.conf import settings
+from django.contrib import messages
+from django.db.models import Count
 
 
 User = get_user_model()
@@ -172,8 +174,6 @@ def create_user(request):
 
     return render(request, 'icode-admin/create_user.html')
 
-
-
 # 
 #  USER ACCOUNTS
 def activate_account(request, token):
@@ -214,8 +214,6 @@ def activate_account(request, token):
 
 
 
-
-
 @login_required
 def parent_dashboard(request):
     if request.user.is_authenticated:
@@ -237,24 +235,43 @@ def index(request):
     brackets = AgeBracket.objects.all().order_by("order")
     programs = Program.objects.all()
     timelines = RegistrationTimeline.objects.all()
-    return render(request, 'index.html', {'brackets': brackets, 'programs':programs, 'timelines':timelines})
+    testimonials = Testimonial.objects.filter(is_active=True)
+    return render(request, 'index.html', {'brackets': brackets, 'programs':programs, 'timelines':timelines,"testimonials": testimonials})
 
 
 def programs(request):
-    return render(request, 'programs.html')
+    brackets = AgeBracket.objects.all().order_by("order")
+    programs = Program.objects.all()
+    timelines = RegistrationTimeline.objects.all()
+    return render(request, 'programs.html',{'brackets': brackets, 'programs':programs, 'timelines':timelines,})
 
 
 def about(request):
     return render(request, 'about.html')
 
 
-def pricing(request):
-    return render(request, 'membership.html')
+def team(request):
+    featured = TeamMember.objects.filter(is_featured=True, is_active=True)
+    members  = TeamMember.objects.filter(is_featured=False, is_active=True)
+    age = AgeBracket.objects.all()
+    courses_count = Program.objects.all()
+    
+    return render(request, 'membership.html', {
+        'featured': featured,
+        'members':members,
+        'total':members.count(),
+        'age_count':age.count(),
+        'courses_count':courses_count.count()
+    })
 
 def socials(request):
     items = GalleryItem.objects.all()
-
-    return render (request, 'socials.html',{'items': items})
+    return render(request, 'socials.html', {
+        'items':         items,
+        'total_images':  items.filter(type='image').count(),
+        'total_videos':  items.filter(type='video').count(),
+        'total_events':  items.filter(category='event').count(),
+    })
 
 
 
@@ -397,9 +414,13 @@ def icode_enrollments(request):
         raise PermissionDenied
     status_filter = request.GET.get("status", "").strip().lower()
  
+    # enrollments = Enrollment.objects.select_related(
+    #     "status", "age_bracket", "registration_timeline"
+    # ).prefetch_related("programs").order_by("-created_at")
+    
     enrollments = Enrollment.objects.select_related(
-        "status", "age_bracket", "registration_timeline"
-    ).prefetch_related("programs").order_by("-created_at")
+    "status", "age_bracket"
+).prefetch_related("programs").order_by("-created_at")
  
     if status_filter:
         enrollments = enrollments.filter(status__code=status_filter)
@@ -681,7 +702,7 @@ def program_update(request, pk):
         program.is_active         = is_active
         program.level_id          = level_id
         program.age_range_id      = age_range_id
-        program.term_fee          = term_fee  # FIX: was program.term_fee_id
+        program.term_fee          = term_fee  
         program.save()
 
         return JsonResponse({"success": True, "message": "Program updated successfully"})
@@ -1033,65 +1054,134 @@ def timeline_update(request, pk):
 def enrollment_store(request):
     if request.method != "POST":
         return JsonResponse({"success": False, "message": "Invalid request"})
- 
-    full_name   = request.POST.get("full_name", "").strip()
-    phone       = request.POST.get("phone", "").strip()
-    email       = request.POST.get("email", "").strip()
-    comments    = request.POST.get("comments", "").strip()
-    program_ids = request.POST.getlist("programs")
-    age_bracket_id              = request.POST.get("age_bracket")
-    preferred_registration_date = request.POST.get("preferred_registration_date")  
-    registration_timeline_id    = request.POST.get("registration_timeline")
-    prospective_start_date      = request.POST.get("preferred_start_date")       
-    customized_course           = request.POST.get("customized_course", "no")  
+
+    full_name       = request.POST.get("full_name", "").strip()
+    phone           = request.POST.get("phone", "").strip()
+    email           = request.POST.get("email", "").strip()
+    comments        = request.POST.get("comments", "").strip()
+    program_ids     = request.POST.getlist("programs")
+    age_bracket_id  = request.POST.get("age_bracket")
+    customized_course = request.POST.get("customized_course", "no")
+
+    # ── New fields ───────────────────────────────────────────────────────
+    referral_source = request.POST.get("referral_source", "").strip()
+    track           = request.POST.get("track", "").strip()
+    cohort_label    = request.POST.get("cohort_label", "").strip()
+    # ─────────────────────────────────────────────────────────────────────
+
+    # Default status → pending
     status = EnrollmentStatus.objects.filter(code="pending").first()
- 
+
+    # Age bracket
     age_bracket = None
     if age_bracket_id:
-        age_bracket = AgeBracket.objects.filter(id=age_bracket_id, is_active=True).first()
-    
+        age_bracket = AgeBracket.objects.filter(
+            id=age_bracket_id, is_active=True
+        ).first()
     if not age_bracket:
         age_bracket = AgeBracket.objects.filter(is_active=True).first()
- 
-    registration_timeline = None
-    if registration_timeline_id:
-        registration_timeline = RegistrationTimeline.objects.filter(
-            id=registration_timeline_id
-        ).first()
- 
+
     enrollment = Enrollment.objects.create(
-        full_name=full_name,
-        phone=phone,
-        email=email,
-        comments=comments,
-        status=status,
-        age_bracket=age_bracket,
-        preferred_registration_date=preferred_registration_date or None,
-        registration_timeline=registration_timeline,
-        preferred_start_date=prospective_start_date or None,
-        custom_course_interest=customized_course if customized_course in ("yes", "no") else None,
+        full_name             = full_name,
+        phone                 = phone,
+        email                 = email,
+        comments              = comments,
+        status                = status,
+        age_bracket           = age_bracket,
+        custom_course_interest = customized_course if customized_course in ("yes", "no") else None,
+        referral_source       = referral_source,
+        track                 = track,
+        cohort_label          = cohort_label,
     )
- 
+
     if program_ids:
         enrollment.programs.set(Program.objects.filter(id__in=program_ids))
- 
+
     send_mail(
-        subject="Enrollment Received - i-Code",
+        subject="Enrollment Received — i-Code Robotics & AI Lab",
         message=(
             f"Hello {full_name},\n\n"
-            "We have received your enrollment successfully.\n\n"
-            "Our team will review your request and get back to you shortly.\n\n"
-            "Thank you for choosing i-Code."
+            "We have received your enrollment request successfully.\n\n"
+            f"Cohort selected: {cohort_label}\n"
+            f"Track: {track}\n\n"
+            "Our team will review your request and get back to you within 24 hours.\n\n"
+            "Thank you for choosing i-CODE Robotics & AI Lab.\n\n"
+            "📍 Onestop Arcade, off Langata Road, Karen, Nairobi\n"
+            "📞 +254 748 982 170 | icodeailab.com"
         ),
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[email],
         fail_silently=True,
     )
- 
+
     return JsonResponse({
         "success": True,
         "message": "Enrollment submitted successfully!"
     })
+
+@csrf_exempt
+# def enrollment_store(request):
+#     if request.method != "POST":
+#         return JsonResponse({"success": False, "message": "Invalid request"})
+ 
+#     full_name   = request.POST.get("full_name", "").strip()
+#     phone       = request.POST.get("phone", "").strip()
+#     email       = request.POST.get("email", "").strip()
+#     comments    = request.POST.get("comments", "").strip()
+#     program_ids = request.POST.getlist("programs")
+#     age_bracket_id              = request.POST.get("age_bracket")
+#     preferred_registration_date = request.POST.get("preferred_registration_date")  
+#     registration_timeline_id    = request.POST.get("registration_timeline")
+#     prospective_start_date      = request.POST.get("preferred_start_date")       
+#     customized_course           = request.POST.get("customized_course", "no")  
+#     status = EnrollmentStatus.objects.filter(code="pending").first()
+ 
+#     age_bracket = None
+#     if age_bracket_id:
+#         age_bracket = AgeBracket.objects.filter(id=age_bracket_id, is_active=True).first()
+    
+#     if not age_bracket:
+#         age_bracket = AgeBracket.objects.filter(is_active=True).first()
+ 
+#     registration_timeline = None
+#     if registration_timeline_id:
+#         registration_timeline = RegistrationTimeline.objects.filter(
+#             id=registration_timeline_id
+#         ).first()
+ 
+#     enrollment = Enrollment.objects.create(
+#         full_name=full_name,
+#         phone=phone,
+#         email=email,
+#         comments=comments,
+#         status=status,
+#         age_bracket=age_bracket,
+#         preferred_registration_date=preferred_registration_date or None,
+#         registration_timeline=registration_timeline,
+#         preferred_start_date=prospective_start_date or None,
+#         custom_course_interest=customized_course if customized_course in ("yes", "no") else None,
+#     )
+ 
+#     if program_ids:
+#         enrollment.programs.set(Program.objects.filter(id__in=program_ids))
+ 
+#     send_mail(
+#         subject="Enrollment Received - i-Code",
+#         message=(
+#             f"Hello {full_name},\n\n"
+#             "We have received your enrollment successfully.\n\n"
+#             "Our team will review your request and get back to you shortly.\n\n"
+#             "Thank you for choosing i-Code."
+#         ),
+#         from_email=settings.DEFAULT_FROM_EMAIL,
+#         recipient_list=[email],
+#         fail_silently=True,
+#     )
+ 
+#     return JsonResponse({
+#         "success": True,
+#         "message": "Enrollment submitted successfully!"
+#     })
  
 #  TERMS AND CONDITIONS
 def terms(request):
@@ -1132,7 +1222,7 @@ def send_welcome_email(request, email):
     })
 
     msg = EmailMultiAlternatives(
-        subject='🎉 You\'re subscribed! Welcome aboard.',
+        subject='You\'re subscribed! Welcome aboard.',
         body='Thank you for subscribing to our newsletter. You will be receiving updates soon!',
         from_email=settings.DEFAULT_FROM_EMAIL,
         to=[email],
@@ -1703,3 +1793,349 @@ def program_tool_update(request, pk):
 
     except Exception as e:
         return JsonResponse({"success": False, "error": str(e)})
+        
+        
+# TESTIMONIALS SUBMISSION
+@require_POST
+def submit_testimonial(request):
+    name    = request.POST.get("author_name", "").strip()
+    role    = request.POST.get("author_role", "").strip()
+    content = request.POST.get("content", "").strip()
+    rating  = request.POST.get("rating", "5")
+
+    if name and role and content:
+        try:
+            rating = int(rating)
+            rating = max(1, min(5, rating))
+        except ValueError:
+            rating = 5
+
+        # is_active=False so you can moderate before publishing
+        Testimonial.objects.create(
+            author_name=name,
+            author_role=role,
+            content=content,
+            rating=rating,
+            is_active=False,   # pending moderation
+        )
+        messages.success(request, "Thank you! Your testimonial is pending review.")
+    else:
+        messages.error(request, "Please fill in all required fields.")
+
+    return redirect(request.META.get("HTTP_REFERER", "/"))
+    
+    
+
+
+
+# ── List page ─────────────────────────────────────────────────────────────────
+@staff_member_required
+def testimonials_admin(request):
+    testimonials  = Testimonial.objects.all().order_by("order", "id")
+    total_count   = testimonials.count()
+    active_count  = testimonials.filter(is_active=True).count()
+    pending_count = total_count - active_count
+
+    return render(request, "icode-admin/testimonials_admin.html", {
+        "testimonials":  testimonials,
+        "total_count":   total_count,
+        "active_count":  active_count,
+        "pending_count": pending_count,
+    })
+
+
+# ── Toggle is_active ───────────────────────────────────────────────────────────
+@staff_member_required
+@require_POST
+def testimonial_toggle(request, pk):
+    try:
+        t = Testimonial.objects.get(pk=pk)
+        data = json.loads(request.body)
+        raw = data.get("is_active")
+        # Handle both JSON bool (true/false) and accidental strings
+        if isinstance(raw, bool):
+            t.is_active = raw
+        else:
+            t.is_active = str(raw).lower() in ("true", "1", "yes")
+        t.save(update_fields=["is_active"])
+        return JsonResponse({"success": True, "is_active": t.is_active})
+    except Testimonial.DoesNotExist:
+        return JsonResponse({"success": False, "error": "Not found"}, status=404)
+    except (json.JSONDecodeError, KeyError):
+        return JsonResponse({"success": False, "error": "Invalid payload"}, status=400)
+
+
+# ── Delete ─────────────────────────────────────────────────────────────────────
+@staff_member_required
+@require_POST
+def testimonial_delete(request, pk):
+    try:
+        Testimonial.objects.get(pk=pk).delete()
+        return JsonResponse({"success": True})
+    except Testimonial.DoesNotExist:
+        return JsonResponse({"success": False, "error": "Not found"}, status=404)
+        
+
+
+def bootcamp_2026(request):
+    
+    brackets = AgeBracket.objects.all().order_by("order")
+    programs = Program.objects.all()
+    timelines = RegistrationTimeline.objects.all()
+    testimonials = Testimonial.objects.filter(is_active=True)
+    return render(request, 'icode-admin/bootcamp_2026.html', {'brackets': brackets, 'programs':programs, 'timelines':timelines,"testimonials": testimonials})
+    
+    
+# ── GALLERY VIEWS ──
+@login_required
+def gallery_admin(request):
+    items = GalleryItem.objects.all()
+    this_month  = timezone.now().date().replace(day=1)
+    total_items  = items.count()
+    total_images = items.filter(type='image').count()
+    total_videos = items.filter(type='video').count()
+    recent_count = items.filter(uploaded_at__date__gte=this_month).count()
+
+    return render(request, 'icode-admin/gallery_admin.html', {
+        'items':         items,
+        'total_items':   total_items,
+        'total_images':  total_images,
+        'total_videos':  total_videos,
+        'recent_count':  recent_count,
+    })
+
+
+@login_required
+def gallery_upload(request):
+    if request.method == 'POST':
+        title     = request.POST.get('title', '').strip()
+        date      = request.POST.get('date')
+        type_     = request.POST.get('type', 'image')
+        category  = request.POST.get('category', 'event')
+        caption   = request.POST.get('caption', '').strip()
+        media     = request.FILES.get('media')
+        thumbnail = request.FILES.get('thumbnail')
+
+        if not title or not date or not media:
+            messages.error(request, 'Title, date, and media file are required.')
+            return redirect('gallery_admin')
+
+        GalleryItem.objects.create(
+            title     = title,
+            date      = date,
+            type      = type_,
+            category  = category,
+            caption   = caption,
+            media     = media,
+            thumbnail = thumbnail if thumbnail else None,
+        )
+        messages.success(request, f'"{title}" uploaded successfully.')
+    return redirect('gallery_admin')
+
+
+@login_required
+def gallery_delete(request, pk):
+    if request.method == 'POST':
+        item = get_object_or_404(GalleryItem, pk=pk)
+        title = item.title
+        if item.media:
+            item.media.delete(save=False)
+        if item.thumbnail:
+            item.thumbnail.delete(save=False)
+        item.delete()
+        messages.success(request, f'"{title}" deleted.')
+    return redirect('gallery_admin')
+
+
+
+
+
+def team_icode(request):
+    members = TeamMember.objects.filter(is_active=True) | TeamMember.objects.filter(is_active=False)
+    members = TeamMember.objects.all()         
+
+    # dept breakdown for stats bar
+    dept_counts = {
+        row['dept']: row['count']
+        for row in TeamMember.objects.values('dept').annotate(count=Count('id'))
+    }
+
+    context = {
+        'members':       members,
+        'total':         members.count(),
+        'active_count':  members.filter(is_active=True).count(),
+        'featured_count': members.filter(is_featured=True).count(),
+        'dept_counts':   dept_counts,
+    }
+    return render(request, 'icode-admin/teams.html', context)
+
+
+# ─────────────────────────────────────────────
+# Detail  (returns JSON for edit modal)
+# ─────────────────────────────────────────────
+@login_required
+@staff_member_required
+@require_GET
+def team_member_detail(request, pk):
+    member = get_object_or_404(TeamMember, pk=pk)
+    return JsonResponse({
+        'id':          member.id,
+        'name':        member.name,
+        'title':       member.title,
+        'role':        member.role,
+        'dept':        member.dept,
+        'initials':    member.initials,
+        'stripe':      member.stripe,
+        'bio':         member.bio,
+        'credentials': member.credentials,
+        'specialisms': member.specialisms,
+        'is_active':   member.is_active,
+        'is_featured': member.is_featured,
+        'order':       member.order,
+        'photo_url':   member.photo.url if member.photo else None,
+    })
+
+
+# ─────────────────────────────────────────────
+# Add  (POST, returns JSON)
+
+@staff_member_required
+@require_POST
+def team_member_add(request):
+    try:
+        data = request.POST
+        member = TeamMember(
+            name        = data.get('name', '').strip(),
+            title       = data.get('title', '').strip(),
+            role        = data.get('role', 'instructor'),
+            dept        = data.get('dept', 'tech'),
+            initials    = data.get('initials', '').strip(),
+            stripe      = data.get('stripe', 'teal'),
+            bio         = data.get('bio', '').strip(),
+            credentials = data.get('credentials', '').strip(),
+            specialisms = data.get('specialisms', '').strip(),
+            is_active   = data.get('is_active') in ('1', 'true', 'True', True),
+            is_featured = data.get('is_featured') in ('1', 'true', 'True', True),
+            order       = int(data.get('order') or 0),
+        )
+        if 'photo' in request.FILES:
+            member.photo = request.FILES['photo']
+
+        # basic validation
+        errors = _validate(member)
+        if errors:
+            return JsonResponse({'success': False, 'error': '; '.join(errors)}, status=400)
+
+        member.save()
+        return JsonResponse({'success': True, 'message': f'{member.name} added successfully.', 'id': member.id})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+# ─────────────────────────────────────────────
+# Update  (POST, returns JSON)
+# ─────────────────────────────────────────────
+@staff_member_required
+@require_POST
+def team_member_update(request, pk):
+    member = get_object_or_404(TeamMember, pk=pk)
+    try:
+        data = request.POST
+        member.name        = data.get('name', '').strip()
+        member.title       = data.get('title', '').strip()
+        member.role        = data.get('role', member.role)
+        member.dept        = data.get('dept', member.dept)
+        member.stripe      = data.get('stripe', member.stripe)
+        member.bio         = data.get('bio', '').strip()
+        member.credentials = data.get('credentials', '').strip()
+        member.specialisms = data.get('specialisms', '').strip()
+        member.is_active   = data.get('is_active') in ('1', 'true', 'True', True)
+        member.is_featured = data.get('is_featured') in ('1', 'true', 'True', True)
+        member.order       = int(data.get('order') or 0)
+
+        raw_initials = data.get('initials', '').strip()
+        if raw_initials:
+            member.initials = raw_initials
+        else:
+            member.initials = ''   
+
+        if 'photo' in request.FILES:
+          
+            if member.photo:
+                member.photo.delete(save=False)
+            member.photo = request.FILES['photo']
+
+        errors = _validate(member)
+        if errors:
+            return JsonResponse({'success': False, 'error': '; '.join(errors)}, status=400)
+
+        member.save()
+        return JsonResponse({'success': True, 'message': f'{member.name} updated successfully.'})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+# ─────────────────────────────────────────────
+# Toggle a boolean field  (is_active / is_featured)
+# ─────────────────────────────────────────────
+@login_required
+@staff_member_required
+@require_POST
+def team_member_toggle(request, pk):
+    member = get_object_or_404(TeamMember, pk=pk)
+    try:
+        body  = json.loads(request.body)
+        field = body.get('field')
+        value = body.get('value')
+
+        if field not in ('is_active', 'is_featured'):
+            return JsonResponse({'success': False, 'error': 'Invalid field.'}, status=400)
+
+        setattr(member, field, bool(value))
+        member.save(update_fields=[field])
+
+        label = 'active' if field == 'is_active' else 'featured'
+        state = 'enabled' if value else 'disabled'
+        return JsonResponse({'success': True, 'message': f'{member.name} {label} {state}.'})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+# ─────────────────────────────────────────────
+# Delete  (POST, returns JSON)
+# ─────────────────────────────────────────────
+@login_required
+@staff_member_required
+@require_POST
+def team_member_delete(request, pk):
+    member = get_object_or_404(TeamMember, pk=pk)
+    try:
+        name = member.name
+        if member.photo:
+            member.photo.delete(save=False)   # clean up uploaded file
+        member.delete()
+        return JsonResponse({'success': True, 'message': f'{name} deleted.'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+# ─────────────────────────────────────────────
+# Internal validation helper
+# ─────────────────────────────────────────────
+def _validate(member):
+    errors = []
+    if not member.name:
+        errors.append('Name is required.')
+    if not member.title:
+        errors.append('Title is required.')
+    if not member.bio:
+        errors.append('Bio is required.')
+    if member.role not in dict(TeamMember.ROLE_CHOICES):
+        errors.append('Invalid role.')
+    if member.stripe not in dict(TeamMember.STRIPE_CHOICES):
+        errors.append('Invalid stripe colour.')
+    return errors
+    

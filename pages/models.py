@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 import uuid
 from django.utils.text import slugify
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # age Brackets
 class AgeBracket(models.Model):
@@ -26,14 +27,18 @@ class EnrollmentStatus(models.Model):
 
     def __str__(self):
         return self.name
- 
-# Programs
+        
+
+ # Programs
+
+
 class Program(models.Model):
     # ── Core identity ─────────────────────────────────────────────────────
     name  = models.CharField(max_length=100)
     code  = models.CharField(max_length=50, unique=True)
     slug  = models.SlugField(max_length=120, unique=True, blank=True)
 
+    # ── Specs (FK lookups) ────────────────────────────────────────────────
     level = models.ForeignKey(
         'Level',
         on_delete=models.SET_NULL,
@@ -181,6 +186,9 @@ class RegistrationTimeline(models.Model):
     def __str__(self):
         return self.title
 
+
+
+
 class Enrollment(models.Model):
     full_name = models.CharField(max_length=200)
     phone = models.CharField(max_length=20)
@@ -194,25 +202,6 @@ class Enrollment(models.Model):
     other_interest = models.CharField(max_length=255, blank=True, null=True)
     comments = models.TextField(blank=True, null=True)
 
-    
-
-    preferred_registration_date = models.DateField(
-        blank=True,
-        null=True
-    )
-
-    registration_timeline = models.ForeignKey(
-        RegistrationTimeline,
-        on_delete=models.PROTECT,
-        null=True,
-        blank=True
-    )
-
-    preferred_start_date = models.DateField(
-        blank=True,
-        null=True
-    )
-
     custom_course_interest = models.CharField(
         max_length=3,
         choices=[
@@ -223,12 +212,27 @@ class Enrollment(models.Model):
         null=True
     )
 
+    # ── New fields for the enrollment form ───────────────────────────────
+    referral_source = models.CharField(max_length=100, blank=True, null=True)
+
+    track = models.CharField(
+        max_length=10,
+        choices=[
+            ('igcse', 'IGCSE / Cambridge'),
+            ('cbc',   'CBC / CBE'),
+            ('none',  'No preference'),
+        ],
+        blank=True, null=True
+    )
+
+    cohort_label = models.CharField(max_length=150, blank=True, null=True)
+    # ─────────────────────────────────────────────────────────────────────
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.full_name
-
-
+        
 
 class GalleryItem(models.Model):
     TYPE_CHOICES = [('image', 'Image'), ('video', 'Video')]
@@ -256,17 +260,21 @@ class GalleryItem(models.Model):
     def is_video(self):
         return self.type == 'video'
     
+
+ 
     
 # USER MODEL
 class CustomUser(AbstractUser):
     STUDENT = 'student'
     PARENT  = 'parent'
     ADMIN   = 'admin'
+    INSTRUCTOR = 'instructor'
 
     ROLE_CHOICES = [
         (STUDENT, 'Student'),
         (PARENT,  'Parent'),
         (ADMIN,   'Admin'),
+        (INSTRUCTOR,   'Instructor'),
     ]
 
     email      = models.EmailField(unique=True)
@@ -375,3 +383,94 @@ class FeeConfig(models.Model):
     @property
     def display_range(self):
         return f"KES {self.fees_per_term_min:,} - {self.fees_per_term_max:,}"
+        
+        
+        
+# TESTIMONIALS
+class Testimonial(models.Model):
+    author_name = models.CharField(max_length=100)
+    author_role = models.CharField(max_length=100, help_text="E.g. 'Parent of student', 'Student")
+    content = models.TextField()
+    rating = models.PositiveSmallIntegerField(
+        default=5,
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+    )
+    avatar_initials = models.CharField(
+        max_length=3,
+        blank=True,
+        help_text="Auto-filled from name if left blank",
+    )
+    is_active = models.BooleanField(default=True)
+    order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "id"]
+
+    def save(self, *args, **kwargs):
+        if not self.avatar_initials and self.author_name:
+            parts = self.author_name.strip().split()
+            if len(parts) >= 2:
+                self.avatar_initials = (parts[0][0] + parts[-1][0]).upper()
+            else:
+                self.avatar_initials = parts[0][:2].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.author_name}"
+        
+class TeamMember(models.Model):
+    ROLE_CHOICES = [
+        ('founder',    'Founder & CEO'),
+        ('instructor', 'Instructor'),
+        ('lead',       'Programme Lead'),
+        ('support',    'Support Staff'),
+    ]
+
+    STRIPE_CHOICES = [
+        ('teal',   'Teal'),
+        ('gold',   'Gold'),
+        ('navy',   'Navy'),
+        ('purple', 'Purple'),
+    ]
+    DEPT_CHOICES = [
+    ('tech',      'Tech'),
+    ('education', 'Education'),
+    ('ops',       'Operations'),
+    ('leadership','Leadership'),
+    ]
+    dept = models.CharField(max_length=20, choices=DEPT_CHOICES, default='tech')
+
+    name        = models.CharField(max_length=100)
+    title       = models.CharField(max_length=150)
+    role        = models.CharField(max_length=20, choices=ROLE_CHOICES, default='instructor')
+    bio         = models.TextField()
+    photo       = models.ImageField(upload_to='team/', blank=True, null=True)
+    initials    = models.CharField(max_length=3, blank=True)
+    stripe      = models.CharField(max_length=10, choices=STRIPE_CHOICES, default='teal')
+    credentials = models.CharField(max_length=500, blank=True)
+    specialisms = models.TextField(blank=True)
+    is_active   = models.BooleanField(default=True)
+    is_featured = models.BooleanField(default=False)
+    order       = models.IntegerField(default=0)
+    created_at  = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', 'id']
+
+    def save(self, *args, **kwargs):
+        if not self.initials and self.name:
+            parts = self.name.strip().split()
+            if len(parts) >= 2:
+                self.initials = (parts[0][0] + parts[-1][0]).upper()
+            else:
+                self.initials = parts[0][:2].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.name} — {self.title}"
+
+    def credentials_list(self):
+        return [c.strip() for c in self.credentials.split(',') if c.strip()]
+
+    def specialisms_list(self):
+        return [s.strip() for s in self.specialisms.splitlines() if s.strip()]

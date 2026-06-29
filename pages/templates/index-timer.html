@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>We're Coming Soon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Brand Colors */
+  --deep-navy:       #1F3A6E;
+  --tech-teal:       #1EBFBF;
+  --royal-blue:      #2B5296;
+  --midnight:        #0D1B2E;
+  --soft-mist:       #EAF6F6;
+  --cyber-cyan:      #00C2C2;
+  --innovation-gold: #F5A623;
+  --pure-white:      #FFFFFF;
+  --primary:        var(--tech-teal);
+  --primary-dark:   #17a8a8;
+  --primary-light:  var(--soft-mist);
+  --accent:         var(--cyber-cyan);
+  --accent-alt:     var(--innovation-gold);
+  --text-dark:      #1a2744;
+  --text-gray:      #4A5568;
+  --text-light:     #718096;
+  --border:         #c8e6e6;
+  --bg-soft:        var(--soft-mist);
+  --white:          var(--pure-white);
+  --shadow-sm:  0 2px 8px  rgba(30,191,191,.10);
+  --shadow-md:  0 4px 20px rgba(30,191,191,.15);
+  --shadow-lg:  0 8px 32px rgba(30,191,191,.20);
+  --radius: 14px;
+  --font-display: "Montserrat", sans-serif;
+  --font-body:    "Poppins", sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-body); color: var(--text-dark); background: var(--white); }
+
+html, body { height: 100%; }
+
+.page {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(30,191,191,0.25), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(0,194,194,0.20), transparent 50%),
+    linear-gradient(135deg, var(--midnight) 0%, var(--deep-navy) 55%, var(--royal-blue) 100%);
+}
+
+/* Decorative animated grid / orbits */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(30,191,191,0.18);
+}
+.orb-1 { width: 620px; height: 620px; top: -200px; left: -180px; animation: spin 60s linear infinite; }
+.orb-2 { width: 420px; height: 420px; bottom: -160px; right: -140px; border-color: rgba(245,166,35,0.18); animation: spin 80s linear infinite reverse; }
+.orb-3 { width: 860px; height: 860px; top: 50%; left: 50%; transform: translate(-50%,-50%); border-color: rgba(255,255,255,0.05); }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.dot {
+  position: absolute;
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 12px 3px rgba(0,194,194,0.7);
+  animation: float 6s ease-in-out infinite;
+}
+.dot:nth-child(1) { top: 18%; left: 12%; animation-delay: 0s; }
+.dot:nth-child(2) { top: 70%; left: 8%; animation-delay: 1.2s; background: var(--accent-alt); box-shadow: 0 0 12px 3px rgba(245,166,35,0.6); }
+.dot:nth-child(3) { top: 25%; right: 10%; animation-delay: 2.1s; }
+.dot:nth-child(4) { bottom: 14%; right: 16%; animation-delay: 0.6s; background: var(--accent-alt); box-shadow: 0 0 12px 3px rgba(245,166,35,0.6); }
+@keyframes float {
+  0%, 100% { transform: translateY(0); opacity: .7; }
+  50% { transform: translateY(-18px); opacity: 1; }
+}
+
+.card {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 640px;
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius);
+  padding: 56px 48px;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: rgba(30,191,191,0.15);
+  border: 1px solid rgba(30,191,191,0.4);
+  color: var(--cyber-cyan);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+.badge .pulse {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--cyber-cyan);
+  box-shadow: 0 0 0 0 rgba(0,194,194,0.7);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(0,194,194,0.6); }
+  70% { box-shadow: 0 0 0 10px rgba(0,194,194,0); }
+  100% { box-shadow: 0 0 0 0 rgba(0,194,194,0); }
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: 0.04em;
+  color: var(--pure-white);
+  margin-bottom: 32px;
+}
+.logo span { background: linear-gradient(90deg, var(--tech-teal), var(--cyber-cyan)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(32px, 6vw, 48px);
+  line-height: 1.15;
+  color: var(--pure-white);
+  margin-bottom: 16px;
+}
+h1 .accent-text {
+  background: linear-gradient(90deg, var(--tech-teal), var(--innovation-gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+p.lead {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.7;
+  color: rgba(234,246,246,0.78);
+  max-width: 460px;
+  margin: 0 auto 36px;
+}
+
+/* Countdown */
+.countdown {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+.countdown .unit {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 14px 18px;
+  min-width: 78px;
+}
+.countdown .num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 28px;
+  color: var(--pure-white);
+}
+.countdown .label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cyber-cyan);
+  margin-top: 4px;
+}
+
+/* Email form */
+.notify {
+  display: flex;
+  gap: 10px;
+  max-width: 420px;
+  margin: 0 auto 28px;
+  flex-wrap: wrap;
+}
+.notify input {
+  flex: 1 1 220px;
+  padding: 14px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.07);
+  color: var(--pure-white);
+  font-family: var(--font-body);
+  font-size: 14px;
+  outline: none;
+  transition: border-color .2s ease;
+}
+.notify input::placeholder { color: rgba(234,246,246,0.5); }
+.notify input:focus { border-color: var(--tech-teal); }
+
+.notify button {
+  padding: 14px 26px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--tech-teal), var(--royal-blue));
+  color: var(--pure-white);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.notify button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  background: linear-gradient(90deg, var(--primary-dark), var(--royal-blue));
+}
+
+.form-msg {
+  font-size: 13px;
+  color: var(--accent-alt);
+  min-height: 18px;
+  margin-bottom: 24px;
+}
+
+/* Socials */
+.socials {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+.socials a {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--pure-white);
+  text-decoration: none;
+  font-size: 16px;
+  transition: all .2s ease;
+}
+.socials a:hover {
+  background: var(--tech-teal);
+  border-color: var(--tech-teal);
+  transform: translateY(-3px);
+}
+
+@media (max-width: 480px) {
+  .card { padding: 40px 24px; }
+  .countdown .unit { min-width: 64px; padding: 10px 12px; }
+  .countdown .num { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="dot"></div>
+  <div class="dot"></div>
+  <div class="dot"></div>
+  <div class="dot"></div>
+
+  <div class="card">
+    <div class="badge"><span class="pulse"></span> Under Maintenance</div>
+
+    <div class="logo">Icode<span>AI Lab</span></div>
+
+    <h1>Almost Ready<br>Finalizing Our <span class="accent-text">Upgrade</span></h1>
+
+    <p class="lead">
+      Our site is currently undergoing scheduled maintenance to bring you a faster,
+      smarter experience. We'll be back online shortly — thanks for your patience.
+    </p>
+
+    <div class="countdown" id="countdown">
+      <div class="unit"><div class="num" id="days">00</div><div class="label">Days</div></div>
+      <div class="unit"><div class="num" id="hours">00</div><div class="label">Hours</div></div>
+      <div class="unit"><div class="num" id="mins">00</div><div class="label">Mins</div></div>
+      <div class="unit"><div class="num" id="secs">00</div><div class="label">Secs</div></div>
+    </div>
+
+    <!--<form class="notify" id="notifyForm">-->
+    <!--  <input type="email" id="emailInput" placeholder="Enter your email" required>-->
+    <!--  <button type="submit">Notify Me</button>-->
+    <!--</form>-->
+    <!--<div class="form-msg" id="formMsg"></div>-->
+
+    <!--<div class="socials">-->
+    <!--  <a href="#" aria-label="Twitter">𝕏</a>-->
+    <!--  <a href="#" aria-label="LinkedIn">in</a>-->
+    <!--  <a href="#" aria-label="Instagram">◎</a>-->
+    <!--  <a href="#" aria-label="Email">✉</a>-->
+    <!--</div>-->
+  </div>
+</div>
+
+<script>
+  // Set your target launch date here (YYYY-MM-DDTHH:MM:SS)
+//  const launchDate = new Date("2026-06-23T00:00:00");
+const launchDate = new Date("2026-06-22T12:00:00");
+
+function updateCountdown() {
+  const now = new Date();
+  let diff = launchDate - now;
+  if (diff < 0) diff = 0;
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const mins = Math.floor((diff / (1000 * 60)) % 60);
+  const secs = Math.floor((diff / 1000) % 60);
+  document.getElementById('days').textContent = String(days).padStart(2, '0');
+  document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+  document.getElementById('mins').textContent = String(mins).padStart(2, '0');
+  document.getElementById('secs').textContent = String(secs).padStart(2, '0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+  document.getElementById('notifyForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('emailInput').value;
+    const msg = document.getElementById('formMsg');
+    msg.textContent = "Thanks! We'll let you know at " + email;
+    document.getElementById('emailInput').value = '';
+  });
+</script>
+
+</body>
+</html>

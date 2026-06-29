@@ -1,143 +1,527 @@
-<div class="modal fade" id="enrollModal" tabindex="-1" aria-labelledby="enrollModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
 
-      <!-- Header -->
-      <div class="modal-header border-0 p-0">
-        <div class="modal-header-inner w-100">
-          <div class="d-flex align-items-start justify-content-between">
-            <div>
-              <div class="modal-badge">
-                <span class="modal-badge-dot"></span> Enrollments open
-              </div>
-              <h5 class="modal-title" id="enrollModalLabel">Join I-CODE Academy</h5>
-              <p class="modal-subtitle">Fill in your details — takes less than 2 minutes</p>
-            </div>
-            <button type="button" class="modal-close" data-bs-dismiss="modal" aria-label="Close">✕</button>
+
+
+<style>
+  :root{--navy:#1F3A6E;--teal:#1EBFBF;--teal-light:#E6FAFA;--teal-mid:#0d9f9f;}
+  .modal-bg *{box-sizing:border-box;}
+  .modal-bg{min-height:auto;background:transparent;display:flex;align-items:center;justify-content:center;padding:2rem 1rem;border-radius:var(--border-radius-lg);position:relative;overflow:hidden;}
+  .modal-bg svg.circuit{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+  .card{background:#FFFFFF;border-radius:16px;width:100%;max-width:560px;overflow:hidden;border:0.5px solid #D8DDE8;position:relative;z-index:1;}
+  .card-header{background:var(--navy);padding:1.5rem 1.75rem 1.25rem;}
+  .badge-open{display:inline-flex;align-items:center;gap:6px;background:rgba(30,191,191,0.18);border:1px solid rgba(30,191,191,0.4);border-radius:20px;color:var(--teal);font-size:11px;font-weight:500;letter-spacing:.04em;padding:3px 10px;margin-bottom:.75rem;}
+  .badge-open .dot{width:6px;height:6px;background:var(--teal);border-radius:50%;animation:pulse 1.5s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .card-header h2{color:#fff;font-size:20px;font-weight:600;margin-bottom:4px;}
+  .card-header p{color:rgba(255,255,255,.6);font-size:13px;}
+  .step-bar{display:flex;gap:4px;margin-top:1.1rem;}
+  .step-bar span{height:3px;border-radius:2px;flex:1;background:rgba(255,255,255,.18);transition:background .3s;}
+  .step-bar span.active{background:var(--teal);}
+  .step-label{display:flex;justify-content:space-between;margin-top:6px;}
+  .step-label small{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.03em;}
+  .step-label small.active{color:var(--teal);font-weight:500;}
+  .card-body{padding:1.5rem 1.75rem;}
+  .step{display:none;}.step.active{display:block;}
+  .field{margin-bottom:1.1rem;}
+  .field label{display:block;font-size:12px;font-weight:500;color:#6b7a99;letter-spacing:.05em;margin-bottom:5px;text-transform:uppercase;}
+  .field label .req{color:var(--teal);margin-left:2px;}
+  .field input,.field select,.field textarea{width:100%;padding:10px 12px;font-size:14px;border:1px solid #D8DDE8;border-radius:8px;background:#FDFDFF;color:#1a2540;transition:border-color .2s,box-shadow .2s;outline:none;}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(30,191,191,.12);}
+  .field input.error,.field select.error{border-color:#e05c5c;box-shadow:0 0 0 3px rgba(224,92,92,.1);}
+  .field .err-msg{font-size:11px;color:#e05c5c;margin-top:4px;display:none;}
+  .field textarea{resize:vertical;min-height:80px;}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  .program-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .prog-card{border:1px solid #D8DDE8;border-radius:8px;padding:10px 12px;cursor:pointer;transition:border-color .2s,background .2s;display:flex;align-items:flex-start;gap:10px;background:#FDFEFF;}
+  .prog-card:hover{border-color:var(--teal);background:var(--teal-light);}
+  .prog-card.selected{border-color:var(--teal);background:var(--teal-light);}
+  .prog-icon{width:28px;height:28px;border-radius:6px;background:rgba(30,191,191,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .prog-icon i{font-size:15px;color:var(--teal-mid);}
+  .prog-card.selected .prog-icon{background:var(--teal);}
+  .prog-card.selected .prog-icon i{color:#fff;}
+  .prog-text{font-size:13px;font-weight:500;color:#1a2540;line-height:1.3;}
+  .prog-sub{font-size:11px;color:#6b7a99;margin-top:2px;}
+  .radio-group{display:flex;gap:8px;}
+  .radio-pill{flex:1;border:1px solid #D8DDE8;border-radius:8px;padding:9px 12px;cursor:pointer;font-size:13px;text-align:center;transition:all .2s;color:#6b7a99;background:#FDFEFF;}
+  .radio-pill:hover{border-color:var(--teal);color:var(--teal-mid);}
+  .radio-pill.selected{border-color:var(--teal);background:var(--teal-light);color:var(--teal-mid);font-weight:500;}
+  .cohort-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem;}
+  .cohort-card{border:1px solid #D8DDE8;border-radius:8px;padding:12px 14px;cursor:pointer;transition:border-color .2s,background .2s;background:#FDFEFF;}
+  .cohort-card:hover{border-color:var(--teal);background:var(--teal-light);}
+  .cohort-card.selected{border-color:var(--teal);background:var(--teal-light);}
+  .cohort-card.selected .cohort-name{color:var(--teal-mid);}
+  .cohort-badge{display:inline-block;font-size:10px;font-weight:500;letter-spacing:.04em;padding:2px 8px;border-radius:20px;margin-bottom:6px;}
+  .badge-igcse{background:rgba(30,191,191,.12);color:var(--teal-mid);}
+  .badge-cbc{background:rgba(31,58,110,.1);color:var(--navy);}
+  .badge-module{background:rgba(245,166,35,.12);color:#b07c10;}
+  .cohort-name{font-size:13px;font-weight:500;color:#1a2540;margin-bottom:2px;}
+  .cohort-dates{font-size:11px;color:#6b7a99;}
+  .cohort-spots{font-size:11px;color:var(--teal-mid);margin-top:4px;display:flex;align-items:center;gap:4px;}
+  .card-footer{padding:1rem 1.75rem 1.5rem;border-top:0.5px solid #D8DDE8;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+  .btn-back{padding:10px 18px;font-size:13px;font-weight:500;border:1px solid #D8DDE8;border-radius:8px;background:transparent;color:#6b7a99;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;}
+  .btn-back:hover{border-color:#b0bad0;color:#1a2540;}
+  .btn-next{flex:1;padding:11px 18px;font-size:14px;font-weight:600;background:var(--teal);color:#fff;border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s,transform .15s;}
+  .btn-next:hover{background:var(--teal-mid);}
+  .btn-next:active{transform:scale(.98);}
+  .btn-next:disabled{background:#a0d4d4;cursor:not-allowed;}
+  .btn-submit{flex:1;padding:11px 18px;font-size:14px;font-weight:600;background:var(--navy);color:#fff;border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s,transform .15s;}
+  .btn-submit:hover{background:#16296e;}
+  .btn-submit:active{transform:scale(.98);}
+  .btn-submit:disabled{background:#a0aac0;cursor:not-allowed;}
+  .privacy-note{text-align:center;font-size:11px;color:#8a96b0;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:4px;}
+  .success-box{text-align:center;padding:2rem 1rem;}
+  .success-box .tick{width:56px;height:56px;background:var(--teal-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;}
+  .success-box .tick i{font-size:28px;color:var(--teal-mid);}
+  .success-box h3{font-size:18px;font-weight:600;margin-bottom:8px;color:#1a2540;}
+  .success-box p{font-size:13px;color:#6b7a99;line-height:1.6;}
+  .error-box{text-align:center;padding:2rem 1rem;}
+  .error-box .icon{width:56px;height:56px;background:#fef0f0;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;}
+  .error-box .icon i{font-size:28px;color:#e05c5c;}
+  .error-box h3{font-size:18px;font-weight:600;margin-bottom:8px;color:#1a2540;}
+  .error-box p{font-size:13px;color:#6b7a99;line-height:1.6;}
+  .error-box .retry-btn{margin-top:1rem;padding:10px 24px;background:var(--navy);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;}
+  .section-title{font-size:15px;font-weight:600;color:#1a2540;margin-bottom:4px;}
+  .section-sub{font-size:12px;color:#6b7a99;margin-bottom:1rem;}
+  .cohort-summary{background:var(--teal-light);border:1px solid rgba(30,191,191,.3);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--teal-mid);margin-top:8px;display:none;align-items:center;gap:6px;}
+  .submitting-overlay{text-align:center;padding:2rem;color:#6b7a99;font-size:14px;}
+  .spinner{width:36px;height:36px;border:3px solid #e0e6f0;border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+
+<!-- Bootstrap Modal Wrapper -->
+<div class="modal fade" id="enrollModal" tabindex="-1" aria-labelledby="enrollModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:620px;">
+    <div class="modal-content" style="background:transparent;border:none;box-shadow:none;position:relative;">
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="position:absolute;top:12px;right:12px;z-index:20;background-color:rgba(255,255,255,0.8);border-radius:50%;padding:6px;opacity:0.9;"></button>
+<div class="modal-bg" style="border-radius:16px;min-height:auto;">
+
+  <svg class="circuit" viewBox="0 0 680 700" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g stroke="#C8D0DC" stroke-width="1" fill="none" opacity="0.6">
+      <line x1="0" y1="80" x2="120" y2="80"/><line x1="120" y1="80" x2="120" y2="40"/>
+      <line x1="120" y1="40" x2="200" y2="40"/><line x1="200" y1="40" x2="200" y2="120"/>
+      <line x1="200" y1="120" x2="340" y2="120"/><line x1="340" y1="120" x2="340" y2="60"/>
+      <line x1="340" y1="60" x2="480" y2="60"/><line x1="480" y1="60" x2="480" y2="140"/>
+      <line x1="480" y1="140" x2="580" y2="140"/><line x1="580" y1="140" x2="580" y2="80"/>
+      <line x1="580" y1="80" x2="680" y2="80"/><line x1="60" y1="0" x2="60" y2="80"/>
+      <line x1="60" y1="160" x2="60" y2="260"/><line x1="60" y1="260" x2="140" y2="260"/>
+      <line x1="140" y1="260" x2="140" y2="200"/><line x1="140" y1="200" x2="260" y2="200"/>
+      <line x1="260" y1="200" x2="260" y2="300"/><line x1="260" y1="300" x2="160" y2="300"/>
+      <line x1="160" y1="300" x2="160" y2="380"/><line x1="160" y1="380" x2="0" y2="380"/>
+      <line x1="420" y1="0" x2="420" y2="60"/><line x1="420" y1="140" x2="420" y2="200"/>
+      <line x1="420" y1="200" x2="540" y2="200"/><line x1="540" y1="200" x2="540" y2="280"/>
+      <line x1="540" y1="280" x2="620" y2="280"/><line x1="620" y1="280" x2="620" y2="180"/>
+      <line x1="620" y1="180" x2="680" y2="180"/><line x1="620" y1="340" x2="620" y2="380"/>
+      <line x1="620" y1="380" x2="680" y2="380"/><line x1="0" y1="460" x2="80" y2="460"/>
+      <line x1="80" y1="460" x2="80" y2="520"/><line x1="80" y1="520" x2="200" y2="520"/>
+      <line x1="200" y1="520" x2="200" y2="440"/><line x1="200" y1="440" x2="320" y2="440"/>
+      <line x1="320" y1="440" x2="320" y2="560"/><line x1="320" y1="560" x2="180" y2="560"/>
+      <line x1="180" y1="560" x2="180" y2="620"/><line x1="180" y1="620" x2="60" y2="620"/>
+      <line x1="60" y1="620" x2="60" y2="700"/><line x1="400" y1="480" x2="500" y2="480"/>
+      <line x1="500" y1="480" x2="500" y2="400"/><line x1="500" y1="400" x2="600" y2="400"/>
+      <line x1="600" y1="400" x2="600" y2="480"/><line x1="600" y1="480" x2="680" y2="480"/>
+      <line x1="460" y1="560" x2="460" y2="640"/><line x1="460" y1="640" x2="560" y2="640"/>
+      <line x1="560" y1="640" x2="560" y2="580"/><line x1="560" y1="580" x2="680" y2="580"/>
+    </g>
+    <g fill="#C4CEDC" opacity="0.75">
+      <circle cx="120" cy="80" r="3.5"/><circle cx="200" cy="40" r="3.5"/>
+      <circle cx="200" cy="120" r="3.5"/><circle cx="340" cy="120" r="3.5"/>
+      <circle cx="340" cy="60" r="3.5"/><circle cx="480" cy="60" r="3.5"/>
+      <circle cx="480" cy="140" r="3.5"/><circle cx="580" cy="140" r="3.5"/>
+      <circle cx="580" cy="80" r="3.5"/><circle cx="60" cy="80" r="3.5"/>
+      <circle cx="60" cy="260" r="3.5"/><circle cx="140" cy="260" r="3.5"/>
+      <circle cx="140" cy="200" r="3.5"/><circle cx="260" cy="200" r="3.5"/>
+      <circle cx="260" cy="300" r="3.5"/><circle cx="160" cy="300" r="3.5"/>
+      <circle cx="160" cy="380" r="3.5"/><circle cx="420" cy="60" r="3.5"/>
+      <circle cx="420" cy="200" r="3.5"/><circle cx="540" cy="200" r="3.5"/>
+      <circle cx="540" cy="280" r="3.5"/><circle cx="620" cy="280" r="3.5"/>
+      <circle cx="620" cy="180" r="3.5"/><circle cx="620" cy="380" r="3.5"/>
+      <circle cx="80" cy="460" r="3.5"/><circle cx="80" cy="520" r="3.5"/>
+      <circle cx="200" cy="520" r="3.5"/><circle cx="200" cy="440" r="3.5"/>
+      <circle cx="320" cy="440" r="3.5"/><circle cx="320" cy="560" r="3.5"/>
+      <circle cx="180" cy="560" r="3.5"/><circle cx="180" cy="620" r="3.5"/>
+      <circle cx="60" cy="620" r="3.5"/><circle cx="500" cy="480" r="3.5"/>
+      <circle cx="500" cy="400" r="3.5"/><circle cx="600" cy="400" r="3.5"/>
+      <circle cx="600" cy="480" r="3.5"/><circle cx="460" cy="560" r="3.5"/>
+      <circle cx="460" cy="640" r="3.5"/><circle cx="560" cy="640" r="3.5"/>
+      <circle cx="560" cy="580" r="3.5"/>
+    </g>
+  </svg>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="badge-open"><span class="dot"></span> Enrollments Open</div>
+      <h2>Join i-CODE Robotics & AI Lab</h2>
+      <p>Secure your child's place — takes less than 3 minutes</p>
+      <div class="step-bar">
+        <span class="active" id="bar1"></span><span id="bar2"></span><span id="bar3"></span>
+      </div>
+      <div class="step-label">
+        <small class="active" id="lbl1">Contact</small>
+        <small id="lbl2">Programme</small>
+        <small id="lbl3">Schedule</small>
+      </div>
+    </div>
+
+    <div class="card-body">
+
+      <!-- STEP 1: Contact details -->
+      <div class="step active" id="step1">
+        <p class="section-title">Parent / guardian details</p>
+        <p class="section-sub">We'll use this to send your confirmation and updates.</p>
+        <div class="field-row">
+          <div class="field">
+            <label>Full name <span class="req">*</span></label>
+            <input type="text" id="f_name" placeholder="e.g. Jane Doe">
+            <div class="err-msg" id="err_name">Please enter your full name.</div>
           </div>
-          <div class="modal-steps">
-            <div class="modal-step done"></div>
-            <div class="modal-step active"></div>
-            <div class="modal-step"></div>
+          <div class="field">
+            <label>Phone <span class="req">*</span></label>
+            <input type="tel" id="f_phone" placeholder="+254 700 000 000">
+            <div class="err-msg" id="err_phone">Please enter a valid phone number.</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Email address <span class="req">*</span></label>
+          <input type="email" id="f_email" placeholder="you@example.com">
+          <div class="err-msg" id="err_email">Please enter a valid email address.</div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Child's age bracket <span class="req">*</span></label>
+            <select id="f_age">
+              <option value="">— Select age group —</option>
+              <option>Explorers · Ages 6–9</option>
+              <option>Builders · Ages 10–13</option>
+              <option>Innovators · Ages 14–17</option>
+              <option>University / Adult</option>
+            </select>
+            <div class="err-msg" id="err_age">Please select an age group.</div>
+          </div>
+          <div class="field">
+            <label>How did you hear about us?</label>
+            <select id="f_source">
+              <option value="">— Select source —</option>
+              <option>Social media</option>
+              <option>School referral</option>
+              <option>Friend / family</option>
+              <option>Walk-in / arcade</option>
+              <option>Online search</option>
+            </select>
           </div>
         </div>
       </div>
 
-      <!-- Scrollable body -->
-      <div class="modal-body px-4 py-4">
-        <form id="enrollForm"
-              data-url="{{ enrollment_store_url }}"
-              data-csrf="{{ csrf_token }}">
-          <div class="row g-3">
-
-            <!-- Name & Phone -->
-            <div class="col-md-6">
-              <label class="form-label fw-semibold small">Full Name <span class="text-danger">*</span></label>
-              <input class="form-control" name="full_name" placeholder="e.g. Jane Doe" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-semibold small">Phone <span class="text-danger">*</span></label>
-              <input class="form-control" name="phone" placeholder="+254 700 000 000" required>
-            </div>
-
-            <!-- Email -->
-            <div class="col-12">
-              <label class="form-label fw-semibold small">Email Address <span class="text-danger">*</span></label>
-              <input class="form-control" name="email" type="email" placeholder="you@example.com" required>
-            </div>
-
-            <!-- Programs -->
-            <div class="col-12">
-              <label class="form-label fw-semibold small">Programs <span class="text-danger">*</span></label>
-              <div class="row g-2 p-3 border rounded-3 bg-white">
-                {% for p in programs %}
-                <div class="col-md-6">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="programs" value="{{ p.id }}" id="prog_{{ p.id }}">
-                    <label class="form-check-label small" for="prog_{{ p.id }}">{{ p.name }}</label>
-                  </div>
-                </div>
-                {% endfor %}
-              </div>
-            </div>
-
-            <!-- Age Bracket & Timeline -->
-            <div class="col-md-6">
-              <label class="form-label fw-semibold small">Age Bracket <span class="text-danger">*</span></label>
-              <select name="age_bracket" class="form-select" required>
-                <option value="" disabled selected>— Select bracket —</option>
-                {% for bracket in brackets %}
-                <option value="{{ bracket.id }}">{{ bracket.title }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-semibold small">Registration Timeline <span class="text-danger">*</span></label>
-              <select name="registration_timeline" class="form-select" required>
-                <option value="" disabled selected>— Select timeline —</option>
-                {% for timeline in timelines %}
-                <option value="{{ timeline.id }}">{{ timeline.title }}</option>
-                {% endfor %}
-              </select>
-            </div>
-
-            <!-- Dates -->
-            <div class="col-md-6">
-              <label class="form-label fw-semibold small">Preferred Registration Date <span class="text-danger">*</span></label>
-              <div class="input-group">
-                <span class="input-group-text bg-white"><i class="bi bi-calendar-check text-teal"></i></span>
-                <input type="text" id="preferred_registration_date" name="preferred_registration_date"
-                  class="form-control flatpickr-date" placeholder="Select date" autocomplete="off" required readonly>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-semibold small">Prospective Start Date <span class="text-danger">*</span></label>
-              <div class="input-group">
-                <span class="input-group-text bg-white"><i class="bi bi-calendar2-week text-teal"></i></span>
-                <input type="text" id="prospective_start_date" name="prospective_start_date"
-                  class="form-control flatpickr-date" placeholder="Select date" autocomplete="off" required readonly>
-              </div>
-            </div>
-
-            <!-- Customised course -->
-            <div class="col-12">
-              <label class="form-label fw-semibold small">Interested in a customised course? <span class="text-danger">*</span></label>
-              <div class="d-flex gap-3">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="customized_course" value="yes" id="customYes" required>
-                  <label class="form-check-label small" for="customYes">Yes, definitely</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="customized_course" value="no" id="customNo">
-                  <label class="form-check-label small" for="customNo">No, thanks</label>
-                </div>
-              </div>
-            </div>
-
-            <!-- Comments -->
-            <div class="col-12">
-              <label class="form-label fw-semibold small">Additional Comments</label>
-              <textarea class="form-control" name="comments" rows="3"
-                placeholder="Any questions or special requirements..."></textarea>
-            </div>
-
-          </div><!-- /.row g-3 -->
-        </form>
-      </div><!-- /.modal-body -->
-
-      <!-- Footer OUTSIDE modal-body -->
-      <div class="modal-footer">
-        <button type="submit" form="enrollForm" class="btn-submit" id="submitBtn">
-          <i class="ti ti-send" aria-hidden="true"></i> Reserve My Child's Slot 
-        </button>
-        <div class="modal-privacy">
-          <i class="ti ti-lock" aria-hidden="true"></i> Your data is safe and never shared
+      <!-- STEP 2: Programme -->
+      <div class="step" id="step2">
+        <p class="section-title">Choose a programme</p>
+        <p class="section-sub">Select one or more — we'll recommend the best fit.</p>
+        <div class="program-grid" id="programGrid">
+          <div class="prog-card" data-prog="Scratch Coding" onclick="toggleProg(this)">
+            <div class="prog-icon"><i class="ti ti-code" aria-hidden="true"></i></div>
+            <div><div class="prog-text">Scratch Coding</div><div class="prog-sub">Ages 6–10 · Beginner</div></div>
+          </div>
+          <div class="prog-card" data-prog="Robotics & Hardware" onclick="toggleProg(this)">
+            <div class="prog-icon"><i class="ti ti-robot" aria-hidden="true"></i></div>
+            <div><div class="prog-text">Robotics & Hardware</div><div class="prog-sub">Ages 8–17 · All levels</div></div>
+          </div>
+          <div class="prog-card" data-prog="Python Programming" onclick="toggleProg(this)">
+            <div class="prog-icon"><i class="ti ti-brand-python" aria-hidden="true"></i></div>
+            <div><div class="prog-text">Python Programming</div><div class="prog-sub">Ages 12+ · Intermediate</div></div>
+          </div>
+          <div class="prog-card" data-prog="AI & Automation" onclick="toggleProg(this)">
+            <div class="prog-icon"><i class="ti ti-brain" aria-hidden="true"></i></div>
+            <div><div class="prog-text">AI & Automation</div><div class="prog-sub">Ages 14+ · Advanced</div></div>
+          </div>
+          <div class="prog-card" data-prog="Cybersecurity" onclick="toggleProg(this)">
+            <div class="prog-icon"><i class="ti ti-shield-lock" aria-hidden="true"></i></div>
+            <div><div class="prog-text">Cybersecurity</div><div class="prog-sub">Ages 14+ · Advanced</div></div>
+          </div>
+          <div class="prog-card" data-prog="Custom / Tailored" onclick="toggleProg(this)">
+            <div class="prog-icon"><i class="ti ti-adjustments" aria-hidden="true"></i></div>
+            <div><div class="prog-text">Custom / Tailored</div><div class="prog-sub">Any age · Personalised</div></div>
+          </div>
         </div>
-        <div id="loader">
-          <div class="spinner-border spinner-border-sm me-1"></div> Sending your enrollment...
+        <div class="field" style="margin-top:1rem;">
+          <label>Preferred schedule</label>
+          <select id="f_schedule">
+            <option value="">— Select a time slot —</option>
+            <option>Weekday afternoons (Mon–Fri, 3–5 PM)</option>
+            <option>Saturday mornings (9 AM – 12 PM)</option>
+            <option>Saturday afternoons (1 – 4 PM)</option>
+            <option>Sunday (flexible)</option>
+          </select>
         </div>
-      </div><!-- /.modal-footer -->
+      </div>
 
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+      <!-- STEP 3: Cohort & Schedule -->
+      <div class="step" id="step3">
+        <p class="section-title">Choose your intake</p>
+        <p class="section-sub">Select the cohort your child will join. Slots are limited per class.</p>
+        <div class="cohort-grid" id="cohortGrid">
+          <div class="cohort-card" data-cohort="Summer Bootcamp · IGCSE · 13 Jul – 21 Aug 2026" onclick="selectCohort(this)">
+            <span class="cohort-badge badge-igcse">IGCSE</span>
+            <div class="cohort-name">Summer Bootcamp — Cohort 1</div>
+            <div class="cohort-dates"><i class="ti ti-calendar" style="font-size:12px;vertical-align:-1px;" aria-hidden="true"></i> 13 July – 21 August 2026</div>
+            <div class="cohort-spots"><i class="ti ti-users" style="font-size:12px;" aria-hidden="true"></i> Limited to 15 students</div>
+          </div>
+          <div class="cohort-card" data-cohort="Summer Bootcamp · CBC/CBE · 3–21 Aug 2026" onclick="selectCohort(this)">
+            <span class="cohort-badge badge-cbc">CBC / CBE</span>
+            <div class="cohort-name">Summer Bootcamp — Cohort 2</div>
+            <div class="cohort-dates"><i class="ti ti-calendar" style="font-size:12px;vertical-align:-1px;" aria-hidden="true"></i> 3 – 21 August 2026</div>
+            <div class="cohort-spots"><i class="ti ti-users" style="font-size:12px;" aria-hidden="true"></i> Limited to 15 students</div>
+          </div>
+          <div class="cohort-card" data-cohort="Module 3 · After-school · September 2026" onclick="selectCohort(this)">
+            <span class="cohort-badge badge-module">Module 3</span>
+            <div class="cohort-name">After-school programme</div>
+            <div class="cohort-dates"><i class="ti ti-calendar" style="font-size:12px;vertical-align:-1px;" aria-hidden="true"></i> September 2026</div>
+            <div class="cohort-spots"><i class="ti ti-users" style="font-size:12px;" aria-hidden="true"></i> Limited to 12 students</div>
+          </div>
+        </div>
+        <div class="cohort-summary" id="cohortSummary">
+          <i class="ti ti-check" style="font-size:14px;" aria-hidden="true"></i>
+          <span id="cohortSummaryText"></span>
+        </div>
+        <div class="field" style="margin-top:1rem;">
+          <label>Track preference</label>
+          <div class="radio-group" id="trackGroup">
+            <div class="radio-pill selected" onclick="selectTrack(this)">IGCSE / Cambridge</div>
+            <div class="radio-pill" onclick="selectTrack(this)">CBC / CBE</div>
+            <div class="radio-pill" onclick="selectTrack(this)">No preference</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Additional notes</label>
+          <textarea id="f_notes" placeholder="Any questions, special requirements, or context about your child's background…"></textarea>
+        </div>
+      </div>
+
+      <!-- SUBMITTING STATE -->
+      <div class="step" id="stepSubmitting">
+        <div class="submitting-overlay">
+          <div class="spinner"></div>
+          <p>Submitting your enrollment…</p>
+        </div>
+      </div>
+
+      <!-- SUCCESS STATE -->
+      <div class="step" id="stepSuccess">
+        <div class="success-box">
+          <div class="tick"><i class="ti ti-check" aria-hidden="true"></i></div>
+          <h3>You're on the list!</h3>
+          <p>Thanks for registering your interest with i-CODE Robotics & AI Lab.<br>Our team will be in touch within 24 hours to confirm your slot.</p>
+          <p style="margin-top:1rem;font-size:12px;color:#6b7a99;">
+            <i class="ti ti-map-pin" style="font-size:13px;vertical-align:-2px;" aria-hidden="true"></i> Onestop Arcade, off Langata Road, Karen, Nairobi<br>
+            <i class="ti ti-phone" style="font-size:13px;vertical-align:-2px;" aria-hidden="true"></i> +254 14 1054939 &nbsp;·&nbsp; info@icodeailab.com
+          </p>
+        </div>
+      </div>
+
+      <!-- ERROR STATE -->
+      <div class="step" id="stepError">
+        <div class="error-box">
+          <div class="icon"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div>
+          <h3>Something went wrong</h3>
+          <p>We couldn't submit your enrollment right now. Please try again, or contact us directly at <strong>info@icodeailab.com</strong> or <strong>+254 14 1054939</strong>.</p>
+          <button class="retry-btn" onclick="retryForm()">Try again</button>
+        </div>
+      </div>
+
+    </div><!-- end card-body -->
+
+    <div class="card-footer" id="cardFooter">
+      <button class="btn-back" id="btnBack" onclick="prevStep()" style="display:none">
+        <i class="ti ti-arrow-left" aria-hidden="true"></i> Back
+      </button>
+      <button class="btn-next" id="btnNext" onclick="nextStep()">
+        Continue <i class="ti ti-arrow-right" aria-hidden="true"></i>
+      </button>
+      <button class="btn-submit" id="btnSubmit" onclick="submitForm()" style="display:none">
+        <i class="ti ti-rocket" aria-hidden="true"></i> Reserve My Child's Slot
+      </button>
+    </div>
+    <p class="privacy-note" id="privacyNote">
+      <i class="ti ti-lock" aria-hidden="true" style="font-size:12px;"></i> Your data is safe and never shared
+    </p>
+  </div>
+
+</div>
+
+<script>
+
+const HS_PORTAL_ID  = '148719983';
+const HS_FORM_GUID  = '3acbc7f9-0470-4394-9c57-610dd680295c';
+const HS_REGION     = 'eu1';
+
+
+let current = 1;
+const total  = 3;
+
+function showStep(n) {
+  ['step1','step2','step3','stepSubmitting','stepSuccess','stepError']
+    .forEach(id => { const el = document.getElementById(id); if(el) el.className = 'step'; });
+  const target = document.getElementById(n === 'submitting' ? 'stepSubmitting'
+                                        : n === 'success'   ? 'stepSuccess'
+                                        : n === 'error'     ? 'stepError'
+                                        : 'step' + n);
+  if (target) target.className = 'step active';
+}
+
+function updateBars() {
+  for (let i = 1; i <= total; i++) {
+    document.getElementById('bar' + i).className = i <= current ? 'active' : '';
+    document.getElementById('lbl' + i).className = i === current ? 'active' : '';
+  }
+  document.getElementById('btnBack').style.display   = current > 1 ? 'flex' : 'none';
+  document.getElementById('btnNext').style.display   = current < total ? 'flex' : 'none';
+  document.getElementById('btnSubmit').style.display = current === total ? 'flex' : 'none';
+  showStep(current);
+}
+
+
+function clearErrors() {
+  document.querySelectorAll('.err-msg').forEach(e => e.style.display = 'none');
+  document.querySelectorAll('.error').forEach(e => e.classList.remove('error'));
+}
+
+function showError(fieldId, msgId) {
+  const field = document.getElementById(fieldId);
+  const msg   = document.getElementById(msgId);
+  if (field) field.classList.add('error');
+  if (msg)   msg.style.display = 'block';
+}
+
+function validateStep1() {
+  clearErrors();
+  let valid = true;
+  const name  = document.getElementById('f_name').value.trim();
+  const phone = document.getElementById('f_phone').value.trim();
+  const email = document.getElementById('f_email').value.trim();
+  const age   = document.getElementById('f_age').value;
+  if (!name)                        { showError('f_name',  'err_name');  valid = false; }
+  if (!phone)                       { showError('f_phone', 'err_phone'); valid = false; }
+  if (!email || !email.includes('@')){ showError('f_email', 'err_email'); valid = false; }
+  if (!age)                         { showError('f_age',   'err_age');   valid = false; }
+  return valid;
+}
+
+function nextStep() {
+  if (current === 1 && !validateStep1()) return;
+  if (current < total) { current++; updateBars(); }
+}
+
+function prevStep() {
+  if (current > 1) { current--; updateBars(); }
+}
+
+function retryForm() {
+  current = 1;
+  updateBars();
+  document.getElementById('cardFooter').style.display  = 'flex';
+  document.getElementById('privacyNote').style.display = 'flex';
+}
+
+// ── Programme toggles ────────────────────────────────────────
+function toggleProg(el) { el.classList.toggle('selected'); }
+
+function getSelectedProgrammes() {
+  return Array.from(document.querySelectorAll('#programGrid .prog-card.selected'))
+    .map(c => c.dataset.prog).join(', ') || 'Not specified';
+}
+
+// ── Track & cohort selection ─────────────────────────────────
+function selectTrack(el) {
+  document.querySelectorAll('#trackGroup .radio-pill').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function getSelectedTrack() {
+  const sel = document.querySelector('#trackGroup .radio-pill.selected');
+  return sel ? sel.textContent.trim() : 'No preference';
+}
+
+function selectCohort(el) {
+  document.querySelectorAll('#cohortGrid .cohort-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  const s = document.getElementById('cohortSummary');
+  document.getElementById('cohortSummaryText').textContent = el.dataset.cohort + ' — selected';
+  s.style.display = 'flex';
+}
+
+function getSelectedCohort() {
+  const sel = document.querySelector('#cohortGrid .cohort-card.selected');
+  return sel ? sel.dataset.cohort : 'Not selected';
+}
+
+// ── HubSpot submit ───────────────────────────────────────────
+async function submitForm() {
+  const btn = document.getElementById('btnSubmit');
+  btn.disabled = true;
+
+  // Hide footer/privacy, show spinner
+  document.getElementById('cardFooter').style.display  = 'none';
+  document.getElementById('privacyNote').style.display = 'none';
+  showStep('submitting');
+
+  // Split name into first / last
+  const fullName  = document.getElementById('f_name').value.trim();
+  const nameParts = fullName.split(' ');
+  const firstName = nameParts[0] || fullName;
+  const lastName  = nameParts.slice(1).join(' ') || '';
+
+  const payload = {
+    fields: [
+      { name: 'firstname',        value: firstName },
+      { name: 'lastname',         value: lastName },
+      { name: 'phone',            value: document.getElementById('f_phone').value.trim() },
+      { name: 'email',            value: document.getElementById('f_email').value.trim() },
+      { name: 'child_age_bracket',value: document.getElementById('f_age').value },
+      { name: 'hs_lead_source',   value: document.getElementById('f_source').value || 'Not specified' },
+      { name: 'programme_interest',value: getSelectedProgrammes() },
+      { name: 'preferred_schedule',value: document.getElementById('f_schedule').value || 'Not specified' },
+      { name: 'cohort_selected',  value: getSelectedCohort() },
+      { name: 'curriculum_track', value: getSelectedTrack() },
+      { name: 'message',          value: document.getElementById('f_notes').value.trim() },
+    ],
+    context: {
+      pageUri:  window.location.href,
+      pageName: 'i-CODE Summer Bootcamp 2026 — Enrollment'
+    }
+  };
+
+  try {
+    const res = await fetch(
+      `https://api.hsforms.com/submissions/v3/integration/submit/${HS_PORTAL_ID}/${HS_FORM_GUID}`,
+      {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload)
+      }
+    );
+
+    if (res.ok) {
+      // Mark all bars complete
+      for (let i = 1; i <= total; i++) document.getElementById('bar' + i).className = 'active';
+      showStep('success');
+    } else {
+      console.error('HubSpot error:', res.status, await res.text());
+      showStep('error');
+      btn.disabled = false;
+      document.getElementById('cardFooter').style.display  = 'flex';
+      document.getElementById('privacyNote').style.display = 'flex';
+    }
+  } catch (err) {
+    console.error('Network error:', err);
+    showStep('error');
+    btn.disabled = false;
+    document.getElementById('cardFooter').style.display  = 'flex';
+    document.getElementById('privacyNote').style.display = 'flex';
+  }
+}
+
+// Init
+updateBars();
+</script>
+
+    </div><!-- end modal-bg -->
+    </div><!-- end modal-content -->
+  </div><!-- end modal-dialog -->
+</div><!-- end enrollModal -->

@@ -1,0 +1,152 @@
+{% extends "instructor/base.html" %}
+{% block title %}Dashboard — Instructor Portal{% endblock %}
+{% block topbar_title %}Good morning, {{ request.user.first_name|default:request.user.username }} 👋{% endblock %}
+{% block topbar_actions %}
+  <a href="{% url 'programme_list' %}" class="btn btn-primary btn-sm">
+    <i class="fas fa-chalkboard-teacher"></i> My Classes
+  </a>
+{% endblock %}
+
+{% block content %}
+<!-- Stats row -->
+<div class="grid-4 mb-24">
+  <div class="stat-card">
+    <div class="stat-icon teal"><i class="fas fa-users"></i></div>
+    <div>
+      <div class="stat-value">{{ total_students }}</div>
+      <div class="stat-label">Total Students</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon blue"><i class="fas fa-chalkboard-teacher"></i></div>
+    <div>
+      <div class="stat-value">{{ classes.count }}</div>
+      <div class="stat-label">Active Classes</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon gold"><i class="fas fa-calendar-check"></i></div>
+    <div>
+      <div class="stat-value">{{ upcoming_sessions.count }}</div>
+      <div class="stat-label">Upcoming Sessions</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon navy"><i class="fas fa-exclamation-triangle"></i></div>
+    <div>
+      <div class="stat-value">{{ at_risk_count }}</div>
+      <div class="stat-label">Students At Risk</div>
+    </div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <!-- My Classes -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title"><i class="fas fa-chalkboard" style="color:var(--tech-teal);margin-right:8px"></i>My Classes</span>
+      <a href="{% url 'programme_list' %}" class="btn btn-ghost btn-sm">View all</a>
+    </div>
+    {% if classes %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Class</th>
+            <th>Programme</th>
+            <th>Schedule</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for cls in classes %}
+          <tr>
+            <td><strong>{{ cls.name }}</strong></td>
+            <td><span class="text-muted">{{ cls.programme.name }}</span></td>
+            <td><span class="text-muted">{{ cls.schedule|default:"—" }}</span></td>
+            <td>
+              <a href="{% url 'class_detail' cls.pk %}" class="btn btn-ghost btn-sm">
+                <i class="fas fa-arrow-right"></i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-chalkboard-teacher"></i>
+      <p>No classes assigned yet.</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Upcoming Sessions -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title"><i class="fas fa-calendar-alt" style="color:var(--innovation-gold);margin-right:8px"></i>Upcoming Sessions</span>
+    </div>
+    {% if upcoming_sessions %}
+    <div class="card-body" style="padding:0">
+      {% for session in upcoming_sessions %}
+      <div style="padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-weight:600;font-size:.9rem">{{ session.topic }}</div>
+          <div class="text-muted">{{ session.class_group.name }} &middot; {{ session.date }}</div>
+        </div>
+        <a href="{% url 'session_attendance' session.pk %}" class="btn btn-primary btn-sm">Attend</a>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-calendar-times"></i>
+      <p>No upcoming sessions.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Recent Sessions -->
+{% if recent_sessions %}
+<div class="card mt-24">
+  <div class="card-header">
+    <span class="card-title"><i class="fas fa-history" style="color:var(--royal-blue);margin-right:8px"></i>Recent Sessions</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Class</th>
+          <th>Topic</th>
+          <th>Students Marked</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for session in recent_sessions %}
+        <tr>
+          <td>{{ session.date }}</td>
+          <td>{{ session.class_group.name }}</td>
+          <td>{{ session.topic }}</td>
+          <td>
+            <span class="badge badge-present">{{ session.attendances.count }} recorded</span>
+          </td>
+          <td>
+            <a href="{% url 'session_attendance' session.pk %}" class="btn btn-ghost btn-sm">
+              <i class="fas fa-clipboard-check"></i> Attendance
+            </a>
+            <a href="{% url 'session_edit' session.pk %}" class="btn btn-ghost btn-sm">
+              <i class="fas fa-edit"></i>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
