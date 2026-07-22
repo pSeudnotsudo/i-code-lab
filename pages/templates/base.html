@@ -1,36 +1,52 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- ══ SEO: Title ══ -->
-    <title>{% block title %}i-CODE Robotics & AI Lab | Karen, Nairobi{% endblock %}</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- ══ SEO: Core Meta ══ -->
-    <meta name="description" content="{% block meta_description %}i-CODE Robotics & AI Lab — Karen's premier innovation lab for kids, teens & professionals. Coding, Robotics, AI, Drones & Cybersecurity in Nairobi.{% endblock %}">
-    <meta name="keywords" content="{% block meta_keywords %}robotics classes Nairobi, coding school Karen, AI lab Nairobi, kids coding classes Karen, tech education Nairobi, robotics for kids Kenya, STEM school Nairobi, drone programming Kenya, cybersecurity training Nairobi, i-CODE{% endblock %}">
-    <meta name="author" content="i-CODE Robotics & AI Lab">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="{% block canonical %}https://icodeailab.com{% endblock %}">
+  <!-- GA4 — load first -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q3LGGMEEER"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-Q3LGGMEEER');
+  </script>
 
-    <!-- ══ SEO: Open Graph ══ -->
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="i-CODE Robotics & AI Lab">
-    <meta property="og:title" content="{% block og_title %}i-CODE Robotics & AI Lab | Karen, Nairobi{% endblock %}">
-    <meta property="og:description" content="{% block og_description %}Karen's premier innovation lab. Coding, Robotics, AI, Drones & Cybersecurity for kids, teens & professionals.{% endblock %}">
-    <meta property="og:url" content="{% block og_url %}https://icodeailab.com{% endblock %}">
-    <meta property="og:image" content="{% block og_image %}https://icodeailab.com/static/images/i-code_logo_v2.png{% endblock %}">
+  <!-- ══ SEO: Title ══ -->
+  <title>{% block title %}i-CODE Robotics & AI Lab | Karen, Nairobi{% endblock %}</title>
 
-    <!-- ══ SEO: Twitter Card ══ -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{% block twitter_title %}i-CODE Robotics & AI Lab | Karen, Nairobi{% endblock %}">
-    <meta name="twitter:description" content="{% block twitter_description %}Karen's premier innovation lab. Coding, Robotics, AI, Drones & Cybersecurity for kids, teens & professionals.{% endblock %}">
-    <meta name="twitter:image" content="{% block twitter_image %}https://icodeailab.com/static/images/i-code_logo_v2.png{% endblock %}">
+  <!-- ══ SEO: Core Meta ══ -->
+  <meta name="description"
+    content="{% block meta_description %}i-CODE Robotics & AI Lab — Karen's premier innovation lab for kids, teens & professionals. Coding, Robotics, AI, Drones & Cybersecurity in Nairobi.{% endblock %}">
+  <meta name="keywords"
+    content="{% block meta_keywords %}robotics classes Nairobi, coding school Karen, AI lab Nairobi, kids coding classes Karen, tech education Nairobi, robotics for kids Kenya, STEM school Nairobi, drone programming Kenya, cybersecurity training Nairobi, i-CODE{% endblock %}">
+  <meta name="author" content="i-CODE Robotics & AI Lab">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="{% block canonical %}https://icodeailab.com{% endblock %}">
 
-    <!-- ══ SEO: Local Business Schema ══ -->
-    <script type="application/ld+json">
+  <!-- ══ SEO: Open Graph ══ -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="i-CODE Robotics & AI Lab">
+  <meta property="og:title" content="{% block og_title %}i-CODE Robotics & AI Lab | Karen, Nairobi{% endblock %}">
+  <meta property="og:description"
+    content="{% block og_description %}Karen's premier innovation lab. Coding, Robotics, AI, Drones & Cybersecurity for kids, teens & professionals.{% endblock %}">
+  <meta property="og:url" content="{% block og_url %}https://icodeailab.com{% endblock %}">
+  <meta property="og:image"
+    content="{% block og_image %}https://icodeailab.com/static/images/i-code_logo_v2.png{% endblock %}">
+
+  <!-- ══ SEO: Twitter Card ══ -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% block twitter_title %}i-CODE Robotics & AI Lab | Karen, Nairobi{% endblock %}">
+  <meta name="twitter:description"
+    content="{% block twitter_description %}Karen's premier innovation lab. Coding, Robotics, AI, Drones & Cybersecurity for kids, teens & professionals.{% endblock %}">
+  <meta name="twitter:image"
+    content="{% block twitter_image %}https://icodeailab.com/static/images/i-code_logo_v2.png{% endblock %}">
+
+  <!-- ══ SEO: Local Business Schema ══ -->
+  <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "EducationalOrganization",
@@ -57,35 +73,47 @@
     }
     </script>
 
-    <!-- ══ Fonts & Icons ══ -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
-    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- ══ Fonts & Icons ══ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    {% block extra_css %}{% endblock %}
-    <link rel="stylesheet" href="{% static 'css/home.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/enrollment_modal.css' %}" />
-  </head>
-  <body>
-    <main>
-      {% include 'navbar.html' %}
-      {% include "partials/enrollment_modal.html" %}
-      {% block content %}
-      {% endblock %}
-      {% include 'footer.html' %}
-      {% block scripts %}
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-      <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-      <script type="text/javascript" src="{% static 'js/enrollment_modal.js' %}"></script>
-      <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
-      {% endblock %}
-    </main>
-  </body>
+  {% block extra_css %}{% endblock %}
+  <!--<link rel="stylesheet" href="{% static 'css/home.css' %}" />-->
+  <!--<link rel="stylesheet" href="{% static 'css/styles.css' %}" />-->
+  <!--<link rel="stylesheet" href="{% static 'css/enrollment_modal.css' %}" />-->
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+  <!--<link rel="stylesheet" href="{% static 'css/home.css' %}" />-->
+  <link rel="stylesheet" href="{% static 'css/home.css' %}?v=2" />
+  <link rel="stylesheet" href="{% static 'css/enrollment_modal.css' %}" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q3LGGMEEER"></script>
+</head>
+
+<body>
+  <main>
+    {% include 'navbar.html' %}
+    {% include "partials/enrollment_modal.html" %}
+    {% block content %}
+    {% endblock %}
+    {% include 'footer.html' %}
+    {% block scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/enrollment_modal.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+    {% endblock %}
+  </main>
+</body>
+
 </html>

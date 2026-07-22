@@ -8,7 +8,9 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link
+  href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+  rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
@@ -16,62 +18,6 @@
 <!-- ═══════════════════════════════════════════
      HERO
 ═══════════════════════════════════════════ -->
-<!--Banner  -->
-
-{% now "Y-m-d" as today %}
-{% if today <= "2026-07-14" %}
-
-<div class="bc-widget" id="bcWidget">
-
-  <!-- Mobile tab (visible only on mobile) -->
-  <button class="bc-mobile-tab" onclick="bcToggle()" aria-label="Toggle bootcamp alert">
-    <i class="ti ti-rocket"></i>
-    <span>Bootcamp</span>
-    <i class="ti ti-chevron-up bc-tab-arrow"></i>
-  </button>
-
-  <!-- Header -->
-  <div class="bc-widget-header">
-    <div class="pulse-dot"></div>
-    <i class="ti ti-rocket" aria-hidden="true"></i>
-    <span>Bootcamp Alert</span>
-    <button class="bc-close" onclick="bcDismiss()" aria-label="Dismiss">
-      <i class="ti ti-x"></i>
-    </button>
-  </div>
-
-  <!-- Program pills -->
-  <div class="bc-widget-programs">
-    {% for p in programs %}
-    <span class="bc-pill">{{ p.code }}</span>
-    {% endfor %}
-  </div>
-
-  <!-- Tagline -->
-  <div class="bc-widget-tagline">🚀 Seats are filling fast — don't miss out!</div>
-
-  <!-- Countdown -->
-  <div class="bc-countdown">
-    <div class="bc-unit"><span class="bc-num" id="bcd">--</span><span class="bc-lbl">days</span></div>
-    <div class="bc-colon">:</div>
-    <div class="bc-unit"><span class="bc-num" id="bch">--</span><span class="bc-lbl">hrs</span></div>
-    <div class="bc-colon">:</div>
-    <div class="bc-unit"><span class="bc-num" id="bcm">--</span><span class="bc-lbl">min</span></div>
-    <div class="bc-colon">:</div>
-    <div class="bc-unit"><span class="bc-num" id="bcs">--</span><span class="bc-lbl">sec</span></div>
-  </div>
-
-  <!-- Enroll -->
-  <a href="{% url 'bootcamp_2026' %}" class="bc-enroll" id="bcEnroll">
-    <i class="ti ti-arrow-right" aria-hidden="true"></i>
-    Enroll Now
-  </a>
-
-</div>
-
-
-
-{% endif %}
 
 
 
@@ -96,17 +42,18 @@
       </h1>
 
       <p class="hero-subtitle">
-        Learn coding, robotics, AI, drones, and digital skills through hands-on projects — designed for kids, teens, university students, and professionals.
+        Learn coding, robotics, AI, drones, and digital skills through hands-on projects — designed for kids, teens,
+        university students, and professionals.
       </p>
 
       <div class="hero-actions">
         <button class="btn-hero-primary" onclick="openEnrollmentModal()">
-            Enroll Now <i class="ti ti-arrow-right" aria-hidden="true"></i>
+          Enroll Now <i class="ti ti-arrow-right" aria-hidden="true"></i>
         </button>
-       <a href="{% url 'programs' %}" class="btn-hero-ghost">
-    <i class="ti ti-compass" aria-hidden="true"></i>
-    View Programs
-</a>
+        <a href="{% url 'programs' %}" class="btn-hero-ghost">
+          <i class="ti ti-compass" aria-hidden="true"></i>
+          View Programs
+        </a>
       </div>
 
       <div class="hero-stats">
@@ -128,145 +75,108 @@
     <!-- Right: Self-Drawing Robot -->
     <div class="hero-visual">
       <div class="robot-canvas">
-        <div class="robot-orbit"><div class="orbit-dot"></div></div>
+        <div class="robot-orbit">
+          <div class="orbit-dot"></div>
+        </div>
 
         <!-- SELF-DRAWING ROBOT SVG -->
         <svg class="robot-svg" viewBox="0 0 300 380" fill="none" xmlns="http://www.w3.org/2000/svg">
           <!-- Antenna -->
-          <line class="draw-path d0" x1="150" y1="60" x2="150" y2="20"
-            stroke="#F5A623" stroke-width="3" stroke-linecap="round"
-            style="--path-len:40"/>
+          <line class="draw-path d0" x1="150" y1="60" x2="150" y2="20" stroke="#F5A623" stroke-width="3"
+            stroke-linecap="round" style="--path-len:40" />
           <circle class="robot-fill f0" cx="150" cy="14" r="8" fill="#F5A623"
-            style="filter:drop-shadow(0 0 8px #F5A623)"/>
+            style="filter:drop-shadow(0 0 8px #F5A623)" />
 
           <!-- Head -->
-          <rect class="draw-path d1" x="80" y="60" width="140" height="110" rx="24"
-            stroke="rgba(255,255,255,0.85)" stroke-width="2.5"
-            fill="rgba(255,255,255,0.06)"
-            style="--path-len:500"/>
+          <rect class="draw-path d1" x="80" y="60" width="140" height="110" rx="24" stroke="rgba(255,255,255,0.85)"
+            stroke-width="2.5" fill="rgba(255,255,255,0.06)" style="--path-len:500" />
 
           <!-- Eyes outer rings -->
-          <circle class="draw-path d2" cx="117" cy="110" r="22"
-            stroke="rgba(255,255,255,0.5)" stroke-width="2"
-            style="--path-len:140"/>
-          <circle class="draw-path d2" cx="183" cy="110" r="22"
-            stroke="rgba(255,255,255,0.5)" stroke-width="2"
-            style="--path-len:140"/>
+          <circle class="draw-path d2" cx="117" cy="110" r="22" stroke="rgba(255,255,255,0.5)" stroke-width="2"
+            style="--path-len:140" />
+          <circle class="draw-path d2" cx="183" cy="110" r="22" stroke="rgba(255,255,255,0.5)" stroke-width="2"
+            style="--path-len:140" />
 
           <!-- Eyes filled -->
           <circle class="robot-fill f1" cx="117" cy="110" r="14" fill="#3DA4A6"
-            style="filter:drop-shadow(0 0 10px #3DA4A6)"/>
+            style="filter:drop-shadow(0 0 10px #3DA4A6)" />
           <circle class="robot-fill f1" cx="183" cy="110" r="14" fill="#3DA4A6"
-            style="filter:drop-shadow(0 0 10px #3DA4A6)"/>
+            style="filter:drop-shadow(0 0 10px #3DA4A6)" />
 
           <!-- Eye glints -->
-          <circle class="robot-fill f2" cx="111" cy="104" r="5" fill="rgba(255,255,255,0.7)"/>
-          <circle class="robot-fill f2" cx="177" cy="104" r="5" fill="rgba(255,255,255,0.7)"/>
+          <circle class="robot-fill f2" cx="111" cy="104" r="5" fill="rgba(255,255,255,0.7)" />
+          <circle class="robot-fill f2" cx="177" cy="104" r="5" fill="rgba(255,255,255,0.7)" />
 
           <!-- Mouth panel -->
-          <rect class="draw-path d3" x="100" y="148" width="100" height="14" rx="7"
-            stroke="rgba(255,255,255,0.4)" stroke-width="1.5"
-            fill="rgba(255,255,255,0.06)"
-            style="--path-len:230"/>
-          <rect class="robot-fill f3" x="104" y="151" width="36" height="8" rx="4"
-            fill="#1EBFBF" style="filter:drop-shadow(0 0 6px #1EBFBF)"/>
-          <rect class="robot-fill f3" x="148" y="151" width="24" height="8" rx="4"
-            fill="#F5A623" style="filter:drop-shadow(0 0 6px #F5A623)"/>
+          <rect class="draw-path d3" x="100" y="148" width="100" height="14" rx="7" stroke="rgba(255,255,255,0.4)"
+            stroke-width="1.5" fill="rgba(255,255,255,0.06)" style="--path-len:230" />
+          <rect class="robot-fill f3" x="104" y="151" width="36" height="8" rx="4" fill="#1EBFBF"
+            style="filter:drop-shadow(0 0 6px #1EBFBF)" />
+          <rect class="robot-fill f3" x="148" y="151" width="24" height="8" rx="4" fill="#F5A623"
+            style="filter:drop-shadow(0 0 6px #F5A623)" />
 
           <!-- Neck -->
-          <rect class="draw-path d4" x="130" y="170" width="40" height="20" rx="8"
-            stroke="rgba(255,255,255,0.5)" stroke-width="2"
-            fill="rgba(255,255,255,0.06)"
-            style="--path-len:120"/>
+          <rect class="draw-path d4" x="130" y="170" width="40" height="20" rx="8" stroke="rgba(255,255,255,0.5)"
+            stroke-width="2" fill="rgba(255,255,255,0.06)" style="--path-len:120" />
 
           <!-- Body -->
-          <rect class="draw-path d1" x="55" y="190" width="190" height="130" rx="28"
-            stroke="rgba(255,255,255,0.75)" stroke-width="2.5"
-            fill="rgba(255,255,255,0.06)"
-            style="--path-len:660"/>
+          <rect class="draw-path d1" x="55" y="190" width="190" height="130" rx="28" stroke="rgba(255,255,255,0.75)"
+            stroke-width="2.5" fill="rgba(255,255,255,0.06)" style="--path-len:660" />
 
           <!-- Chest panel -->
-          <rect class="draw-path d5" x="80" y="215" width="140" height="80" rx="16"
-            stroke="rgba(255,255,255,0.35)" stroke-width="1.5"
-            fill="rgba(255,255,255,0.04)"
-            style="--path-len:440"/>
+          <rect class="draw-path d5" x="80" y="215" width="140" height="80" rx="16" stroke="rgba(255,255,255,0.35)"
+            stroke-width="1.5" fill="rgba(255,255,255,0.04)" style="--path-len:440" />
 
           <!-- Chest lights -->
           <circle class="robot-fill f4" cx="110" cy="250" r="10" fill="#1EBFBF"
-            style="filter:drop-shadow(0 0 10px #1EBFBF)"/>
+            style="filter:drop-shadow(0 0 10px #1EBFBF)" />
           <circle class="robot-fill f4" cx="150" cy="250" r="10" fill="#3DA4A6"
-            style="filter:drop-shadow(0 0 10px #3DA4A6)"/>
+            style="filter:drop-shadow(0 0 10px #3DA4A6)" />
           <circle class="robot-fill f4" cx="190" cy="250" r="10" fill="#F5A623"
-            style="filter:drop-shadow(0 0 10px #F5A623)"/>
+            style="filter:drop-shadow(0 0 10px #F5A623)" />
 
           <!-- Progress bar -->
-          <rect class="draw-path d6" x="90" y="275" width="120" height="10" rx="5"
-            stroke="rgba(255,255,255,0.25)" stroke-width="1.2"
-            style="--path-len:270"/>
-          <rect class="robot-fill f4" x="92" y="277" width="70" height="6" rx="3"
-            fill="#1EBFBF"/>
+          <rect class="draw-path d6" x="90" y="275" width="120" height="10" rx="5" stroke="rgba(255,255,255,0.25)"
+            stroke-width="1.2" style="--path-len:270" />
+          <rect class="robot-fill f4" x="92" y="277" width="70" height="6" rx="3" fill="#1EBFBF" />
 
           <!-- Left arm -->
-          <rect class="draw-path d7" x="12" y="200" width="44" height="100" rx="22"
-            stroke="rgba(255,255,255,0.7)" stroke-width="2"
-            fill="rgba(255,255,255,0.06)"
-            style="--path-len:290"/>
+          <rect class="draw-path d7" x="12" y="200" width="44" height="100" rx="22" stroke="rgba(255,255,255,0.7)"
+            stroke-width="2" fill="rgba(255,255,255,0.06)" style="--path-len:290" />
           <!-- Left hand -->
-          <circle class="draw-path d8" cx="34" cy="315" r="16"
-            stroke="rgba(255,255,255,0.6)" stroke-width="2"
-            fill="rgba(255,255,255,0.08)"
-            style="--path-len:100"/>
+          <circle class="draw-path d8" cx="34" cy="315" r="16" stroke="rgba(255,255,255,0.6)" stroke-width="2"
+            fill="rgba(255,255,255,0.08)" style="--path-len:100" />
 
           <!-- Right arm -->
-          <rect class="draw-path d7" x="244" y="200" width="44" height="100" rx="22"
-            stroke="rgba(255,255,255,0.7)" stroke-width="2"
-            fill="rgba(255,255,255,0.06)"
-            style="--path-len:290"/>
+          <rect class="draw-path d7" x="244" y="200" width="44" height="100" rx="22" stroke="rgba(255,255,255,0.7)"
+            stroke-width="2" fill="rgba(255,255,255,0.06)" style="--path-len:290" />
           <!-- Right hand -->
-          <circle class="draw-path d8" cx="266" cy="315" r="16"
-            stroke="rgba(255,255,255,0.6)" stroke-width="2"
-            fill="rgba(255,255,255,0.08)"
-            style="--path-len:100"/>
+          <circle class="draw-path d8" cx="266" cy="315" r="16" stroke="rgba(255,255,255,0.6)" stroke-width="2"
+            fill="rgba(255,255,255,0.08)" style="--path-len:100" />
 
           <!-- Left leg -->
-          <rect class="draw-path d9" x="85" y="318" width="50" height="50" rx="18"
-            stroke="rgba(255,255,255,0.65)" stroke-width="2"
-            fill="rgba(255,255,255,0.05)"
-            style="--path-len:200"/>
+          <rect class="draw-path d9" x="85" y="318" width="50" height="50" rx="18" stroke="rgba(255,255,255,0.65)"
+            stroke-width="2" fill="rgba(255,255,255,0.05)" style="--path-len:200" />
           <!-- Left foot -->
-          <rect class="draw-path d11" x="78" y="360" width="64" height="20" rx="10"
-            stroke="rgba(255,255,255,0.5)" stroke-width="1.5"
-            fill="rgba(255,255,255,0.06)"
-            style="--path-len:175"/>
+          <rect class="draw-path d11" x="78" y="360" width="64" height="20" rx="10" stroke="rgba(255,255,255,0.5)"
+            stroke-width="1.5" fill="rgba(255,255,255,0.06)" style="--path-len:175" />
 
           <!-- Right leg -->
-          <rect class="draw-path d9" x="165" y="318" width="50" height="50" rx="18"
-            stroke="rgba(255,255,255,0.65)" stroke-width="2"
-            fill="rgba(255,255,255,0.05)"
-            style="--path-len:200"/>
+          <rect class="draw-path d9" x="165" y="318" width="50" height="50" rx="18" stroke="rgba(255,255,255,0.65)"
+            stroke-width="2" fill="rgba(255,255,255,0.05)" style="--path-len:200" />
           <!-- Right foot -->
-          <rect class="draw-path d11" x="158" y="360" width="64" height="20" rx="10"
-            stroke="rgba(255,255,255,0.5)" stroke-width="1.5"
-            fill="rgba(255,255,255,0.06)"
-            style="--path-len:175"/>
+          <rect class="draw-path d11" x="158" y="360" width="64" height="20" rx="10" stroke="rgba(255,255,255,0.5)"
+            stroke-width="1.5" fill="rgba(255,255,255,0.06)" style="--path-len:175" />
 
           <!-- Signal waves from antenna -->
-          <path class="draw-path d10"
-            d="M130 14 Q110 0 90 14"
-            stroke="rgba(244,140,6,0.7)" stroke-width="1.8" stroke-linecap="round"
-            style="--path-len:60"/>
-          <path class="draw-path d10"
-            d="M170 14 Q190 0 210 14"
-            stroke="rgba(244,140,6,0.7)" stroke-width="1.8" stroke-linecap="round"
-            style="--path-len:60"/>
-          <path class="draw-path d11"
-            d="M118 10 Q100 -12 80 8"
-            stroke="rgba(244,140,6,0.38)" stroke-width="1.4" stroke-linecap="round"
-            style="--path-len:80"/>
-          <path class="draw-path d11"
-            d="M182 10 Q200 -12 220 8"
-            stroke="rgba(244,140,6,0.38)" stroke-width="1.4" stroke-linecap="round"
-            style="--path-len:80"/>
+          <path class="draw-path d10" d="M130 14 Q110 0 90 14" stroke="rgba(244,140,6,0.7)" stroke-width="1.8"
+            stroke-linecap="round" style="--path-len:60" />
+          <path class="draw-path d10" d="M170 14 Q190 0 210 14" stroke="rgba(244,140,6,0.7)" stroke-width="1.8"
+            stroke-linecap="round" style="--path-len:60" />
+          <path class="draw-path d11" d="M118 10 Q100 -12 80 8" stroke="rgba(244,140,6,0.38)" stroke-width="1.4"
+            stroke-linecap="round" style="--path-len:80" />
+          <path class="draw-path d11" d="M182 10 Q200 -12 220 8" stroke="rgba(244,140,6,0.38)" stroke-width="1.4"
+            stroke-linecap="round" style="--path-len:80" />
         </svg>
       </div>
 
@@ -274,8 +184,8 @@
       <div class="floating-card card-students">
         <div class="card-icon calendar-icon">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <rect x="3" y="6" width="18" height="15" rx="2" stroke="white" stroke-width="2"/>
-            <path d="M3 10h18M8 3v4M16 3v4" stroke="white" stroke-width="2"/>
+            <rect x="3" y="6" width="18" height="15" rx="2" stroke="white" stroke-width="2" />
+            <path d="M3 10h18M8 3v4M16 3v4" stroke="white" stroke-width="2" />
           </svg>
         </div>
         <div>
@@ -297,22 +207,22 @@
       <!--  </div>-->
       <!--</div>-->
       <div class="floating-card card-congrats">
-  <div class="card-icon congrats-icon">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-        fill="rgba(255,255,255,0.9)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
-    </svg>
-  </div>
-  <div class="congrats-body">
-    <div class="congrats-label">Enrollment Confirmed</div>
-    <div class="card-title">
-      Congratulations!
-      <i class="ti ti-confetti"></i>
-    </div>
-    <div class="card-subtitle">Admission completed</div>
-  </div>
-  <div class="congrats-badge">✓</div>
-</div>
+        <div class="card-icon congrats-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+              fill="rgba(255,255,255,0.9)" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
+          </svg>
+        </div>
+        <div class="congrats-body">
+          <div class="congrats-label">Enrollment Confirmed</div>
+          <div class="card-title">
+            Congratulations!
+            <i class="ti ti-confetti"></i>
+          </div>
+          <div class="card-subtitle">Admission completed</div>
+        </div>
+        <div class="congrats-badge">✓</div>
+      </div>
 
       <!--<div class="floating-card card-class">-->
       <!--  <div class="user-avatar">-->
@@ -337,15 +247,31 @@
     <h2 class="section-title">Built on Real <span class="hl">Success</span></h2>
     <div class="section-divider"></div>
     <p class="section-desc">
-      At I-CODE, students start with curiosity and leave with confidence. In just a few weeks, learners progress from basic digital skills to building robots, coding websites, and creating AI solutions.
+      At I-CODE, students start with curiosity and leave with confidence. In just a few weeks, learners progress from
+      basic digital skills to building robots, coding websites, and creating AI solutions.
     </p>
 
     <div class="stats-grid">
-      <div class="stat-item"><div class="stat-number">50+</div><div class="stat-label">Students Trained</div></div>
-      <div class="stat-item"><div class="stat-number">90%</div><div class="stat-label">Project Completion Rate</div></div>
-      <div class="stat-item"><div class="stat-number">40+</div><div class="stat-label">Hands-On Projects</div></div>
-      <div class="stat-item"><div class="stat-number">20+</div><div class="stat-label">Industry Mentors</div></div>
-      <div class="stat-item"><div class="stat-number">{{programs.count}}</div><div class="stat-label">Learning Pathways</div></div>
+      <div class="stat-item">
+        <div class="stat-number">50+</div>
+        <div class="stat-label">Students Trained</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">90%</div>
+        <div class="stat-label">Project Completion Rate</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">40+</div>
+        <div class="stat-label">Hands-On Projects</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">20+</div>
+        <div class="stat-label">Industry Mentors</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">{{programs.count}}</div>
+        <div class="stat-label">Learning Pathways</div>
+      </div>
     </div>
   </div>
 </section>
@@ -357,26 +283,41 @@
   <div class="features-strip__inner">
     <div class="ft-card">
       <div class="ft-card__icon ft-card__icon--blue">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 11H15M9 15H15M17 21H7C5.9 21 5 20.1 5 19V5C5 3.9 5.9 3 7 3H12.6C12.9 3 13.1 3.1 13.3 3.3L18.7 8.7C18.9 8.9 19 9.1 19 9.4V19C19 20.1 18.1 21 17 21Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M9 11H15M9 15H15M17 21H7C5.9 21 5 20.1 5 19V5C5 3.9 5.9 3 7 3H12.6C12.9 3 13.1 3.1 13.3 3.3L18.7 8.7C18.9 8.9 19 9.1 19 9.4V19C19 20.1 18.1 21 17 21Z"
+            stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
       </div>
       <h4 class="ft-card__title">Structured Learning Paths</h4>
-      <p class="ft-card__desc">Step-by-step curriculum from beginner to advanced across all age groups — coding, robotics, AI, and more.</p>
+      <p class="ft-card__desc">Step-by-step curriculum from beginner to advanced across all age groups — coding,
+        robotics, AI, and more.</p>
     </div>
 
     <div class="ft-card">
       <div class="ft-card__icon ft-card__icon--teal">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M8 7V3M16 7V3M7 11H17M5 21H19C20.1 21 21 20.1 21 19V7C21 5.9 20.1 5 19 5H5C3.9 5 3 5.9 3 7V19C3 20.1 3.9 21 5 21Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M8 7V3M16 7V3M7 11H17M5 21H19C20.1 21 21 20.1 21 19V7C21 5.9 20.1 5 19 5H5C3.9 5 3 5.9 3 7V19C3 20.1 3.9 21 5 21Z"
+            stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
       </div>
       <h4 class="ft-card__title">Flexible Scheduling</h4>
-      <p class="ft-card__desc">After-school and weekend classes designed to fit your routine. Track every session and milestone with ease.</p>
+      <p class="ft-card__desc">After-school and weekend classes designed to fit your routine. Track every session and
+        milestone with ease.</p>
     </div>
 
     <div class="ft-card">
       <div class="ft-card__icon ft-card__icon--orange">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M17 20H22V18C22 16.3 20.7 15 19 15C18 15 17.2 15.4 16.6 16.1M17 20H7M7 20H2V18C2 16.3 3.3 15 5 15C6 15 6.8 15.4 7.4 16.1M7 20V18C7 17.3 7.1 16.7 7.4 16.1M15 7C15 8.7 13.7 10 12 10C10.3 10 9 8.7 9 7C9 5.3 10.3 4 12 4C13.7 4 15 5.3 15 7Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M17 20H22V18C22 16.3 20.7 15 19 15C18 15 17.2 15.4 16.6 16.1M17 20H7M7 20H2V18C2 16.3 3.3 15 5 15C6 15 6.8 15.4 7.4 16.1M7 20V18C7 17.3 7.1 16.7 7.4 16.1M15 7C15 8.7 13.7 10 12 10C10.3 10 9 8.7 9 7C9 5.3 10.3 4 12 4C13.7 4 15 5.3 15 7Z"
+            stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
       </div>
       <h4 class="ft-card__title">Progress Tracking</h4>
-      <p class="ft-card__desc">Monitor student achievements, project completions, and skill development through our tracking system.</p>
+      <p class="ft-card__desc">Monitor student achievements, project completions, and skill development through our
+        tracking system.</p>
     </div>
   </div>
 </section>
@@ -391,23 +332,26 @@
       <h2 class="section-title">What is <span class="hl">I-CODE?</span></h2>
       <div class="section-divider"></div>
       <p class="section-desc">
-        i-Code is a next-generation tech lab that empower future skills to students from childhood to career level by combining robotics, AI,Coding,Drone and cybersecurity into a hands-on learning experience.
+        i-Code is a next-generation tech lab that empower future skills to students from childhood to career level by
+        combining robotics, AI,Coding,Drone and cybersecurity into a hands-on learning experience.
       </p>
     </div>
 
     <div class="what-grid">
       <div class="what-image-wrap">
-        <video autoplay muted loop playsinline 
-          style="width:100%;display:block;border-radius:15px;">
-          <source src="/media/videos/icode.mp4" type="video/mp4">
+        <video autoplay muted loop playsinline style="width:100%;display:block;border-radius:15px;">
+          <source src="/media/videos/INSIDE_ICODE.mp4" type="video/mp4">
         </video>
         <!--<div class="what-badge">🚀 A Real Innovation Lab</div>-->
         <div class="what-badge"><i class="ti ti-rocket"></i> A Real Innovation Lab</div>
       </div>
 
       <div>
-        <h3 style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;margin-bottom:8px;">A real innovation lab,<br><span style="color:var(--primary-dark);">not just a classroom</span></h3>
-        <p style="color:var(--text-gray);line-height:1.7;margin-bottom:24px;">Our students learn on professional workstations with industry-standard tools. From coding environments to robotics stations, everything is set up for hands-on building.</p>
+        <h3 style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;margin-bottom:8px;">A real
+          innovation lab,<br><span style="color:var(--primary-dark);">not just a classroom</span></h3>
+        <p style="color:var(--text-gray);line-height:1.7;margin-bottom:24px;">Our students learn on professional
+          workstations with industry-standard tools. From coding environments to robotics stations, everything is set up
+          for hands-on building.</p>
 
         <ul class="what-list">
           <li>
@@ -464,30 +408,30 @@
     {% for program in programs %}
     <div class="prog-card" onclick="location.href='{{ program.get_absolute_url }}'" style="cursor:pointer;">
       <div class="go-corner"><span class="go-arrow">&#10140;</span></div>
-    
+
       <div class="prog-card__icon">
-  {% with code=program.code|lower %}
-    {% if 'cod' in code or 'web' in code or 'programming' in code %}
-      <i class="ti ti-code"></i>
-    {% elif 'robot' in code or 'arduino' in code %}
-      <i class="ti ti-robot"></i>
-    {% elif 'ai' in code or 'machine' in code or 'ml' in code %}
-      <i class="ti ti-brain"></i>
-    {% elif 'drone' in code or 'uav' in code %}
-      <i class="ti ti-drone"></i>
-    {% elif 'kid' in code or 'junior' in code or 'scratch' in code %}
-      <i class="ti ti-device-gamepad-2"></i>
-    {% elif 'cyber' in code or 'security' in code or 'hack' in code %}
-      <i class="ti ti-lock"></i>
-    {% else %}
-      <i class="ti ti-bulb"></i>
-    {% endif %}
-  {% endwith %}
-</div>
+        {% with code=program.code|lower %}
+        {% if 'cod' in code or 'web' in code or 'programming' in code %}
+        <i class="ti ti-code"></i>
+        {% elif 'robot' in code or 'arduino' in code %}
+        <i class="ti ti-robot"></i>
+        {% elif 'ai' in code or 'machine' in code or 'ml' in code %}
+        <i class="ti ti-brain"></i>
+        {% elif 'drone' in code or 'uav' in code %}
+        <i class="ti ti-drone"></i>
+        {% elif 'kid' in code or 'junior' in code or 'scratch' in code %}
+        <i class="ti ti-device-gamepad-2"></i>
+        {% elif 'cyber' in code or 'security' in code or 'hack' in code %}
+        <i class="ti ti-lock"></i>
+        {% else %}
+        <i class="ti ti-bulb"></i>
+        {% endif %}
+        {% endwith %}
+      </div>
       <div class="prog-card__title">{{ program.name }}</div>
       <p class="prog-card__desc">{{ program.hero_copy }}</p>
       {% if program.age_range %}
-        <span class="prog-card__badge">{{ program.age_range.title }}</span>
+      <span class="prog-card__badge">{{ program.age_range.title }}</span>
       {% endif %}
     </div>
     {% empty %}
@@ -499,7 +443,7 @@
     <a href="{% url 'programs' %}" class="btn-programs">
       View All Programs
       <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5">
-        <path d="M5 12h14M12 5l7 7-7 7"/>
+        <path d="M5 12h14M12 5l7 7-7 7" />
       </svg>
     </a>
   </div>
@@ -511,10 +455,13 @@
 <section style="padding:80px 24px;background:#0D1B2E;text-align:center;">
   <div style="max-width:900px;margin:0 auto;">
     <div class="section-eyebrow" style="background:rgba(73,187,189,.22);color:#7fd8da;">See It Live</div>
-    <h2 class="section-title" style="color:#fff;margin-bottom:28px;">Watch a Class <span class="hl">In Session</span></h2>
+    <h2 class="section-title" style="color:#fff;margin-bottom:28px;">Watch a Class <span class="hl">In Session</span>
+    </h2>
     <video controls poster="{% static 'images/video-thumb.jpg' %}"
       style="width:100%;border-radius:16px;box-shadow:0 8px 32px rgba(73,187,189,.25);">
-      <source src="/media/videos/icode.mp4" type="video/mp4">
+      <source src="/media/videos/INSIDE_ICODE.mp4" type="video/mp4">
+      <!--<iframe width="560" height="315" src="https://www.youtube.com/embed/SlH8q0lfSLM?si=K2g9HpRejDRjXk4T" title="YouTube video player" frameborder="0" allow="accelerometer;-->
+      <!--autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>-->
     </video>
   </div>
 </section>
@@ -603,25 +550,25 @@
     <!-- ★ Assessment CTA Button -->
     <button class="testimonial-cta" id="openModal" type="button">
       <span class="cta-icon" aria-hidden="true">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
         </svg>
       </span>
       Write your assessment
-      <svg class="cta-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
-        <path d="M5 12h14M12 5l7 7-7 7"/>
+      <svg class="cta-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+        <path d="M5 12h14M12 5l7 7-7 7" />
       </svg>
     </button>
 
     {% if messages %}
-      {% for message in messages %}
-        <div class="t-toast t-toast--{{ message.tags }}" role="alert">
-          {{ message }}
-        </div>
-      {% endfor %}
+    {% for message in messages %}
+    <div class="t-toast t-toast--{{ message.tags }}" role="alert">
+      {{ message }}
+    </div>
+    {% endfor %}
     {% endif %}
 
     {% if testimonials %}
@@ -630,12 +577,12 @@
         {% for t in testimonials %}
         <article class="t-card">
           <div class="t-card__quote" aria-hidden="true">&ldquo;</div>
-<div class="t-card__stars" aria-label="{{ t.rating }} out of 5 stars">
-  {% for i in "12345" %}
-    <i class="ti {% if forloop.counter <= t.rating %}ti-star-filled t-star--on{% else %}ti-star t-star--off{% endif %}"
-       aria-hidden="true"></i>
-  {% endfor %}
-</div>
+          <div class="t-card__stars" aria-label="{{ t.rating }} out of 5 stars">
+            {% for i in "12345" %}
+            <i class="ti {% if forloop.counter <= t.rating %}ti-star-filled t-star--on{% else %}ti-star t-star--off{% endif %}"
+              aria-hidden="true"></i>
+            {% endfor %}
+          </div>
 
 
           <p class="t-card__text">{{ t.content }}</p>
@@ -655,15 +602,15 @@
         <div class="t-carousel__dots" id="tDots" role="tablist"></div>
         <div class="t-carousel__arrows">
           <button class="t-arrow" id="tPrev" aria-label="Previous">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" aria-hidden="true">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
           </button>
           <button class="t-arrow" id="tNext" aria-label="Next">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           </button>
         </div>
@@ -674,8 +621,7 @@
   </div>
 
   <!-- Assessment Modal -->
-  <div class="t-modal-backdrop" id="tModal" aria-modal="true" role="dialog"
-       aria-labelledby="tModalTitle" hidden>
+  <div class="t-modal-backdrop" id="tModal" aria-modal="true" role="dialog" aria-labelledby="tModalTitle" hidden>
     <div class="t-modal">
       <button class="t-modal__close" id="closeModal" aria-label="Close">&times;</button>
 
@@ -689,34 +635,32 @@
 
         <div class="t-form__group">
           <label class="t-form__label" for="author_name">Full name <span aria-hidden="true">*</span></label>
-          <input class="t-form__input" type="text" id="author_name" name="author_name"
-                 placeholder="Jane Doe" required maxlength="100">
+          <input class="t-form__input" type="text" id="author_name" name="author_name" placeholder="Jane Doe" required
+            maxlength="100">
         </div>
 
         <div class="t-form__group">
           <label class="t-form__label" for="author_role">Your role <span aria-hidden="true">*</span></label>
           <input class="t-form__input" type="text" id="author_role" name="author_role"
-                 placeholder="e.g. Parent of student, Career switcher" required maxlength="100">
+            placeholder="e.g. Parent of student, Career switcher" required maxlength="100">
         </div>
 
-       <div class="t-form__group">
-  <label class="t-form__label">Rating <span aria-hidden="true">*</span></label>
-  <div class="t-star-picker" role="radiogroup" aria-label="Rating">
-    {% for i in "12345" %}
-    <label class="t-star-pick">
-      <input type="radio" name="rating" value="{{ forloop.counter }}"
-             {% if forloop.counter == 5 %}checked{% endif %}>
-      <i class="ti ti-star-filled t-star-pick__icon" aria-hidden="true"></i>
-    </label>
-    {% endfor %}
-  </div>
-</div>
+        <div class="t-form__group">
+          <label class="t-form__label">Rating <span aria-hidden="true">*</span></label>
+          <div class="t-star-picker" role="radiogroup" aria-label="Rating">
+            {% for i in "12345" %}
+            <label class="t-star-pick">
+              <input type="radio" name="rating" value="{{ forloop.counter }}" {% if forloop.counter == 5 %}checked{% endif %}>
+              <i class="ti ti-star-filled t-star-pick__icon" aria-hidden="true"></i>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
 
         <div class="t-form__group">
           <label class="t-form__label" for="content">Your testimonial <span aria-hidden="true">*</span></label>
           <textarea class="t-form__input t-form__textarea" id="content" name="content"
-                    placeholder="Tell us about your experience…" required maxlength="600"
-                    rows="4"></textarea>
+            placeholder="Tell us about your experience…" required maxlength="600" rows="4"></textarea>
           <div class="t-form__counter"><span id="charCount">0</span> / 600</div>
         </div>
 
@@ -729,11 +673,8 @@
 <!-- ═══════════════════════════════════════════
      WHATSAPP BUTTON
 ═══════════════════════════════════════════ -->
-<a href="https://wa.me/254141054939" 
-   class="whatsapp-float" 
-   target="_blank" 
-   rel="noopener noreferrer" 
-   aria-label="Chat on WhatsApp">
+<a href="https://wa.me/254141054939" class="whatsapp-float" target="_blank" rel="noopener noreferrer"
+  aria-label="Chat on WhatsApp">
   <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" />
 </a>
 

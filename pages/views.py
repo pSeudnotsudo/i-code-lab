@@ -23,7 +23,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt  
 from django.http import JsonResponse
-from django.views.decorators.http import require_POST, require_GET
+from django.views.decorators.http import require_POST,require_GET
 import json
 from django.db.models import Count
 from django.utils import timezone
@@ -36,7 +36,7 @@ from django.db import transaction
 from django.http import FileResponse
 from django.conf import settings
 from django.contrib import messages
-from django.db.models import Count
+
 
 
 User = get_user_model()
@@ -250,6 +250,8 @@ def about(request):
     return render(request, 'about.html')
 
 
+# def pricing(request):
+#     return render(request, 'membership.html')
 def team(request):
     featured = TeamMember.objects.filter(is_featured=True, is_active=True)
     members  = TeamMember.objects.filter(is_featured=False, is_active=True)
@@ -702,7 +704,7 @@ def program_update(request, pk):
         program.is_active         = is_active
         program.level_id          = level_id
         program.age_range_id      = age_range_id
-        program.term_fee          = term_fee  
+        program.term_fee          = term_fee  # FIX: was program.term_fee_id
         program.save()
 
         return JsonResponse({"success": True, "message": "Program updated successfully"})
@@ -1945,11 +1947,7 @@ def gallery_delete(request, pk):
         item.delete()
         messages.success(request, f'"{title}" deleted.')
     return redirect('gallery_admin')
-
-
-
-
-
+    
 def team_icode(request):
     members = TeamMember.objects.filter(is_active=True) | TeamMember.objects.filter(is_active=False)
     members = TeamMember.objects.all()         
@@ -2138,4 +2136,6 @@ def _validate(member):
     if member.stripe not in dict(TeamMember.STRIPE_CHOICES):
         errors.append('Invalid stripe colour.')
     return errors
+    
+
     

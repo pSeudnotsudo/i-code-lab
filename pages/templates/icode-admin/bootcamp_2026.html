@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Summer Holiday Bootcamp 2026 | i-CODE Robotics & AI Lab{% endblock %}
+{% block title %}Summer Bootcamp Bootcamp | Register{% endblock %}
 
 {% block extra_css %}
+<!-- <link rel="preconnect" href="https://fonts.googleapis.com">
+<link
+  href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Montserrat:wght@700;800&display=swap"
+  rel="stylesheet"> -->
 <style>
   :root {
     --site-teal: #17c1c8;
@@ -11,194 +15,888 @@
     --site-header-from: #0d2b4e;
   }
 
-  #bootcamp-page { font-family: 'Poppins', sans-serif; color: #1a1a1a; }
-  #bootcamp-page h1, #bootcamp-page h2, #bootcamp-page h3 { font-family: 'Montserrat', sans-serif; font-weight: 700; margin: 0; }
-  #bootcamp-page section { padding: 70px 20px; }
-  #bootcamp-page .section-inner { max-width: 1100px; margin: 0 auto; }
-  #bootcamp-page .section-title { text-align: center; font-size: 2.1rem; color: var(--deep-navy); margin-bottom: 15px; }
-  #bootcamp-page .section-subtitle { text-align: center; max-width: 750px; margin: 0 auto 50px; color: #555; font-size: 1.05rem; line-height: 1.7; }
-  #bootcamp-page .anchor-nav {
-    background: #fff; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 50;
+  #bootcamp-page {
+    font-family: 'Poppins', sans-serif;
+    color: #1a1a1a;
   }
-  #bootcamp-page .anchor-nav .section-inner {
-    display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; padding: 14px 20px;
-  }
-  #bootcamp-page .anchor-nav a {
-    color: var(--deep-navy); font-weight: 600; font-size: 0.92rem; text-decoration: none;
-    text-transform: uppercase; letter-spacing: 0.5px; transition: color 0.2s;
-  }
-  #bootcamp-page .anchor-nav a:hover { color: var(--site-teal); }
 
-  /* HERO */
+  #bootcamp-page * {
+    box-sizing: border-box;
+  }
+
+  #bootcamp-page h1,
+  #bootcamp-page h2,
+  #bootcamp-page h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  #bootcamp-page section {
+    padding: 70px 20px;
+  }
+
+  #bootcamp-page .section-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  #bootcamp-page .section-title {
+    text-align: center;
+    font-size: 2.1rem;
+    color: var(--deep-navy);
+    margin-bottom: 15px;
+  }
+
+  #bootcamp-page .section-subtitle {
+    text-align: center;
+    max-width: 750px;
+    margin: 0 auto 50px;
+    color: #555;
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
+  #bootcamp-page .anchor-nav {
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  #bootcamp-page .anchor-nav .section-inner {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    padding: 14px 20px;
+  }
+
+  #bootcamp-page .anchor-nav a {
+    color: var(--deep-navy);
+    font-weight: 600;
+    font-size: 0.92rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+
+  #bootcamp-page .anchor-nav a:hover {
+    color: var(--site-teal);
+  }
+
+  /* HERO (with poster) */
   #bootcamp-hero {
     background: linear-gradient(135deg, var(--site-header-from), var(--deep-navy));
-    color: #fff; padding: 90px 20px; text-align: center;
+    color: #fff;
+    padding: 80px 20px;
   }
+
+  #bootcamp-hero .hero-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 50px;
+    align-items: center;
+  }
+
+  #bootcamp-hero .hero-text {
+    text-align: left;
+  }
+
   #bootcamp-hero .badge {
-    display: inline-block; background: var(--site-teal); color: #0d2b4e;
-    font-weight: 600; padding: 6px 18px; border-radius: 30px; font-size: 0.85rem;
-    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;
-  }
-  #bootcamp-hero .brand-label {
-    color: var(--site-teal); font-weight: 700; letter-spacing: 2px; font-size: 0.85rem;
-    text-transform: uppercase; margin-bottom: 12px; display: block;
-  }
-  #bootcamp-hero h1 { font-size: 2.8rem; margin-bottom: 10px; }
-  #bootcamp-hero .tagline { font-size: 1.1rem; color: var(--site-teal); font-weight: 600; margin: 12px 0 20px; font-style: italic; }
-  #bootcamp-hero p { max-width: 700px; margin: 0 auto 30px; font-size: 1.05rem; opacity: 0.92; line-height: 1.7; }
-  #bootcamp-hero .btn-group { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
-  #bootcamp-hero .btn-primary-icode, #bootcamp-cta .btn-primary-icode {
-    background: var(--site-teal); color: #0d2b4e; border: none; padding: 14px 32px;
-    border-radius: 8px; font-weight: 700; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
     display: inline-block;
+    background: var(--site-teal);
+    color: #0d2b4e;
+    font-weight: 600;
+    padding: 6px 18px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
   }
-  #bootcamp-hero .btn-primary-icode:hover, #bootcamp-cta .btn-primary-icode:hover {
-    transform: translateY(-2px); box-shadow: 0 8px 20px rgba(23,193,200,0.4); color: #0d2b4e;
+
+  #bootcamp-hero .brand-label {
+    color: var(--site-teal);
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  #bootcamp-hero h1 {
+    font-size: 2.6rem;
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+
+  #bootcamp-hero .tagline {
+    font-size: 1.05rem;
+    color: var(--site-teal);
+    font-weight: 600;
+    margin: 12px 0 18px;
+    font-style: italic;
+  }
+
+  #bootcamp-hero p {
+    max-width: 520px;
+    margin: 0 0 28px;
+    font-size: 1.02rem;
+    opacity: 0.92;
+    line-height: 1.7;
+  }
+
+  #bootcamp-hero .btn-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+
+  /* PRIMARY BUTTON — now shared across hero, form, and final CTA */
+  #bootcamp-hero .btn-primary-icode,
+  #bootcamp-form .btn-primary-icode,
+  #bootcamp-cta .btn-primary-icode {
+    background: var(--site-teal);
+    color: #0d2b4e;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  #bootcamp-hero .btn-primary-icode:hover,
+  #bootcamp-form .btn-primary-icode:hover,
+  #bootcamp-cta .btn-primary-icode:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(23, 193, 200, 0.4);
+    color: #0d2b4e;
+  }
+
+  #bootcamp-hero .hero-poster {
+    position: relative;
+  }
+
+  #bootcamp-hero .hero-poster img {
+    width: 100%;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    border: 3px solid rgba(255, 255, 255, 0.15);
+    display: block;
+  }
+
+  #bootcamp-hero .hero-poster::before {
+    content: "";
+    position: absolute;
+    inset: -14px;
+    border: 2px dashed var(--site-teal);
+    border-radius: 20px;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  @media (max-width: 800px) {
+    #bootcamp-hero .hero-inner {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+
+    #bootcamp-hero .hero-text {
+      text-align: center;
+    }
+
+    #bootcamp-hero p {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #bootcamp-hero .btn-group {
+      justify-content: center;
+    }
+
+    #bootcamp-hero .hero-poster {
+      max-width: 380px;
+      margin: 0 auto;
+    }
   }
 
   /* QUICK FACTS */
-  #bootcamp-facts { background: #f7f9fc; }
+  #bootcamp-facts {
+    background: #f7f9fc;
+  }
+
   #bootcamp-facts .facts-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 25px; text-align: center;
-  }
-  #bootcamp-facts .fact-num { font-size: 2.4rem; font-weight: 700; color: var(--deep-navy); font-family: 'Montserrat', sans-serif; }
-  #bootcamp-facts .fact-label { font-size: 0.9rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
-
-  /* INTRO */
-  #bootcamp-intro .intro-highlight {
-    margin-top: 35px; text-align: center; background: linear-gradient(135deg, var(--site-header-from), var(--deep-navy));
-    color: #fff; padding: 25px; border-radius: 14px; font-weight: 600;
-  }
-  #bootcamp-intro .intro-highlight strong { color: var(--site-teal); }
-
-  /* REQUIREMENTS TABLE */
-  #bootcamp-requirements { background: #f7f9fc; }
-  #bootcamp-requirements table {
-    width: 100%; border-collapse: collapse; background: #fff;
-    box-shadow: 0 4px 20px rgba(31,58,110,0.08); border-radius: 12px; overflow: hidden;
-  }
-  #bootcamp-requirements td {
-    padding: 16px 20px; border-bottom: 1px solid #eee; color: #333; vertical-align: top;
-  }
-  #bootcamp-requirements tr:last-child td { border-bottom: none; }
-  #bootcamp-requirements td:first-child {
-    font-weight: 700; color: var(--deep-navy); width: 240px; font-family: 'Montserrat', sans-serif;
-  }
-  #bootcamp-requirements .curriculum-tags { margin-top: 40px; text-align: center; }
-  #bootcamp-requirements .curriculum-tags span {
-    display: inline-block; background: #fff; border: 1px solid #e0e6f0; color: var(--deep-navy);
-    padding: 8px 18px; border-radius: 20px; margin: 5px; font-size: 0.9rem; font-weight: 600;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 25px;
+    text-align: center;
   }
 
-  /* COHORTS & DATES */
-  #bootcamp-dates .cohorts-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px;
+  #bootcamp-facts .fact-num {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--deep-navy);
+    font-family: 'Montserrat', sans-serif;
   }
-  #bootcamp-dates .cohort-card {
-    background: #fff; border-radius: 14px; padding: 30px;
-    box-shadow: 0 4px 20px rgba(31,58,110,0.08); border-top: 5px solid var(--site-teal);
-  }
-  #bootcamp-dates .cohort-card .cohort-tag {
-    display: inline-block; background: var(--deep-navy); color: #fff; font-size: 0.8rem;
-    font-weight: 600; padding: 5px 14px; border-radius: 20px; margin-bottom: 12px;
-  }
-  #bootcamp-dates .cohort-card h3 { color: var(--deep-navy); font-size: 1.25rem; margin-bottom: 6px; }
-  #bootcamp-dates .cohort-card .duration { color: #777; font-size: 0.9rem; margin: 6px 0 0; }
-  #bootcamp-dates .showcase-banner {
-    margin-top: 35px; text-align: center; background: linear-gradient(135deg, var(--site-header-from), var(--deep-navy));
-    color: #fff; padding: 25px; border-radius: 14px;
-  }
-  #bootcamp-dates .showcase-banner strong { color: var(--site-teal); }
 
-  /* AGE TRACK CARDS */
-  #bootcamp-tracks { background: #f7f9fc; }
-  #bootcamp-tracks .tracks-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;
+  #bootcamp-facts .fact-label {
+    font-size: 0.9rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
   }
-  #bootcamp-tracks .track-card {
-    background: #fff; border-radius: 14px; padding: 35px 30px;
-    box-shadow: 0 4px 20px rgba(31,58,110,0.08); border-top: 5px solid var(--site-teal);
-    transition: transform 0.25s, box-shadow 0.25s; position: relative;
-  }
-  #bootcamp-tracks .track-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(31,58,110,0.15); }
-  #bootcamp-tracks .track-card .age-tag {
-    display: inline-block; background: var(--deep-navy); color: #fff; font-size: 0.8rem;
-    font-weight: 600; padding: 5px 14px; border-radius: 20px; margin-bottom: 15px;
-  }
-  #bootcamp-tracks .track-card .popular-tag {
-    position: absolute; top: -12px; right: 20px; background: var(--site-teal); color: #0d2b4e;
-    font-size: 0.75rem; font-weight: 700; padding: 4px 14px; border-radius: 20px; text-transform: uppercase;
-  }
-  #bootcamp-tracks .track-card h3 { color: var(--deep-navy); font-size: 1.4rem; margin-bottom: 5px; }
-  #bootcamp-tracks .track-card ul { padding-left: 20px; color: #444; line-height: 1.8; margin: 15px 0 0; }
-  #bootcamp-tracks .track-card li::marker { color: var(--site-teal); }
 
-  /* PRICING */
+  /* EXPANDABLES (accordion) */
+  #bootcamp-page .accordion {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  #bootcamp-page details.accordion-item {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(31, 58, 110, 0.08);
+    margin-bottom: 16px;
+    overflow: hidden;
+    border-left: 5px solid var(--site-teal);
+  }
+
+  #bootcamp-page details.accordion-item summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 20px 25px;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    color: var(--deep-navy);
+    font-size: 1.05rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    transition: background 0.2s;
+  }
+
+  #bootcamp-page details.accordion-item summary:hover {
+    background: #fafcff;
+  }
+
+  #bootcamp-page details.accordion-item:hover {
+    box-shadow: 0 6px 24px rgba(31, 58, 110, 0.12);
+  }
+
+  #bootcamp-page details.accordion-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  #bootcamp-page details.accordion-item summary::after {
+    content: "+";
+    font-size: 1.5rem;
+    color: var(--site-teal);
+    font-weight: 400;
+    flex-shrink: 0;
+    transition: transform 0.25s;
+  }
+
+  #bootcamp-page details.accordion-item[open] summary::after {
+    transform: rotate(45deg);
+  }
+
+  #bootcamp-page details.accordion-item .accordion-body {
+    padding: 0 25px 24px;
+    color: #444;
+    line-height: 1.75;
+    animation: accordion-fade 0.25s ease;
+  }
+
+  @keyframes accordion-fade {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  #bootcamp-page details.accordion-item .accordion-body ul {
+    list-style: none;
+    padding: 0;
+    margin: 14px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #bootcamp-page details.accordion-item .accordion-body li {
+    position: relative;
+    padding-left: 30px;
+  }
+
+  #bootcamp-page details.accordion-item .accordion-body li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgba(23, 193, 200, 0.14);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2317c1c8' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 10px 10px;
+  }
+
+  /* REQUIREMENTS - numbered card list */
+  #bootcamp-requirements .req-list {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  #bootcamp-requirements .req-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px 22px;
+    box-shadow: 0 4px 16px rgba(31, 58, 110, 0.07);
+    border-left: 4px solid var(--site-teal);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  #bootcamp-requirements .req-item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 6px 20px rgba(31, 58, 110, 0.12);
+  }
+
+  #bootcamp-requirements .req-num {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--deep-navy);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+  }
+
+  #bootcamp-requirements .req-text {
+    color: #333;
+    line-height: 1.6;
+    padding-top: 4px;
+  }
+
+  #bootcamp-requirements .req-text strong {
+    color: var(--deep-navy);
+  }
+
+  /* PRICING - premium rounded table */
+  #bootcamp-pricing .table-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 12px 36px rgba(31, 58, 110, 0.14);
+    background: #fff;
+    border: 1px solid #eef1f7;
+    position: relative;
+  }
+
+  #bootcamp-pricing .table-wrap::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--site-teal), var(--deep-navy));
+    z-index: 1;
+  }
+
   #bootcamp-pricing table {
-    width: 100%; border-collapse: collapse; background: #fff;
-    box-shadow: 0 4px 20px rgba(31,58,110,0.08); border-radius: 12px; overflow: hidden;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
   }
+
   #bootcamp-pricing th {
-    background: var(--deep-navy); color: #fff; padding: 16px; text-align: left; font-family: 'Montserrat', sans-serif;
+    background: var(--deep-navy);
+    color: #fff;
+    padding: 20px 30px;
+    text-align: left;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
   }
-  #bootcamp-pricing td { padding: 16px; border-bottom: 1px solid #eee; color: #333; }
-  #bootcamp-pricing tr:last-child td { border-bottom: none; }
-  #bootcamp-pricing tr.popular-row td:first-child { color: var(--deep-navy); font-weight: 700; }
+
+  #bootcamp-pricing th:last-child {
+    text-align: right;
+  }
+
+  #bootcamp-pricing td {
+    padding: 22px 30px;
+    color: #333;
+    font-size: 1.02rem;
+    border-top: 1px solid #eef1f7;
+  }
+
+  #bootcamp-pricing tbody tr {
+    background: #fff;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  #bootcamp-pricing tbody tr:hover {
+    background: #f5fdfe;
+  }
+
+  #bootcamp-pricing tbody tr.popular-row {
+    position: relative;
+    background: rgba(23, 193, 200, 0.07);
+  }
+
+  #bootcamp-pricing tbody tr.popular-row:hover {
+    background: rgba(23, 193, 200, 0.12);
+  }
+
+  #bootcamp-pricing tbody tr.popular-row td {
+    border-top: 1.5px solid rgba(23, 193, 200, 0.3);
+    border-bottom: 1.5px solid rgba(23, 193, 200, 0.3);
+  }
+
+  #bootcamp-pricing tbody tr.popular-row td:first-child {
+    color: var(--deep-navy);
+    font-weight: 800;
+    border-left: 4px solid var(--site-teal);
+  }
+
   #bootcamp-pricing .popular-pill {
-    display: inline-block; background: var(--site-teal); color: #0d2b4e; font-size: 0.7rem;
-    font-weight: 700; padding: 2px 10px; border-radius: 12px; text-transform: uppercase; margin-left: 8px;
-  }
-  #bootcamp-pricing .included-box {
-    margin-top: 25px; background: #f7f9fc; border-radius: 12px; padding: 20px 25px; color: #444; line-height: 1.7;
-  }
-  #bootcamp-pricing .included-box strong { color: var(--deep-navy); }
-  #bootcamp-pricing .pricing-note {
-    text-align: center; margin-top: 20px; font-size: 0.9rem; color: #777; font-style: italic;
+    display: inline-block;
+    background: linear-gradient(135deg, var(--site-teal), #0fa8ae);
+    color: #fff;
+    font-size: 0.62rem;
+    font-weight: 800;
+    padding: 4px 11px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 10px;
+    vertical-align: middle;
+    white-space: nowrap;
+    box-shadow: 0 3px 8px rgba(23, 193, 200, 0.35);
   }
 
-  /* PAYMENT */
-  #bootcamp-payment { background: #f7f9fc; }
-  #bootcamp-payment .payment-box {
-    background: #fff; border-radius: 14px; padding: 35px; box-shadow: 0 4px 20px rgba(31,58,110,0.08);
-    max-width: 700px; margin: 0 auto; text-align: center; line-height: 1.8; color: #444;
+  #bootcamp-pricing tbody tr td:first-child {
+    font-weight: 600;
+    color: var(--deep-navy);
   }
-  #bootcamp-payment .payment-box a { color: var(--site-teal); font-weight: 600; text-decoration: none; }
 
-  /* PATHWAY */
-  #bootcamp-pathway .pathway-flow {
-    display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 14px;
-    row-gap: 20px; max-width: 950px; margin: 0 auto;
+  #bootcamp-pricing tbody tr td:last-child {
+    text-align: right;
+    font-weight: 800;
+    color: var(--deep-navy);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: 0.3px;
   }
-  #bootcamp-pathway .pathway-step {
-    background: #fff; border: 2px solid var(--site-teal); color: var(--deep-navy);
-    border-radius: 10px; padding: 14px 20px; font-weight: 600; font-size: 0.9rem; text-align: center;
-    box-shadow: 0 4px 14px rgba(31,58,110,0.06);
+
+  #bootcamp-pricing tbody tr.popular-row td:last-child {
+    color: var(--site-teal);
   }
-  #bootcamp-pathway .pathway-arrow { color: var(--site-teal); font-size: 1.4rem; font-weight: 700; }
-  #bootcamp-pathway .pathway-note {
-    text-align: center; max-width: 700px; margin: 35px auto 0; color: #555; line-height: 1.7; font-style: italic;
+
+  @media (max-width: 640px) {
+    #bootcamp-pricing thead {
+      display: none;
+    }
+
+    #bootcamp-pricing table,
+    #bootcamp-pricing tbody,
+    #bootcamp-pricing tr,
+    #bootcamp-pricing td {
+      display: block;
+      width: 100%;
+    }
+
+    #bootcamp-pricing tbody tr {
+      padding: 4px 0;
+    }
+
+    #bootcamp-pricing tbody tr+tr {
+      border-top: 1px solid #eef1f7;
+    }
+
+    #bootcamp-pricing td {
+      border-top: none !important;
+      border-left: none !important;
+      padding: 6px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #bootcamp-pricing td:first-child {
+      padding-top: 18px;
+    }
+
+    #bootcamp-pricing td:last-child {
+      padding-bottom: 18px;
+      text-align: right;
+    }
+  }
+
+  #bootcamp-pricing .payment-box {
+    max-width: 800px;
+    margin: 20px auto 0;
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(31, 58, 110, 0.08);
+    line-height: 1.8;
+    color: #444;
+  }
+
+  #bootcamp-pricing .payment-box strong {
+    color: var(--deep-navy);
+  }
+
+  /* FORM — full-bleed flat gray band, edge-to-edge, no boxed card */
+  #register {
+    background: #f7f9fc;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #register::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--site-teal), var(--deep-navy));
+  }
+
+  #bootcamp-form .form-card {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0;
+    position: relative;
+  }
+
+  #bootcamp-form form {
+    width: 100%;
+  }
+
+  #bootcamp-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 22px;
+  }
+
+  #bootcamp-form .form-group {
+    margin-bottom: 22px;
+  }
+
+  #bootcamp-form .form-row .form-group {
+    margin-bottom: 0;
+  }
+
+  #bootcamp-form .form-group.full {
+    grid-column: 1 / -1;
+  }
+
+  #bootcamp-form label {
+    display: block;
+    font-weight: 600;
+    color: var(--deep-navy);
+    margin-bottom: 7px;
+    font-size: 0.92rem;
+  }
+
+  #bootcamp-form label .req {
+    color: #e05a5a;
+    margin-left: 1px;
+  }
+
+  #bootcamp-form input[type="text"],
+  #bootcamp-form input[type="email"],
+  #bootcamp-form input[type="tel"],
+  #bootcamp-form input[type="number"],
+  #bootcamp-form select,
+  #bootcamp-form textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #e0e6f0;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    color: #1a1a1a;
+    background: #fff;
+    line-height: 1.4;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  #bootcamp-form input::placeholder,
+  #bootcamp-form textarea::placeholder {
+    color: #9aa5b8;
+  }
+
+  #bootcamp-form input:hover,
+  #bootcamp-form select:hover,
+  #bootcamp-form textarea:hover {
+    border-color: #c7d0e0;
+  }
+
+  #bootcamp-form input:focus,
+  #bootcamp-form select:focus,
+  #bootcamp-form textarea:focus {
+    outline: none;
+    border-color: var(--site-teal);
+    box-shadow: 0 0 0 4px rgba(23, 193, 200, 0.15);
+  }
+
+  #bootcamp-form input:invalid:not(:placeholder-shown) {
+    border-color: #e0e6f0;
+  }
+
+  #bootcamp-form input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  #bootcamp-form textarea {
+    resize: vertical;
+    min-height: 90px;
+  }
+
+  #bootcamp-form select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231F3A6E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+    padding-right: 40px;
+    cursor: pointer;
+  }
+
+  #bootcamp-form .radio-group,
+  #bootcamp-form .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  #bootcamp-form .radio-option,
+  #bootcamp-form .checkbox-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    font-size: 0.94rem;
+    line-height: 1.5;
+    color: #333;
+    padding: 14px 16px;
+    border: 1.5px solid #e0e6f0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  }
+
+  #bootcamp-form .radio-option:hover,
+  #bootcamp-form .checkbox-option:hover {
+    border-color: var(--site-teal);
+    background: rgba(23, 193, 200, 0.05);
+  }
+
+  #bootcamp-form .radio-option:has(input:checked),
+  #bootcamp-form .checkbox-option:has(input:checked) {
+    border-color: var(--site-teal);
+    background: rgba(23, 193, 200, 0.08);
+    box-shadow: 0 0 0 1px var(--site-teal) inset, 0 4px 14px rgba(23, 193, 200, 0.18);
+  }
+
+  #bootcamp-form .radio-option .track-icon {
+    flex-shrink: 0;
+    font-size: 1.3rem;
+    line-height: 1;
+    margin-top: -1px;
+  }
+
+  #bootcamp-form .radio-option input[type="radio"],
+  #bootcamp-form .checkbox-option input[type="checkbox"] {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: var(--site-teal);
+    cursor: pointer;
+  }
+
+  #bootcamp-form .checkbox-option a {
+    color: var(--deep-navy);
+    font-weight: 600;
+    text-decoration: underline;
+  }
+
+  #bootcamp-form .conditional-field {
+    display: none;
+    margin-top: 14px;
+  }
+
+  #bootcamp-form .conditional-field.show {
+    display: block;
+    animation: accordion-fade 0.2s ease;
+  }
+
+  #bootcamp-form .hint {
+    font-size: 0.82rem;
+    color: #888;
+    margin-top: 5px;
+  }
+
+  #bootcamp-form .form-section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--deep-navy);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 36px 0 18px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #eef1f7;
+  }
+
+  #bootcamp-form .form-section-label::before {
+    content: "";
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--site-teal);
+    box-shadow: 0 0 0 4px rgba(23, 193, 200, 0.18);
+  }
+
+  #bootcamp-form .form-group:first-child .form-section-label,
+  #bootcamp-form .form-section-label:first-child {
+    margin-top: 0;
+  }
+
+  #bootcamp-form .form-msg {
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    font-size: 0.92rem;
+    font-weight: 500;
+    display: none;
+  }
+
+  #bootcamp-form .form-msg.success {
+    background: #e6f9ea;
+    color: #1a7a3c;
+    display: block;
+  }
+
+  #bootcamp-form .form-msg.error {
+    background: #fdeceb;
+    color: #b3261e;
+    display: block;
+  }
+
+  #bootcamp-form button[type="submit"] {
+    width: 100%;
+    margin-top: 16px;
+    padding: 15px 32px;
+    font-size: 1.02rem;
+  }
+
+  #bootcamp-form button[type="submit"]:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
   }
 
   /* FINAL CTA */
-  #bootcamp-cta { background: #f7f9fc; text-align: center; }
-  #bootcamp-cta h2 { color: var(--deep-navy); margin-bottom: 15px; }
-  #bootcamp-cta p { max-width: 600px; margin: 0 auto 30px; color: #555; line-height: 1.7; }
-  #bootcamp-cta .cta-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 35px; }
-  #bootcamp-cta .contact-info {
-    display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; font-size: 0.95rem; color: var(--deep-navy);
+  #bootcamp-cta {
+    background: linear-gradient(135deg, var(--site-header-from), var(--deep-navy));
+    color: #fff;
+    text-align: center;
   }
-  #bootcamp-cta .contact-info a { color: var(--deep-navy); text-decoration: none; font-weight: 600; }
-  #bootcamp-cta .contact-info a:hover { color: var(--site-teal); }
 
-  @media (max-width: 576px) {
-    #bootcamp-hero h1 { font-size: 2rem; }
-    #bootcamp-page .section-title { font-size: 1.6rem; }
-    #bootcamp-pathway .pathway-arrow { display: none; }
-    #bootcamp-requirements td:first-child { width: auto; display: block; }
-    #bootcamp-requirements tr { display: flex; flex-direction: column; padding: 12px 0; }
-    #bootcamp-requirements td { padding: 4px 20px; border: none; }
-    #bootcamp-page .anchor-nav .section-inner { gap: 16px; }
+  #bootcamp-cta h2 {
+    color: #fff;
+    margin-bottom: 15px;
+  }
+
+  #bootcamp-cta p {
+    max-width: 600px;
+    margin: 0 auto 30px;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.7;
+  }
+
+  #bootcamp-cta .contact-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    font-size: 0.95rem;
+  }
+
+  #bootcamp-cta .contact-info a {
+    color: var(--site-teal);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  #bootcamp-cta .contact-info a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 640px) {
+    #bootcamp-page .section-title {
+      font-size: 1.6rem;
+    }
+
+    #bootcamp-form .form-row {
+      grid-template-columns: 1fr;
+    }
+
+    #bootcamp-form .form-card {
+      padding: 0;
+    }
+
+    #bootcamp-page .anchor-nav .section-inner {
+      gap: 16px;
+    }
   }
 </style>
 {% endblock %}
@@ -209,312 +907,462 @@
   <!-- ANCHOR NAV -->
   <nav class="anchor-nav">
     <div class="section-inner">
-      <a href="#bootcamp-intro">Introduction</a>
-      <a href="#requirements">Requirements</a>
-      <a href="#bootcamp-dates">Programme</a>
-      <a href="#bootcamp-pricing">Benefits & Pricing</a>
-      <a href="#bootcamp-cta">Enroll</a>
+      <a href="#intro">About</a>
+      <a href="#bootcamp-requirements">Requirements</a>
+      <a href="#structure">Programme</a>
+      <a href="#bootcamp-pricing">Fees & Payment</a>
+      <a href="#register">Register</a>
     </div>
   </nav>
 
   <!-- HERO -->
   <section id="bootcamp-hero">
-    <div class="section-inner">
-      <span class="brand-label"><h2>i-CODE Robotics & AI Lab</h2></span>
-            <h1>Summer Holiday Bootcamp 2026</h1>
-      <p class="tagline">"Invent the Code. Ignite the Future."</p>
-      <p>
-        Kenya's Premium Robotics & AI Lab is opening its doors this holiday for an intensive,
+    <div class="hero-inner">
+      <div class="hero-text">
+        <span class="brand-label">I-CODE Robotics &amp; AI Lab</span>
+        <div class="badge">Ages 6 &ndash; 17</div>
+        <h1>Summer Holiday Bootcamp 2026</h1>
+        <p class="tagline">Invent the Code &bull; Ignite the Future &bull;</p>
+        <p>Kenya's Premium Robotics & AI Lab is opening its doors this holiday for an intensive,
         project-based bootcamp in Robotics, Coding, AI, and Cybersecurity:
-        for ages 6 - 17.
-      </p>
-      <div class="btn-group">
-        <a href="#bootcamp-cta" class="btn-primary-icode" data-bs-toggle="modal" data-bs-target="#enrollModal" id="enroll-cta-top">Book Your Slot — Enroll Now</a>
+        for ages 6 - 17.</p>
+        <div class="btn-group">
+          <a href="#register" class="btn-primary-icode">Register Now</a>
+        </div>
+      </div>
+      <div class="hero-poster">
+        <img src="{% static 'images/i-code-classroom.JPG' %}" alt="Kids and Teens Coding Bootcamp poster"
+          loading="eager">
       </div>
     </div>
   </section>
 
   <!-- QUICK FACTS -->
   <section id="bootcamp-facts">
-    <div class="section-inner">
-      <div class="facts-grid">
-        <div>
-          <div class="fact-num">Duration 	13 July – 21 August 2026</div>
-        <!--  <div class="fact-label">Per Cohort</div>-->
-        <!--<div>-->
-        <!--  <div class="fact-num">Ages 6–17</div>-->
-        <!--  <div class="fact-label">Three Tracks</div>-->
-        <!--</div>-->
-        <!--<div>-->
-        <!--  <div class="fact-num">Max 15</div>-->
-        <!--  <div class="fact-label">Per Class</div>-->
-        </div>
+    <div class="section-inner facts-grid">
+      <div>
+        <div class="fact-num">6-17</div>
+        <div class="fact-label">Years old</div>
+      </div>
+      <div>
+        <div class="fact-num">3</div>
+        <div class="fact-label">Skill tracks</div>
+      </div>
+      <div>
+        <div class="fact-num">3</div>
+        <div class="fact-label">Weeks Classes Categories</div>
+      </div>
+      <div>
+        <!-- <div class="fact-num">13 July -21 August</div> -->
+        <div class="fact-num">2026</div>
+        <div class="fact-label">2026</div>
       </div>
     </div>
   </section>
 
-  <!-- INTRODUCTION -->
-  <section id="bootcamp-intro">
+  <!-- INTRO / ABOUT -->
+  <section id="intro">
     <div class="section-inner">
-      <h2 class="section-title">Introduction</h2>
-      <p class="section-subtitle" style="margin-bottom:25px;">
-        This isn't a holiday camp. It's a <strong>Premium Innovation Experience.</strong>
-      </p>
-      <p style="max-width:750px;margin:0 auto;color:#444;line-height:1.8;font-size:1.05rem;padding-top:10px;">
-        Over 3 action-packed weeks, your child will join one of three innovation tracks —
-        Explorers, Builders, or Innovators — building real robots, writing real code, and
-        exploring real AI tools, six hours a day. It all leads to Showcase Day, where every
-        student presents their own project to family, mentors, and guests at our Mega Innovation
-        Showcase. Every child leaves with a certificate of completion, a project portfolio, a
-        personalised placement report, and a clear recommendation for their next step on the
-        Future Innovator Pathway.
-      </p>
-      <div class="intro-highlight">
-        Showcase Day — <strong>22 August 2026</strong> · "The Future We Build"
+      <h2 class="section-title">About the Programme</h2>
+      <p class="section-subtitle">Over 3 action-packed weeks, your child will join one of three innovation tracks —
+      Explorers, Builders, or Innovators — building real robots, writing real code, and
+      exploring real AI tools, six hours a day. It all leads to Showcase Day, where every
+      student presents their own project to family, mentors, and guests at our Mega Innovation
+      Showcase. Every child leaves with a certificate of completion, a project portfolio, a
+      personalised placement report, and a clear recommendation for their next step on the
+      Future Innovator Pathway.</p>
+
+      <div class="accordion">
+        <details class="accordion-item" open>
+          <summary>What will my child learn?</summary>
+          <div class="accordion-body">
+            <ul>
+              <li><strong>Coding</strong> &ndash; developing simple programs, apps & games using visual and/or
+                text-based languages</li>
+              <li><strong>Electronics and Robotics</strong> &ndash; from first principles to advanced robot programming
+              </li>
+              <li><strong>AI &amp; Design Thinking</strong> &ndash; logical and computational thinking</li>
+            </ul>
+          </div>
+        </details>
       </div>
     </div>
   </section>
 
   <!-- REQUIREMENTS -->
-  <section id="requirements" style="padding:0;">
-    <div id="bootcamp-requirements" style="padding:70px 20px;">
-      <div class="section-inner">
-        <h2 class="section-title">Requirements</h2>
-        <p class="section-subtitle">Everything you need to know before you book.</p>
-
-        <table>
-          <tr>
-            <td>Age Range</td>
-            <td>6 – 17 years</td>
-          </tr>
-          <tr>
-            <td>Duration</td>
-            <td>13 July – 21 August 2026</td>
-          </tr>
-          <tr>
-            <td>Location</td>
-            <td>i-CODE Robotics & AI Lab, One Stop Arcade, off Langata Road, Karen, Nairobi</td>
-          </tr>
-          <tr>
-            <td>What to Bring</td>
-            <td>Comfortable clothing, water bottle, and snacks</td>
-          </tr>
-          <tr>
-            <td>Curriculum Alignment</td>
-            <td>Cambridge IGCSE Computing & ICT · Kenya CBC/CBE Digital Literacy & STEM</td>
-          </tr>
-        </table>
-
-        <div class="curriculum-tags">
-          <span>Cambridge IGCSE Computing & ICT</span>
-          <span>Kenya CBC/CBE Digital Literacy & STEM</span>
-          <span>Robotics and Drone Engineering</span>
-          <span>AI & Design Thinking</span>
+  <section id="bootcamp-requirements">
+    <div class="section-inner">
+      <h2 class="section-title">Requirements</h2>
+      <p class="section-subtitle">Before enrolling, please make sure your child meets the following prerequisites.</p>
+      <div class="req-list">
+        <div class="req-item">
+          <div class="req-num">1</div>
+          <div class="req-text">Student should be between <strong>6 and 17 years</strong> old.</div>
+        </div>
+        <div class="req-item">
+          <div class="req-num">2</div>
+          <div class="req-text">Ability to use a computer <strong>keyboard and mouse</strong>.</div>
+        </div>
+        <div class="req-item">
+          <div class="req-num">3</div>
+          <div class="req-text">Should own a <strong>personal email address</strong> (Gmail recommended) &ndash; used
+            for manuals, notes and assignments.</div>
+        </div>
+        <div class="req-item">
+          <div class="req-num">4</div>
+          <div class="req-text">A <strong>curious mind</strong>, ready to explore and learn!</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- PROGRAMME STRUCTURE: COHORTS & DATES -->
-  <section id="bootcamp-dates">
+  <!-- PROGRAMME STRUCTURE (expandables) -->
+  <section id="structure" style="background:#f7f9fc;">
     <div class="section-inner">
       <h2 class="section-title">Programme Structure</h2>
-      <p class="section-subtitle">Three premium cohorts, one consistent standard — choose the dates that work for your family.</p>
+      <p class="section-subtitle">Choose the format that fits your child's schedule.</p>
 
-      <div class="cohorts-grid">
-        <div class="cohort-card">
-          <span class="cohort-tag">Cohort 1 · IGCSE Bootcamp</span>
-          <h3>13 July – 21 August 2026</h3>
-          <p class="duration">6 Weeks · Ages 6–17</p>
-        </div>
-        <div class="cohort-card">
-          <span class="cohort-tag">Cohort 2 · CBC / CBE Bootcamp</span>
-          <h3>3 – 21 August 2026</h3>
-          <p class="duration">3 Weeks · Ages 6–17</p>
-        </div>
-      </div>
+      <div class="accordion">
+        <details class="accordion-item">
+          <summary>Holiday Boot Camps (April, August, December)</summary>
+          <div class="accordion-body">
+            In-person sessions held during the April, August and December school holidays at the @iLabAfrica Research
+            Centre, Student Centre Building, 4th Floor, Strathmore University.
+            <ul>
+              <li>April Boot Camp</li>
+              <li>August Boot Camp &ndash; registrations ongoing</li>
+              <li>November Boot Camp</li>
+            </ul>
+          </div>
+        </details>
 
-      <div class="showcase-banner">
-        <strong>Showcase Day — 22 August 2026</strong><br>
-        All Groups · "The Future We Build"
-      </div>
-    </div>
-  </section>
+        <details class="accordion-item">
+          <summary>Summer Boot Camp</summary>
+          <div class="accordion-body">Designed for kids following British and American education calendars, held during
+            the summer break.</div>
+        </details>
 
-  <!-- AGE TRACKS -->
-  <section id="bootcamp-tracks">
-    <div class="section-inner">
-      <h2 class="section-title">The Three Tracks</h2>
-      <p class="section-subtitle">Choose the track that fits your child's age and ambition.</p>
+        <details class="accordion-item">
+          <summary>Child Cyber Protection Training (for Parents)</summary>
+          <div class="accordion-body">
+            Sessions to help parents guide their children's online safety, held in:
+            <ul>
+              <li>March</li>
+              <li>July</li>
+              <li>November</li>
+            </ul>
+          </div>
+        </details>
 
-      <div class="tracks-grid">
-        <div class="track-card">
-          
-          <span class="age-tag">Ages 6–9 · Explorers</span>
-          <h3>Explorers</h3>
-          <p style="color:#666;font-size:0.92rem;margin-top:6px;">First steps into robotics and coding through play-based, hands-on missions.</p>
-          <ul>
-            <li>LEGO Spike & EV3 robotics challenges</li>
-            <li>Scratch coding fundamentals</li>
-            <li>First steps into AI tools</li>
-            <li>Fun team challenges & innovation games</li>
-          </ul>
-        </div>
-
-        <div class="track-card">
-          <span class="popular-tag">Most Popular</span>
-          
-          <span class="age-tag">Ages 10–13 · Builders</span>
-          <h3>Builders</h3>
-          <p style="color:#666;font-size:0.92rem;margin-top:6px;">Where curiosity becomes capability — building, coding, and creating with intention.</p>
-          <ul>
-            <li>LEGO Spike, EV3 & VEX IQ robotics</li>
-            <li>Scratch → Python introduction</li>
-            <li>AI tools & prompt basics</li>
-            <li>Digital safety fundamentals</li>
-          </ul>
-        </div>
-
-        <div class="track-card">
-          
-          <span class="age-tag">Ages 14–17 · Innovators</span>
-          <h3>Innovators</h3>
-          <p style="color:#666;font-size:0.92rem;margin-top:6px;">Advanced, real-world systems thinking for the next generation of engineers.</p>
-          <ul>
-            <li>Arduino & IoT systems</li>
-            <li>VEX robotics (EXP/V5)</li>
-            <li>Python programming</li>
-            <li>AI prompt engineering & automation</li>
-            <li>Cybersecurity & ethical hacking basics</li>
-          </ul>
-        </div>
+        <details class="accordion-item">
+          <summary>Inter-Schools Innovative Showcase</summary>
+          <div class="accordion-body">Students get to showcase their projects and network with kids from other schools
+            at the end-of-programme showcase.</div>
+        </details>
       </div>
     </div>
   </section>
 
-  <!-- BENEFITS & PRICING -->
+  <!-- PRICING / BENEFITS / PAYMENT -->
   <section id="bootcamp-pricing">
     <div class="section-inner">
-      <h2 class="section-title">Benefits & Pricing</h2>
-      <p class="section-subtitle">Transparent pricing, premium inclusions — no hidden costs.</p>
+      <h2 class="section-title">Fees, Benefits & Payment</h2>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Track</th>
-            <th>Age</th>
-            <th>Weekly Rate</th>
-            <th>Full 3-Week Rate (~15% savings)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Explorers</td>
-            <td>6–9</td>
-            <td>KES 4,500/week</td>
-            <td>KES 11,500</td>
-          </tr>
-          <tr class="popular-row">
-            <td>Builders <span class="popular-pill">Most Popular</span></td>
-            <td>10–13</td>
-            <td>KES 5,500/week</td>
-            <td>KES 14,000</td>
-          </tr>
-          <tr>
-            <td>Innovators</td>
-            <td>14–17</td>
-            <td>KES 6,500/week</td>
-            <td>KES 16,500</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="included-box">
-        <strong>All fees include:</strong> certificate of completion, progress report &
-        project portfolio, official i-CODE Bootcamp T-shirt, full participation in the Mega
-        Innovation Showcase, all learning materials and equipment use, and a personalised
-        placement report with a September term recommendation.
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Package</th>
+              <th>Fee</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Explorers(6-9 Years)</td>
+              <td>KES 11,500</td>
+            </tr>
+            <tr class="popular-row">
+              <td>Builders(10-13 Years) &ndash; <span class="popular-pill">Most Popular</span></td>
+              <td>KES 14,000</td>
+            </tr>
+            <tr>
+              <td>Innovators(14-17 years)</td>
+              <td>KES 16,500</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
-      <p class="pricing-note">Sibling discounts and bring-a-friend credits available — contact us for details.</p>
+      <div class="accordion" style="margin-top:30px;">
+        <details class="accordion-item">
+          <summary>What's included?</summary>
+          <div class="accordion-body">
+            <ul>
+              <li>Hands-on learning </li>
+              <li>Mentorship, progress report &
+              project portfolio </li>
+              <li>Certificate on completion</li>
+              <li>All learning materials and equipment use</li>
+              <li>Networking with kids from other schools</li>
+              <li>Full participation in the Mega
+              Innovation Showcase</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="accordion-item">
+          <summary>How do I pay?</summary>
+          <div class="accordion-body">
+            All payments are made to <strong>Icode Robotics &amp; AI Lab only</strong>.
+            <div class="payment-box">
+              <strong>Option 1 &ndash; M-Pesa</strong><br>
+              Paybill: 600950 &nbsp;|&nbsp; Account Number: 0723987838<br>
+              Send confirmation (with child's name) to info@icodeailab.com or call +254 141 054 939
+            </div>
+            <!-- <div class="payment-box">
+              <strong>Option 2 &ndash; Standard Chartered Bank</strong><br>
+              Account Number: 00099998888777<br>
+              Indicate course name "Kids Coding Bootcamp" and child's name on the slip
+            </div> -->
+          </div>
+        </details>
+      </div>
     </div>
   </section>
 
-  <!-- PAYMENT DETAILS -->
-  <!--<section id="bootcamp-payment">-->
-  <!--  <div class="section-inner">-->
-  <!--    <h2 class="section-title">Payment Details</h2>-->
-  <!--    <div class="payment-box">-->
-  <!--      <p style="margin:0 0 10px;"><strong>Payment options to be confirmed.</strong></p>-->
-  <!--      <p style="margin:0;">-->
-  <!--        Send your payment confirmation (including your child's name) to-->
-  <!--        <a href="mailto:info@icodeailab.com">info@icodeailab.com</a>-->
-  <!--        or call-->
-  <!--        <a href="tel:+254141054939">+254 14 1054939</a>.-->
-  <!--      </p>-->
-  <!--    </div>-->
-  <!--  </div>-->
-  <!--</section>-->
-
-  <!-- THE PATHWAY -->
-  <section id="bootcamp-pathway">
+  <!-- APPLICATION FORM -->
+  <section id="register">
     <div class="section-inner">
-      <h2 class="section-title">Beyond the Bootcamp — The Future Innovator Pathway</h2>
-      <p class="section-subtitle">What you're really investing in — a journey, not just a holiday.</p>
+      <h2 class="section-title">Application Form</h2>
+      <p class="section-subtitle">Fields marked <span class="req">*</span> are required.</p>
 
-      <div class="pathway-flow">
-        <div class="pathway-step">Summer Bootcamp</div>
-        <div class="pathway-arrow">→</div>
-        <div class="pathway-step">After-School / Weekend Term</div>
-        <div class="pathway-arrow">→</div>
-        <div class="pathway-step">Advanced Robotics / AI</div>
-        <div class="pathway-arrow">→</div>
-        <div class="pathway-step">Innovation Competition</div>
-        <div class="pathway-arrow">→</div>
-        <div class="pathway-step">Internship / Mentorship</div>
+      <div class="form-card">
+        <div id="form-msg" class="form-msg"></div>
+
+        <form id="bootcamp-form">
+          {% csrf_token %}
+
+          <div class="form-section-label">Student Details</div>
+
+          <div class="form-group full">
+            <label>Email <span class="req">*</span></label>
+            <input type="email" name="email" required>
+          </div>
+
+          <div class="form-group full">
+            <label>Name of Student <span class="req">*</span></label>
+            <div class="form-row" style="margin-bottom:0;">
+              <input type="text" name="student_firstname" placeholder="First name" required>
+              <input type="text" name="student_lastname" placeholder="Last name" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Age <span class="req">*</span></label>
+              <input type="number" name="age" min="6" max="18" required>
+            </div>
+            <div class="form-group">
+              <label>Phone Number <span class="req">*</span></label>
+              <input type="tel" name="phone" required>
+            </div>
+          </div>
+
+          <div class="form-section-label">Enrollment & Payment</div>
+
+          <div class="form-group full">
+            <label>Enroll Child For <span class="req">*</span></label>
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="track" value="Explorers" required><span
+                  class="track-icon">🐣</span> Explorers (6-9 Years)</label>
+              <label class="radio-option"><input type="radio" name="track" value="Builders" required><span
+                  class="track-icon">💻</span> Builders (10-13 Years)</label>
+              <label class="radio-option"><input type="radio" name="track" value="Innovators" required><span
+                  class="track-icon">🚀</span> Innovators (14-17 Years)</label>
+            </div>
+            
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Total Amount Paid (0 if not paid) <span class="req">*</span></label>
+              <input type="number" name="amount_paid" min="0" required>
+            </div>
+            <div class="form-group">
+              <label>M-PESA / Bank Transaction Code (if paid) <span class="req">*</span></label>
+              <input type="text" name="transaction_code">
+            </div>
+          </div>
+
+          <div class="form-group full">
+            <label>How did you hear about the course? <span class="req">*</span></label>
+            <select name="source" required>
+              <option value="">Select an option</option>
+              <option value="Social media">Social media (Facebook, Instagram, Twitter, etc.)</option>
+              <option value="Website">Website</option>
+              <option value="Referral">Referral</option>
+            </select>
+          </div>
+
+          <div class="form-section-label">Parent / Guardian Details</div>
+
+          <div class="form-group full">
+            <label>Parent's / Guardian's Name <span class="req">*</span></label>
+            <div class="form-row" style="margin-bottom:0;">
+              <input type="text" name="parent_firstname" placeholder="First name" required>
+              <input type="text" name="parent_lastname" placeholder="Last name" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Parent Contact Phone Number <span class="req">*</span></label>
+              <input type="tel" name="parent_phone" required>
+            </div>
+            <div class="form-group">
+              <label>Additional Contact Person (optional)</label>
+              <input type="text" name="additional_contact">
+            </div>
+          </div>
+
+          <div class="form-section-label">Health & Consent</div>
+
+          <div class="form-group full">
+            <label>Does your child have any Health Conditions? <span class="req">*</span></label>
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="has_allergies" value="Yes" required> Yes</label>
+              <label class="radio-option"><input type="radio" name="has_allergies" value="No" required> No</label>
+            </div>
+            <div class="conditional-field" id="allergy-detail-wrap">
+              <label>If yes, kindly elaborate</label>
+              <textarea name="allergy_detail" rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="form-group full">
+            <div class="checkbox-group">
+              <label class="checkbox-option">
+                <input type="checkbox" name="privacy_policy" required>
+                I have read and agreed to the <a href="https://strathmore.edu/privacy-policy/" target="_blank"
+                  rel="noopener">Data Privacy Policy</a> <span class="req">*</span>
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary-icode">Submit Application</button>
+        </form>
       </div>
-
-      <p class="pathway-note">
-        This is the front door to a multi-year journey with i-CODE — building real skills,
-        a strong portfolio, and a clear path toward advanced programmes and recognition.
-      </p>
     </div>
   </section>
 
-  <!-- FINAL CTA / ENROLL -->
+  <!-- FINAL CTA -->
   <section id="bootcamp-cta">
     <div class="section-inner">
-      <h2>Enroll Now</h2>
-      <p>
-        Spaces are limited to 15 students per class to preserve our premium mentor-to-student ratio.
-        Secure your child's seat in the i-CODE Summer Holiday Bootcamp 2026 today.
-      </p>
-
-      <div class="cta-buttons">
-        <a href="#" class="btn-primary-icode" data-bs-toggle="modal" data-bs-target="#enrollModal">Enroll Now</a>
+      <h2>Questions before you register?</h2>
+      <p>Reach out and our team will help you pick the right track and boot camp dates for your child.</p>
+      <div class="contact-info">
+        <a href="tel:+254141054939">+254 14 1054939<</a>
+        <a href="mailto:info@icodeailab.com">info@icodeailab.com</a>
       </div>
-
-      <!--<div class="contact-info">-->
-      <!--  <span>One Stop Arcade, off Langata Road, Karen, Nairobi</span>-->
-      <!--  <a href="tel:+254141054939">+254 14 1054939</a>-->
-      <!--  <a href="mailto:info@icodeailab.com">info@icodeailab.com</a>-->
-      <!--  <a href="https://icodeailab.com/" target="_blank">icodeailab.com</a>-->
-      <!--</div>-->
     </div>
   </section>
 
 </div>
+{% endblock %}
 
-<!-- ═══════════════════════════════════════════
-     WHATSAPP BUTTON
-═══════════════════════════════════════════ -->
-<a href="https://wa.me/254141054939" 
-   class="whatsapp-float" 
-   target="_blank" 
-   rel="noopener noreferrer" 
-   aria-label="Chat on WhatsApp">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" />
-</a>
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var form = document.getElementById('bootcamp-form');
+    var msg = document.getElementById('form-msg');
+    var allergyRadios = form.querySelectorAll('input[name="has_allergies"]');
+    var allergyWrap = document.getElementById('allergy-detail-wrap');
 
-{% include "partials/enrollment_modal.html" %}
+    allergyRadios.forEach(function (r) {
+      r.addEventListener('change', function () {
+        allergyWrap.classList.toggle('show', r.value === 'Yes' && r.checked);
+      });
+    });
+
+    // ---- HubSpot config: replace with your real portal ID and form GUID ----
+    var HUBSPOT_PORTAL_ID = '{{ hubspot_portal_id|default:"YOUR_PORTAL_ID" }}';
+    var HUBSPOT_FORM_GUID = '{{ hubspot_form_guid|default:"YOUR_FORM_GUID" }}';
+    var HUBSPOT_ENDPOINT = 'https://api.hsforms.com/submissions/v3/integration/submit/' +
+      HUBSPOT_PORTAL_ID + '/' + HUBSPOT_FORM_GUID;
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      msg.className = 'form-msg';
+      msg.textContent = '';
+
+      var submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      var data = new FormData(form);
+
+      // Map Django form fields -> HubSpot internal property names.
+      // Create matching custom properties in HubSpot first (or rename these to existing ones).
+      var fields = [
+        { name: 'email', value: data.get('email') },
+        { name: 'student_firstname', value: data.get('student_firstname') },
+        { name: 'student_lastname', value: data.get('student_lastname') },
+        { name: 'student_age', value: data.get('age') },
+        { name: 'phone', value: data.get('phone') },
+        { name: 'enrollment_track', value: data.get('track') },
+        { name: 'amount_paid', value: data.get('amount_paid') },
+        { name: 'transaction_code', value: data.get('transaction_code') },
+        { name: 'lead_source', value: data.get('source') },
+        { name: 'parent_firstname', value: data.get('parent_firstname') },
+        { name: 'parent_lastname', value: data.get('parent_lastname') },
+        { name: 'parent_phone', value: data.get('parent_phone') },
+        { name: 'additional_contact', value: data.get('additional_contact') || '' },
+        { name: 'has_food_allergies', value: data.get('has_allergies') },
+        { name: 'allergy_detail', value: data.get('allergy_detail') || '' },
+        { name: 'data_privacy_consent', value: data.get('privacy_policy') ? 'true' : 'false' }
+      ];
+
+      var payload = {
+        fields: fields,
+        context: {
+          pageUri: window.location.href,
+          pageName: document.title
+        },
+        legalConsentOptions: {
+          consent: {
+            consentToProcess: true,
+            text: "I have read and agreed to the Data Privacy Policy",
+            communications: []
+          }
+        }
+      };
+
+      fetch(HUBSPOT_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error('HubSpot submission failed');
+          return res.json();
+        })
+        .then(function () {
+          msg.className = 'form-msg success';
+          msg.textContent = 'Thank you! Your application has been submitted successfully.';
+          form.reset();
+          allergyWrap.classList.remove('show');
+        })
+        .catch(function (err) {
+          msg.className = 'form-msg error';
+          msg.textContent = 'Something went wrong submitting your application. Please try again or contact ilabee@strathmore.edu.';
+          console.error(err);
+        })
+        .finally(function () {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit Application';
+          msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    });
+  });
+</script>
 {% endblock %}
