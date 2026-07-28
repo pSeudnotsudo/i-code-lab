@@ -86,6 +86,7 @@ urlpatterns = [
     
     #summer-bootcamp
     path('summer-bootcamp/', views.bootcamp_2026, name='bootcamp_2026'),
+    path('submit-bootcamp-form/', views.submit_bootcamp_form, name='submit_bootcamp_form'),
 
     
     # PUBLIC URLS

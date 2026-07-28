@@ -87,79 +87,7 @@
     color: var(--site-teal);
   }
 
-  /* HERO (with poster) */
-  #bootcamp-hero {
-    background: linear-gradient(135deg, var(--site-header-from), var(--deep-navy));
-    color: #fff;
-    padding: 80px 20px;
-  }
-
-  #bootcamp-hero .hero-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: 50px;
-    align-items: center;
-  }
-
-  #bootcamp-hero .hero-text {
-    text-align: left;
-  }
-
-  #bootcamp-hero .badge {
-    display: inline-block;
-    background: var(--site-teal);
-    color: #0d2b4e;
-    font-weight: 600;
-    padding: 6px 18px;
-    border-radius: 30px;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-
-  #bootcamp-hero .brand-label {
-    color: var(--site-teal);
-    font-weight: 700;
-    letter-spacing: 2px;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    display: block;
-  }
-
-  #bootcamp-hero h1 {
-    font-size: 2.6rem;
-    margin-bottom: 10px;
-    line-height: 1.2;
-  }
-
-  #bootcamp-hero .tagline {
-    font-size: 1.05rem;
-    color: var(--site-teal);
-    font-weight: 600;
-    margin: 12px 0 18px;
-    font-style: italic;
-  }
-
-  #bootcamp-hero p {
-    max-width: 520px;
-    margin: 0 0 28px;
-    font-size: 1.02rem;
-    opacity: 0.92;
-    line-height: 1.7;
-  }
-
-  #bootcamp-hero .btn-group {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-  }
-
-  /* PRIMARY BUTTON — now shared across hero, form, and final CTA */
-  #bootcamp-hero .btn-primary-icode,
+  
   #bootcamp-form .btn-primary-icode,
   #bootcamp-cta .btn-primary-icode {
     background: var(--site-teal);
@@ -175,7 +103,6 @@
     font-size: 1rem;
   }
 
-  #bootcamp-hero .btn-primary-icode:hover,
   #bootcamp-form .btn-primary-icode:hover,
   #bootcamp-cta .btn-primary-icode:hover {
     transform: translateY(-2px);
@@ -183,50 +110,77 @@
     color: #0d2b4e;
   }
 
-  #bootcamp-hero .hero-poster {
+ 
+  #bootcamp-hero {
+    padding: 0;
+    background: var(--site-header-from);
+  }
+
+  #bootcamp-hero .hero-carousel {
     position: relative;
-  }
-
-  #bootcamp-hero .hero-poster img {
     width: 100%;
-    border-radius: 16px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
-    border: 3px solid rgba(255, 255, 255, 0.15);
-    display: block;
+    height: 70vh;
+    min-height: 380px;
+    max-height: 640px;
+    overflow: hidden;
   }
 
-  #bootcamp-hero .hero-poster::before {
-    content: "";
+  #bootcamp-hero .hero-carousel img {
     position: absolute;
-    inset: -14px;
-    border: 2px dashed var(--site-teal);
-    border-radius: 20px;
-    opacity: 0.5;
-    pointer-events: none;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0;
+    animation: hero-carousel-fade 10s ease-in-out infinite;
   }
 
-  @media (max-width: 800px) {
-    #bootcamp-hero .hero-inner {
-      grid-template-columns: 1fr;
-      text-align: center;
+  #bootcamp-hero .hero-carousel img:nth-child(1) {
+    animation-delay: 0s;
+  }
+
+  #bootcamp-hero .hero-carousel img:nth-child(2) {
+    animation-delay: 5s;
+  }
+
+  @keyframes hero-carousel-fade {
+    0% {
+      opacity: 0;
     }
 
-    #bootcamp-hero .hero-text {
-      text-align: center;
+    5% {
+      opacity: 1;
     }
 
-    #bootcamp-hero p {
-      margin-left: auto;
-      margin-right: auto;
+    45% {
+      opacity: 1;
     }
 
-    #bootcamp-hero .btn-group {
-      justify-content: center;
+    50% {
+      opacity: 0;
     }
 
-    #bootcamp-hero .hero-poster {
-      max-width: 380px;
-      margin: 0 auto;
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #bootcamp-hero .hero-carousel img {
+      animation: none;
+      opacity: 0;
+    }
+
+    #bootcamp-hero .hero-carousel img:first-child {
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 640px) {
+    #bootcamp-hero .hero-carousel {
+      height: 50vh;
+      min-height: 280px;
     }
   }
 
@@ -582,36 +536,32 @@
     color: var(--deep-navy);
   }
 
-  /* FORM — full-bleed flat gray band, edge-to-edge, no boxed card */
+
   #register {
     background: #f7f9fc;
     width: 100vw;
     margin-left: calc(50% - 50vw);
     position: relative;
     overflow: hidden;
-  }
 
-  #register::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 5px;
-    background: linear-gradient(90deg, var(--site-teal), var(--deep-navy));
   }
 
   #bootcamp-form .form-card {
     box-sizing: border-box;
     width: 100%;
-    max-width: 900px;
+    max-width: 760px;
     margin: 0 auto;
-    padding: 0;
+    padding: 40px 44px;
     position: relative;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 16px 44px rgba(31, 58, 110, 0.14), 0 2px 8px rgba(31, 58, 110, 0.06);
+    border: 1px solid #eef1f7;
   }
 
   #bootcamp-form form {
     width: 100%;
+
   }
 
   #bootcamp-form .form-row {
@@ -892,7 +842,8 @@
     }
 
     #bootcamp-form .form-card {
-      padding: 0;
+      padding: 28px 20px;
+      border-radius: 14px;
     }
 
     #bootcamp-page .anchor-nav .section-inner {
@@ -918,23 +869,9 @@
 
   <!-- HERO -->
   <section id="bootcamp-hero">
-    <div class="hero-inner">
-      <div class="hero-text">
-        <span class="brand-label">I-CODE Robotics &amp; AI Lab</span>
-        <div class="badge">Ages 6 &ndash; 17</div>
-        <h1>Summer Holiday Bootcamp 2026</h1>
-        <p class="tagline">Invent the Code &bull; Ignite the Future &bull;</p>
-        <p>Kenya's Premium Robotics & AI Lab is opening its doors this holiday for an intensive,
-        project-based bootcamp in Robotics, Coding, AI, and Cybersecurity:
-        for ages 6 - 17.</p>
-        <div class="btn-group">
-          <a href="#register" class="btn-primary-icode">Register Now</a>
-        </div>
-      </div>
-      <div class="hero-poster">
-        <img src="{% static 'images/i-code-classroom.JPG' %}" alt="Kids and Teens Coding Bootcamp poster"
-          loading="eager">
-      </div>
+    <div class="hero-carousel">
+      <img src="{% static 'images/hero-bootcamp.png' %}" alt="I-CODE Robotics & AI Lab Summer Bootcamp" loading="eager">
+      <img src="{% static 'images/hero-bootcamp.png' %}" alt="I-CODE Robotics & AI Lab Summer Bootcamp" loading="lazy">
     </div>
   </section>
 
@@ -954,7 +891,6 @@
         <div class="fact-label">Weeks Classes Categories</div>
       </div>
       <div>
-        <!-- <div class="fact-num">13 July -21 August</div> -->
         <div class="fact-num">2026</div>
         <div class="fact-label">2026</div>
       </div>
@@ -966,12 +902,12 @@
     <div class="section-inner">
       <h2 class="section-title">About the Programme</h2>
       <p class="section-subtitle">Over 3 action-packed weeks, your child will join one of three innovation tracks —
-      Explorers, Builders, or Innovators — building real robots, writing real code, and
-      exploring real AI tools, six hours a day. It all leads to Showcase Day, where every
-      student presents their own project to family, mentors, and guests at our Mega Innovation
-      Showcase. Every child leaves with a certificate of completion, a project portfolio, a
-      personalised placement report, and a clear recommendation for their next step on the
-      Future Innovator Pathway.</p>
+        Explorers, Builders, or Innovators — building real robots, writing real code, and
+        exploring real AI tools, six hours a day. It all leads to Showcase Day, where every
+        student presents their own project to family, mentors, and guests at our Mega Innovation
+        Showcase. Every child leaves with a certificate of completion, a project portfolio, a
+        personalised placement report, and a clear recommendation for their next step on the
+        Future Innovator Pathway.</p>
 
       <div class="accordion">
         <details class="accordion-item" open>
@@ -1101,12 +1037,12 @@
             <ul>
               <li>Hands-on learning </li>
               <li>Mentorship, progress report &
-              project portfolio </li>
+                project portfolio </li>
               <li>Certificate on completion</li>
               <li>All learning materials and equipment use</li>
               <li>Networking with kids from other schools</li>
               <li>Full participation in the Mega
-              Innovation Showcase</li>
+                Innovation Showcase</li>
             </ul>
           </div>
         </details>
@@ -1120,11 +1056,6 @@
               Paybill: 600950 &nbsp;|&nbsp; Account Number: 0723987838<br>
               Send confirmation (with child's name) to info@icodeailab.com or call +254 141 054 939
             </div>
-            <!-- <div class="payment-box">
-              <strong>Option 2 &ndash; Standard Chartered Bank</strong><br>
-              Account Number: 00099998888777<br>
-              Indicate course name "Kids Coding Bootcamp" and child's name on the slip
-            </div> -->
           </div>
         </details>
       </div>
@@ -1145,9 +1076,20 @@
 
           <div class="form-section-label">Student Details</div>
 
-          <div class="form-group full">
-            <label>Email <span class="req">*</span></label>
-            <input type="email" name="email" required>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Email <span class="req">*</span></label>
+              <input type="email" name="email" required>
+            </div>
+            <div class="form-group">
+              <label>How did you hear about the course? <span class="req">*</span></label>
+              <select name="source" required>
+                <option value="">Select an option</option>
+                <option value="Social media">Social media (Facebook, Instagram, Twitter, etc.)</option>
+                <option value="Website">Website</option>
+                <option value="Referral">Referral</option>
+              </select>
+            </div>
           </div>
 
           <div class="form-group full">
@@ -1181,7 +1123,7 @@
               <label class="radio-option"><input type="radio" name="track" value="Innovators" required><span
                   class="track-icon"><i class="bi bi-rocket-takeoff"></i></span> Innovators (14-17 Years)</label>
             </div>
-            
+
           </div>
 
           <div class="form-row">
@@ -1193,16 +1135,6 @@
               <label>M-PESA / Bank Transaction Code (if paid) <span class="req">*</span></label>
               <input type="text" name="transaction_code">
             </div>
-          </div>
-
-          <div class="form-group full">
-            <label>How did you hear about the course? <span class="req">*</span></label>
-            <select name="source" required>
-              <option value="">Select an option</option>
-              <option value="Social media">Social media (Facebook, Instagram, Twitter, etc.)</option>
-              <option value="Website">Website</option>
-              <option value="Referral">Referral</option>
-            </select>
           </div>
 
           <div class="form-section-label">Parent / Guardian Details</div>
@@ -1244,7 +1176,7 @@
             <div class="checkbox-group">
               <label class="checkbox-option">
                 <input type="checkbox" name="privacy_policy" required>
-                I have read and agreed to the <a href="https://strathmore.edu/privacy-policy/" target="_blank"
+                I have read and agreed to the <a href="" target="_blank"
                   rel="noopener">Data Privacy Policy</a> <span class="req">*</span>
               </label>
             </div>
@@ -1262,7 +1194,7 @@
       <h2>Questions before you register?</h2>
       <p>Reach out and our team will help you pick the right track and boot camp dates for your child.</p>
       <div class="contact-info">
-        <a href="tel:+254141054939">+254 14 1054939<</a>
+        <a href="tel:+254141054939">+254 14 1054939</a>
         <a href="mailto:info@icodeailab.com">info@icodeailab.com</a>
       </div>
     </div>
@@ -1271,13 +1203,27 @@
 </div>
 {% endblock %}
 
-{% block extra_js %}
+{% block scripts %}
 <script>
+  console.log('BOOTCAMP SCRIPT TAG LOADED');
+
   document.addEventListener('DOMContentLoaded', function () {
+    console.log('DOMContentLoaded fired');
+
     var form = document.getElementById('bootcamp-form');
     var msg = document.getElementById('form-msg');
+    console.log('form element:', form);
+    console.log('msg element:', msg);
+
+    if (!form) {
+      console.error('STOP: #bootcamp-form not found in the DOM. Check for duplicate IDs or wrong template rendering.');
+      return;
+    }
+
     var allergyRadios = form.querySelectorAll('input[name="has_allergies"]');
     var allergyWrap = document.getElementById('allergy-detail-wrap');
+    console.log('allergyRadios found:', allergyRadios.length);
+    console.log('allergyWrap element:', allergyWrap);
 
     allergyRadios.forEach(function (r) {
       r.addEventListener('change', function () {
@@ -1285,14 +1231,13 @@
       });
     });
 
-    // ---- HubSpot config: replace with your real portal ID and form GUID ----
-    var HUBSPOT_PORTAL_ID = '{{ hubspot_portal_id|default:"YOUR_PORTAL_ID" }}';
-    var HUBSPOT_FORM_GUID = '{{ hubspot_form_guid|default:"YOUR_FORM_GUID" }}';
-    var HUBSPOT_ENDPOINT = 'https://api.hsforms.com/submissions/v3/integration/submit/' +
-      HUBSPOT_PORTAL_ID + '/' + HUBSPOT_FORM_GUID;
+    console.log('Attaching submit listener to form:', form);
 
     form.addEventListener('submit', function (e) {
+      console.log('SUBMIT EVENT FIRED');
       e.preventDefault();
+      console.log('preventDefault called');
+
       msg.className = 'form-msg';
       msg.textContent = '';
 
@@ -1301,62 +1246,32 @@
       submitBtn.textContent = 'Submitting...';
 
       var data = new FormData(form);
+      console.log('FormData built, csrf token present:', !!data.get('csrfmiddlewaretoken'));
 
-      // Map Django form fields -> HubSpot internal property names.
-      // Create matching custom properties in HubSpot first (or rename these to existing ones).
-      var fields = [
-        { name: 'email', value: data.get('email') },
-        { name: 'student_firstname', value: data.get('student_firstname') },
-        { name: 'student_lastname', value: data.get('student_lastname') },
-        { name: 'student_age', value: data.get('age') },
-        { name: 'phone', value: data.get('phone') },
-        { name: 'enrollment_track', value: data.get('track') },
-        { name: 'amount_paid', value: data.get('amount_paid') },
-        { name: 'transaction_code', value: data.get('transaction_code') },
-        { name: 'lead_source', value: data.get('source') },
-        { name: 'parent_firstname', value: data.get('parent_firstname') },
-        { name: 'parent_lastname', value: data.get('parent_lastname') },
-        { name: 'parent_phone', value: data.get('parent_phone') },
-        { name: 'additional_contact', value: data.get('additional_contact') || '' },
-        { name: 'has_food_allergies', value: data.get('has_allergies') },
-        { name: 'allergy_detail', value: data.get('allergy_detail') || '' },
-        { name: 'data_privacy_consent', value: data.get('privacy_policy') ? 'true' : 'false' }
-      ];
+      var fetchUrl = "{% url 'submit_bootcamp_form' %}";
+      console.log('Fetching URL:', fetchUrl);
 
-      var payload = {
-        fields: fields,
-        context: {
-          pageUri: window.location.href,
-          pageName: document.title
-        },
-        legalConsentOptions: {
-          consent: {
-            consentToProcess: true,
-            text: "I have read and agreed to the Data Privacy Policy",
-            communications: []
-          }
-        }
-      };
-
-      fetch(HUBSPOT_ENDPOINT, {
+      fetch(fetchUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        headers: { 'X-CSRFToken': data.get('csrfmiddlewaretoken') },
+        body: data
       })
         .then(function (res) {
-          if (!res.ok) throw new Error('HubSpot submission failed');
+          console.log('Response status:', res.status);
           return res.json();
         })
-        .then(function () {
+        .then(function (result) {
+          console.log('Response body:', result);
+          if (!result.success) throw new Error('Submission failed');
           msg.className = 'form-msg success';
           msg.textContent = 'Thank you! Your application has been submitted successfully.';
           form.reset();
           allergyWrap.classList.remove('show');
         })
         .catch(function (err) {
+          console.error('CAUGHT ERROR:', err);
           msg.className = 'form-msg error';
-          msg.textContent = 'Something went wrong submitting your application. Please try again or contact ilabee@strathmore.edu.';
-          console.error(err);
+          msg.textContent = 'Something went wrong submitting your application. Please try again or contact Icode Admin.';
         })
         .finally(function () {
           submitBtn.disabled = false;
@@ -1364,6 +1279,8 @@
           msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
     });
+
+    console.log('Submit listener attached successfully');
   });
 </script>
 {% endblock %}

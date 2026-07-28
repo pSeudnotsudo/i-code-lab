@@ -36,6 +36,8 @@ from django.db import transaction
 from django.http import FileResponse
 from django.conf import settings
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_protect
+import requests
 
 
 
@@ -2136,6 +2138,54 @@ def _validate(member):
     if member.stripe not in dict(TeamMember.STRIPE_CHOICES):
         errors.append('Invalid stripe colour.')
     return errors
-    
+
+
+# SUBMIT BOOTCAMP FORM
+@csrf_protect
+@require_POST
+def submit_bootcamp_form(request):
+    data = request.POST
+
+    payload = {
+        "properties": {
+            "email": data.get("email"),
+            "firstname": data.get("student_firstname"),
+            "lastname": data.get("student_lastname"),
+            "phone": data.get("phone"),
+            "enrollment_track": data.get("track"),
+            "student_age": data.get("age"),
+            "lead_source": data.get("source"),
+            "amount_paid": data.get("amount_paid"),
+            "transaction_code": data.get("transaction_code"),
+            "parent_firstname": data.get("parent_firstname"),
+            "parent_lastname": data.get("parent_lastname"),
+            "parent_phone": data.get("parent_phone"),
+            "has_food_allergies": data.get("has_allergies"),
+            "allergy_detail": data.get("allergy_detail", ""),
+        }
+    }
+
+    headers = {
+        "Authorization": f"Bearer {settings.HUBSPOT_ACCESS_TOKEN}",
+        "Content-Type": "application/json",
+    }
+
+    try:
+        resp = requests.post(
+            "https://api.hubapi.com/crm/v3/objects/contacts",
+            json=payload,
+            headers=headers,
+            timeout=10,
+        )
+    except requests.RequestException as e:
+        return JsonResponse({"success": False, "error": str(e)}, status=502)
+
+    if resp.status_code in (200, 201):
+        return JsonResponse({"success": True})
+
+    return JsonResponse(
+        {"success": False, "error": resp.json()},
+        status=resp.status_code
+    )
 
     
