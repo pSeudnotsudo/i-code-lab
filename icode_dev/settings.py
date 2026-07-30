@@ -157,6 +157,8 @@ DEFAULT_FROM_EMAIL  = f'I-Code <{config("EMAIL_HOST_USER")}>'
 HUBSPOT_ACCESS_TOKEN = config('HUBSPOT_ACCESS_TOKEN')
 HUBSPOT_PORTAL_ID = config('HUBSPOT_PORTAL_ID')
 
+HUBSPOT_FORM_GUID = config('HUBSPOT_FORM_GUID')
+
 
 
 # Static files (CSS, JavaScript, Images)

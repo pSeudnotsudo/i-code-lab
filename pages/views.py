@@ -2146,46 +2146,93 @@ def _validate(member):
 def submit_bootcamp_form(request):
     data = request.POST
 
-    payload = {
-        "properties": {
-            "email": data.get("email"),
-            "firstname": data.get("student_firstname"),
-            "lastname": data.get("student_lastname"),
-            "phone": data.get("phone"),
-            "enrollment_track": data.get("track"),
-            "student_age": data.get("age"),
-            "lead_source": data.get("source"),
-            "amount_paid": data.get("amount_paid"),
-            "transaction_code": data.get("transaction_code"),
-            "parent_firstname": data.get("parent_firstname"),
-            "parent_lastname": data.get("parent_lastname"),
-            "parent_phone": data.get("parent_phone"),
-            "has_food_allergies": data.get("has_allergies"),
-            "allergy_detail": data.get("allergy_detail", ""),
-        }
-    }
+    portal_id = settings.HUBSPOT_PORTAL_ID
+    form_guid = settings.HUBSPOT_FORM_GUID
 
-    headers = {
-        "Authorization": f"Bearer {settings.HUBSPOT_ACCESS_TOKEN}",
-        "Content-Type": "application/json",
+    if not portal_id or not form_guid:
+        return JsonResponse(
+            {"success": False, "error": "HubSpot form credentials not configured"},
+            status=500,
+        )
+
+    url = f"https://api-eu1.hsforms.com/submissions/v3/integration/submit/{portal_id}/{form_guid}"
+
+    payload = {
+        "fields": [
+            {"name": "email", "value": data.get("email")},
+            {"name": "phone", "value": data.get("parent_phone")},
+            {"name": "firstname", "value": data.get("student_firstname")},
+            {"name": "lastname", "value": data.get("student_lastname")},
+            {"name": "parent_firstname", "value": data.get("parent_firstname")},
+            {"name": "parent_lastname", "value": data.get("parent_lastname")},
+            {"name": "age", "value": data.get("age")},
+            {"name": "lead_status", "value": data.get("source")},
+            {"name": "enrollment_track", "value": data.get("track")},
+            {"name": "amount_paid", "value": data.get("amount_paid")},
+            {"name": "transaction_code", "value": data.get("transaction_code")},
+            
+        ],
+        "context": {
+            "pageUri": request.build_absolute_uri(),
+            "pageName": "Bootcamp Application Form",
+        },
     }
 
     try:
-        resp = requests.post(
-            "https://api.hubapi.com/crm/v3/objects/contacts",
-            json=payload,
-            headers=headers,
-            timeout=10,
-        )
+        resp = requests.post(url, json=payload, timeout=10)
     except requests.RequestException as e:
         return JsonResponse({"success": False, "error": str(e)}, status=502)
 
-    if resp.status_code in (200, 201):
+    if resp.status_code in (200, 204):
         return JsonResponse({"success": True})
 
-    return JsonResponse(
-        {"success": False, "error": resp.json()},
-        status=resp.status_code
-    )
+    return JsonResponse({"success": False, "error": resp.text}, status=resp.status_code)
+
+
+# def submit_bootcamp_form(request):
+#     data = request.POST
+
+#     payload = {
+#         "properties": {
+#             "email": data.get("email"),
+#             "firstname": data.get("student_firstname"),
+#             "lastname": data.get("student_lastname"),
+#             "phone": data.get("phone"),
+#             "enrollment_track": data.get("track"),
+#             "student_age": data.get("age"),
+#             "lead_source": data.get("source"),
+#             "amount_paid": data.get("amount_paid"),
+#             "transaction_code": data.get("transaction_code"),
+#             "parent_firstname": data.get("parent_firstname"),
+#             "parent_lastname": data.get("parent_lastname"),
+#             "parent_phone": data.get("parent_phone"),
+#             "health_condition": data.get("health_condition"),
+#             "health_condition_detail": data.get("health_condition_detail", ""),
+#         }
+#     }
+
+#     headers = {
+#         "Authorization": f"Bearer {settings.HUBSPOT_ACCESS_TOKEN}",
+#         "Content-Type": "application/json",
+#     }
+
+#     try:
+#         resp = requests.post(
+            
+#             "https://api.hubapi.com/crm/objects/2026-03/{objectType}",
+#             json=payload,
+#             headers=headers,
+#             timeout=10,
+#         )
+#     except requests.RequestException as e:
+#         return JsonResponse({"success": False, "error": str(e)}, status=502)
+
+#     if resp.status_code in (200, 201):
+#         return JsonResponse({"success": True})
+
+#     return JsonResponse(
+#         {"success": False, "error": resp.json()},
+#         status=resp.status_code
+#     )
 
     
