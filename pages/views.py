@@ -38,6 +38,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
 import requests
+from django.views.decorators.http import require_http_methods
 
 
 
@@ -2189,50 +2190,95 @@ def submit_bootcamp_form(request):
     return JsonResponse({"success": False, "error": resp.text}, status=resp.status_code)
 
 
-# def submit_bootcamp_form(request):
-#     data = request.POST
+# CERTIFICATES
 
-#     payload = {
-#         "properties": {
-#             "email": data.get("email"),
-#             "firstname": data.get("student_firstname"),
-#             "lastname": data.get("student_lastname"),
-#             "phone": data.get("phone"),
-#             "enrollment_track": data.get("track"),
-#             "student_age": data.get("age"),
-#             "lead_source": data.get("source"),
-#             "amount_paid": data.get("amount_paid"),
-#             "transaction_code": data.get("transaction_code"),
-#             "parent_firstname": data.get("parent_firstname"),
-#             "parent_lastname": data.get("parent_lastname"),
-#             "parent_phone": data.get("parent_phone"),
-#             "health_condition": data.get("health_condition"),
-#             "health_condition_detail": data.get("health_condition_detail", ""),
-#         }
-#     }
 
-#     headers = {
-#         "Authorization": f"Bearer {settings.HUBSPOT_ACCESS_TOKEN}",
-#         "Content-Type": "application/json",
-#     }
+try:
+    # Optional dependency — see README for install instructions. Falls back
+    # to a no-op decorator so the app still runs without it, but production
+    # deployments should install django-ratelimit per section 9's
+    # "protect the verification API against abuse" requirement.
+    from ratelimit.decorators import ratelimit
+except ImportError:  # pragma: no cover
+    def ratelimit(*args, **kwargs):
+        def decorator(view):
+            return view
+        return decorator
 
-#     try:
-#         resp = requests.post(
-            
-#             "https://api.hubapi.com/crm/objects/2026-03/{objectType}",
-#             json=payload,
-#             headers=headers,
-#             timeout=10,
-#         )
-#     except requests.RequestException as e:
-#         return JsonResponse({"success": False, "error": str(e)}, status=502)
 
-#     if resp.status_code in (200, 201):
-#         return JsonResponse({"success": True})
+def _client_ip(request):
+    forwarded = request.META.get("HTTP_X_FORWARDED_FOR")
+    return forwarded.split(",")[0].strip() if forwarded else request.META.get("REMOTE_ADDR")
 
-#     return JsonResponse(
-#         {"success": False, "error": resp.json()},
-#         status=resp.status_code
-#     )
+
+def _lookup(full_id, request):
+    """Single source of truth for verification. Runs entirely server-side —
+    the client only ever supplies the ID string, never a status (section 9:
+    'use server-side verification rather than relying on information
+    entered by the user')."""
+    result = "not_found"
+    certificate = None
+    try:
+        certificate = Certificate.objects.select_related("programme").get(certificate_id=full_id)
+        result = "revoked" if certificate.status == Certificate.Status.REVOKED else "valid"
+        if result == "valid":
+            certificate.register_verification_hit()
+    except Certificate.DoesNotExist:
+        certificate = None
+
+    VerificationAttempt.objects.create(
+        certificate_id_entered=full_id,
+        matched_certificate=certificate,
+        result=result,
+        ip_address=_client_ip(request),
+    )
+    return result, certificate
+
+
+def _to_context_dict(certificate):
+    """Only the fields the public page is allowed to show — section 5:
+    'Do not expose unnecessary personal information.'"""
+    return {
+        "certificate_id": certificate.certificate_id,
+        "name": certificate.name,
+        "programme": certificate.programme.name,
+        "level": certificate.get_level_display(),
+        "certificate_type": certificate.get_certificate_type_display(),
+        "completion_date": certificate.completion_date,
+        "issue_date": certificate.issue_date,
+    }
+
+
+@ratelimit(key="ip", rate="20/m", block=True)
+@require_http_methods(["GET", "POST"])
+def verify_certificate(request):
+    """Renders the form; on POST, looks up the ID the visitor typed in."""
+    context = {}
+    if request.method == "POST":
+        raw = (request.POST.get("certificate_id") or "").strip().upper()
+        if not raw:
+            context["form_error"] = "Enter a Certificate ID."
+        else:
+            full_id = raw if raw.startswith("ICODE-") else f"ICODE-{raw}"
+            result, certificate = _lookup(full_id, request)
+            context["submitted_id"] = raw[len("ICODE-"):] if raw.startswith("ICODE-") else raw
+            context["result"] = result
+            if certificate and result in ("valid", "revoked"):
+                context["certificate"] = _to_context_dict(certificate)
+    return render(request, "cert_verify.html", context)
+
+
+@ratelimit(key="ip", rate="30/m", block=True)
+def verify_certificate_direct(request, certificate_id):
+    """Target of the printed QR code — verifies immediately with no typing."""
+    full_id = certificate_id.strip().upper()
+    result, certificate = _lookup(full_id, request)
+    context = {
+        "result": result,
+        "submitted_id": full_id[len("ICODE-"):] if full_id.startswith("ICODE-") else full_id,
+    }
+    if certificate and result in ("valid", "revoked"):
+        context["certificate"] = _to_context_dict(certificate)
+    return render(request, "cert_verify.html", context)
 
     

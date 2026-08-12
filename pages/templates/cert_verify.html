@@ -1,0 +1,545 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Verify a Certificate — i-CODE Robotics & AI Lab{% endblock %}
+
+{% block extra_css %}
+
+<style>
+    :root {
+  --site-teal: #17c1c8;
+  --deep-navy: #1F3A6E;
+  --site-header-from: #0d2b4e;
+}
+    .verify-page {
+        
+        --paper: #f5f8fb;
+        --panel: #ffffff;
+        --line: #dde5ee;
+        --ink: #0f1f36;
+        --ink-soft: #55677f;
+        --ok: #0f9d68;
+        --ok-bg: #e8f8f1;
+        --warn: #c8790f;
+        --warn-bg: #fdf1e0;
+        --err: #c8402f;
+        --err-bg: #fbeae7;
+        --radius: 14px;
+        /* --font-display: 'Space Grotesk', 'Inter', sans-serif; */
+        /* --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; */
+        /* --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace; */
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--font-body);
+        min-height: 100vh;
+    }
+
+    .verify-page * {
+        box-sizing: border-box;
+    }
+
+    /* ---------------- Header band ---------------- */
+    .verify-hero {
+        background: linear-gradient(135deg, var(--site-header-from) 0%, var(--deep-navy) 100%);
+        color: #ffffff;
+        padding: 56px 24px 96px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .verify-hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+            linear-gradient(rgba(23, 193, 200, 0.16) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(23, 193, 200, 0.16) 1px, transparent 1px);
+        background-size: 34px 34px;
+        mask-image: radial-gradient(ellipse at top, black, transparent 70%);
+        pointer-events: none;
+    }
+
+    .verify-hero-inner {
+        max-width: 720px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .verify-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--font-mono);
+        font-size: 12.5px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--site-teal);
+        background: rgba(23, 193, 200, 0.12);
+        border: 1px solid rgba(23, 193, 200, 0.35);
+        padding: 6px 12px;
+        border-radius: 999px;
+    }
+
+    .verify-eyebrow .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--site-teal);
+        box-shadow: 0 0 0 3px rgba(23, 193, 200, 0.25);
+    }
+
+    .verify-hero h1 {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: clamp(28px, 5vw, 42px);
+        line-height: 1.15;
+        margin: 20px 0 12px;
+        letter-spacing: -0.01em;
+    }
+
+    .verify-hero p {
+        font-size: clamp(15px, 2.4vw, 17px);
+        color: rgba(255, 255, 255, 0.78);
+        max-width: 52ch;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* ---------------- Verification card (viewfinder motif) ---------------- */
+    .verify-wrap {
+        max-width: 640px;
+        margin: -64px auto 64px;
+        padding: 0 20px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .verify-card {
+        background: var(--panel);
+        border-radius: var(--radius);
+        box-shadow: 0 20px 50px -20px rgba(15, 31, 54, 0.35), 0 1px 0 rgba(15, 31, 54, 0.04);
+        padding: 32px;
+        position: relative;
+    }
+
+    /* corner brackets — nod to the QR scan flow described in the brief */
+    .verify-card::before,
+    .verify-card::after,
+    .verify-card .bracket-tr,
+    .verify-card .bracket-br {
+        content: "";
+        position: absolute;
+        width: 22px;
+        height: 22px;
+        border: 2.5px solid var(--site-teal);
+        opacity: 0.9;
+    }
+
+    .verify-card::before {
+        top: -1px;
+        left: -1px;
+        border-right: none;
+        border-bottom: none;
+        border-top-left-radius: 8px;
+    }
+
+    .verify-card::after {
+        bottom: -1px;
+        right: -1px;
+        border-left: none;
+        border-top: none;
+        border-bottom-right-radius: 8px;
+    }
+
+    .verify-card .bracket-tr {
+        top: -1px;
+        right: -1px;
+        border-left: none;
+        border-bottom: none;
+        border-top-right-radius: 8px;
+    }
+
+    .verify-card .bracket-br {
+        bottom: -1px;
+        left: -1px;
+        border-right: none;
+        border-top: none;
+        border-bottom-left-radius: 8px;
+    }
+
+    .verify-card h2 {
+        font-family: var(--font-display);
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0 0 4px;
+    }
+
+    .verify-card .verify-hint {
+        font-size: 14px;
+        color: var(--ink-soft);
+        margin: 0 0 22px;
+        line-height: 1.5;
+    }
+
+    .verify-form {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .cert-id-field {
+        display: flex;
+        align-items: stretch;
+        border: 1.5px solid var(--line);
+        border-radius: 10px;
+        overflow: hidden;
+        background: var(--paper);
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .cert-id-field:focus-within {
+        border-color: var(--site-teal);
+        box-shadow: 0 0 0 4px rgba(23, 193, 200, 0.16);
+        background: #fff;
+    }
+
+    .cert-id-prefix {
+        display: flex;
+        align-items: center;
+        padding: 0 14px;
+        font-family: var(--font-mono);
+        font-size: 14px;
+        color: var(--ink-soft);
+        background: rgba(15, 31, 54, 0.03);
+        border-right: 1px solid var(--line);
+        white-space: nowrap;
+    }
+
+    .cert-id-field input {
+        flex: 1;
+        min-width: 0;
+        border: none;
+        background: transparent;
+        outline: none;
+        padding: 15px 14px;
+        font-family: var(--font-mono);
+        font-size: 15px;
+        letter-spacing: 0.03em;
+        color: var(--ink);
+    }
+
+    .cert-id-field input::placeholder {
+        color: #a7b3c2;
+        letter-spacing: 0.03em;
+    }
+
+    .verify-submit {
+        appearance: none;
+        border: none;
+        cursor: pointer;
+        font-family: var(--font-body);
+        font-weight: 600;
+        font-size: 15px;
+        color: #ffffff;
+        background: var(--site-teal);
+        padding: 15px 20px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: background 0.15s ease, transform 0.1s ease;
+    }
+
+    .verify-submit:hover {
+        background: #14aeb4;
+    }
+
+    .verify-submit:active {
+        transform: scale(0.99);
+    }
+
+    .verify-submit:focus-visible {
+        outline: 3px solid var(--deep-navy);
+        outline-offset: 2px;
+    }
+
+    .verify-error-msg {
+        font-size: 13.5px;
+        color: var(--err);
+        margin: -4px 0 0;
+    }
+
+    /* ---------------- Result states ---------------- */
+    .verify-result {
+        margin-top: 22px;
+        padding-top: 22px;
+        border-top: 1px dashed var(--line);
+        animation: resultIn 0.35s ease;
+    }
+
+    @keyframes resultIn {
+        from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 15px;
+        padding: 9px 14px;
+        border-radius: 999px;
+        margin-bottom: 16px;
+    }
+
+    .status-badge .icon {
+        font-size: 15px;
+        line-height: 1;
+    }
+
+    .status-valid {
+        color: var(--ok);
+        background: var(--ok-bg);
+    }
+
+    .status-invalid {
+        color: var(--err);
+        background: var(--err-bg);
+    }
+
+    .status-revoked {
+        color: var(--warn);
+        background: var(--warn-bg);
+    }
+
+    .verify-result p.lead {
+        font-size: 14.5px;
+        color: var(--ink-soft);
+        margin: 0 0 18px;
+        line-height: 1.55;
+    }
+
+    .cert-detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px 20px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 18px;
+    }
+
+    .cert-detail-grid .full {
+        grid-column: 1 / -1;
+    }
+
+    .cert-detail dt {
+        font-size: 11.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--ink-soft);
+        margin: 0 0 3px;
+    }
+
+    .cert-detail dd {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--ink);
+    }
+
+    .cert-detail dd.mono {
+        font-family: var(--font-mono);
+        font-weight: 500;
+        letter-spacing: 0.02em;
+    }
+
+    .not-found-box {
+        background: var(--err-bg);
+        border: 1px solid rgba(200, 64, 47, 0.25);
+        border-radius: 10px;
+        padding: 18px;
+        font-size: 14.5px;
+        color: #7a2c21;
+        line-height: 1.55;
+    }
+
+    /* ---------------- Supporting info below the card ---------------- */
+    .verify-footnote {
+        max-width: 640px;
+        margin: 28px auto 0;
+        padding: 0 20px;
+        text-align: center;
+    }
+
+    .verify-footnote p {
+        font-size: 13.5px;
+        color: var(--ink-soft);
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .verify-footnote strong {
+        color: var(--deep-navy);
+    }
+
+    /* ---------------- Mobile ---------------- */
+    @media (max-width: 640px) {
+        .verify-hero {
+            padding: 40px 18px 80px;
+        }
+
+        .verify-wrap {
+            margin-top: -56px;
+            padding: 0 16px;
+        }
+
+        .verify-card {
+            padding: 22px 18px;
+            border-radius: 12px;
+        }
+
+        .cert-id-field {
+            flex-direction: column;
+        }
+
+        .cert-id-prefix {
+            border-right: none;
+            border-bottom: 1px solid var(--line);
+            justify-content: flex-start;
+            padding: 8px 12px;
+        }
+
+        .cert-detail-grid {
+            grid-template-columns: 1fr;
+            padding: 16px;
+        }
+
+        .verify-submit {
+            width: 100%;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .verify-result {
+            animation: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="verify-page">
+
+    <section class="verify-hero">
+        <div class="verify-hero-inner">
+           <br>
+            <h1>Verify i-CODE certificate</h1>
+            <p>Enter the Certificate ID printed on the certificate, or scan the QR code, to confirm it was genuinely
+                issued by i-CODE Robotics &amp; AI Lab.</p>
+        </div>
+    </section>
+
+    <div class="verify-wrap">
+        <div class="verify-card">
+            <span class="bracket-tr"></span><span class="bracket-br"></span>
+
+            <h2>Certificate ID</h2>
+            <p class="verify-hint">Check for Certificate Serial found beneath the QR code on the certificate.
+            </p>
+
+            <form class="verify-form" method="post" action="{% url 'certificate_verify' %}" autocomplete="off">
+                {% csrf_token %}
+                <div class="cert-id-field">
+                    <span class="cert-id-prefix">ICODE-</span>
+                    <input type="text" name="certificate_id" id="certificate_id" placeholder="2026-000123"
+                        value="{{ submitted_id|default:'' }}" inputmode="text" aria-label="Certificate ID" required>
+                </div>
+                {% if form_error %}
+                <p class="verify-error-msg">{{ form_error }}</p>
+                {% endif %}
+                <button type="submit" class="verify-submit">Verify certificate</button>
+            </form>
+
+            {% if result == 'valid' %}
+            <div class="verify-result">
+                <span class="status-badge status-valid"><span class="icon">✓</span> Certificate verified</span>
+                <p class="lead">This certificate was issued by i-CODE Robotics &amp; AI Lab.</p>
+                <dl class="cert-detail-grid">
+                    <div class="cert-detail full">
+                        <dt>Certificate ID</dt>
+                        <dd class="mono">{{ certificate.certificate_id }}</dd>
+                    </div>
+                    <div class="cert-detail">
+                        <dt>Name</dt>
+                        <dd>{{ certificate.name }}</dd>
+                    </div>
+                    <div class="cert-detail">
+                        <dt>Programme</dt>
+                        <dd>{{ certificate.programme }}</dd>
+                    </div>
+                    <div class="cert-detail">
+                        <dt>Level</dt>
+                        <dd>{{ certificate.level }}</dd>
+                    </div>
+                    <div class="cert-detail">
+                        <dt>Certificate type</dt>
+                        <dd>{{ certificate.certificate_type }}</dd>
+                    </div>
+                    <div class="cert-detail">
+                        <dt>Date of completion</dt>
+                        <dd>{{ certificate.completion_date }}</dd>
+                    </div>
+                    <div class="cert-detail">
+                        <dt>Issue date</dt>
+                        <dd>{{ certificate.issue_date }}</dd>
+                    </div>
+                </dl>
+            </div>
+
+            {% elif result == 'revoked' %}
+            <div class="verify-result">
+                <span class="status-badge status-revoked"><span class="icon">⚠</span> Certificate revoked</span>
+                <p class="lead">This Certificate ID exists in our records but is no longer valid.</p>
+                <dl class="cert-detail-grid">
+                    <div class="cert-detail">
+                        <dt>Certificate ID</dt>
+                        <dd class="mono">{{ certificate.certificate_id }}</dd>
+                    </div>
+                    <div class="cert-detail">
+                        <dt>Status</dt>
+                        <dd>Revoked</dd>
+                    </div>
+                </dl>
+            </div>
+
+            {% elif result == 'not_found' %}
+            <div class="verify-result">
+                <span class="status-badge status-invalid"><span class="icon">✕</span> Certificate not found</span>
+                <div class="not-found-box">
+                    We could not verify a certificate matching the Certificate ID provided. Double-check the ID and try
+                    again, or contact i-CODE Robotics &amp; AI Lab directly if you believe this is an error.
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="verify-footnote">
+        <p>Every certificate carries a unique ID and QR code. <strong>Scanning the QR code opens this page
+                automatically</strong> with the result already filled in — no need to type anything.</p>
+    </div>
+
+</div>
+{% endblock %}

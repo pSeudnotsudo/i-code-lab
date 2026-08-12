@@ -142,6 +142,11 @@ urlpatterns = [
     path('icode-admin/team/<int:pk>/delete/',         views.team_member_delete,   name='team_member_delete'),
 
 
+    # CERTS
+    path("verify/", views.verify_certificate, name="certificate_verify"),
+    path("verify/<str:certificate_id>/", views.verify_certificate_direct, name="certificate_verify_direct"),
+
+
 ]
 
 if settings.DEBUG:
