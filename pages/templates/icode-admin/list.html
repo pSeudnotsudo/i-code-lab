@@ -1,0 +1,599 @@
+{% extends "icode-admin/base_admin.html" %}
+{% block page_title %}Certificates{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ---- page-local additions, reuse admin_base.html's --primary / --border / --radius tokens ---- */
+    .page-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+    }
+
+    .page-head h2 {
+        font-size: 17px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .page-head p {
+        font-size: 12.5px;
+        color: var(--text-gray);
+        margin: 3px 0 0;
+    }
+
+    .filter-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 16px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .filter-row input[type="text"],
+    .filter-row select {
+        padding: 8px 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        font-family: "Poppins", sans-serif;
+        font-size: 13px;
+        background: #fff;
+    }
+
+    .filter-row input[type="text"] {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    table.cert-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+    .cert-table th {
+        text-align: left;
+        font-size: 10.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-gray);
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
+    }
+
+    .cert-table td {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+    }
+
+    .cert-table tr:hover>td {
+        background: var(--primary-light);
+    }
+
+    .mono {
+        font-family: ui-monospace, monospace;
+        font-size: 12.5px;
+    }
+
+    .badge-revoked {
+        background: #fdeceb;
+        color: #c0392b;
+    }
+
+    .action-link {
+        background: none;
+        border: none;
+        padding: 0;
+        margin-right: 12px;
+        cursor: pointer;
+        font-family: "Poppins", sans-serif;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: var(--primary-dark);
+        text-decoration: none;
+    }
+
+    .action-link:last-child {
+        margin-right: 0;
+    }
+
+    .action-link.danger {
+        color: #c0392b;
+    }
+
+    .detail-row td {
+        background: #fbfdfd;
+        padding: 18px 24px;
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        gap: 16px;
+        align-items: start;
+    }
+
+    @media (max-width: 600px) {
+        .detail-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .detail-grid img.qr {
+        width: 130px;
+        height: 130px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+    }
+
+    .detail-facts {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 20px;
+        margin-bottom: 12px;
+    }
+
+    .detail-facts dt {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: var(--text-gray);
+        margin: 0;
+    }
+
+    .detail-facts dd {
+        margin: 2px 0 0;
+        font-weight: 500;
+    }
+
+    .audit-mini {
+        list-style: none;
+        padding: 0;
+        margin: 8px 0 0;
+        font-size: 12px;
+        color: var(--text-gray);
+    }
+
+    .audit-mini li {
+        padding: 4px 0;
+    }
+
+    /* ---- Modal system (admin_base.html doesn't define one, so this page owns it) ---- */
+    .modal-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 37, 53, 0.55);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .modal-backdrop.open {
+        display: flex;
+    }
+
+    .modal-box {
+        background: #fff;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 540px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 22px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .modal-head h3 {
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .modal-close-btn {
+        background: none;
+        border: none;
+        font-size: 18px;
+        line-height: 1;
+        cursor: pointer;
+        color: var(--text-gray);
+    }
+
+    .modal-body {
+        padding: 20px 22px;
+    }
+
+    .modal-footer {
+        padding: 14px 22px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .btn-ghost {
+        background: #f1f4f6;
+        color: var(--text-dark);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 8px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+    .form-group {
+        margin-bottom: 14px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-gray);
+        margin-bottom: 5px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        font-family: "Poppins", sans-serif;
+        font-size: 13.5px;
+        background: #fff;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(73, 187, 189, 0.15);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    @media (max-width: 560px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .field-hint {
+        font-size: 11.5px;
+        color: var(--text-gray);
+        margin-top: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block admin_content %}
+
+<div class="page-head">
+    <div>
+        <h2>Certificates</h2>
+        <p>{{ total_count }} record{{ total_count|pluralize }}</p>
+    </div>
+    <div style="display:flex; gap:10px;">
+        <a class="btn-primary" style="background:#f1f4f6; color:var(--text-dark); border:1px solid var(--border);"
+            href="{% url 'certificate_export' %}?q={{ q }}&status={{ status }}&program={{ program_id }}">
+            <i class="ti ti-download"></i> Export CSV
+        </a>
+        <button class="btn-primary" type="button" onclick="openModal('modal-create')">
+            <i class="ti ti-plus"></i> New Certificate
+        </button>
+    </div>
+</div>
+
+<div class="card">
+    <form class="filter-row" method="get">
+        <input type="text" name="q" value="{{ q }}" placeholder="Search Certificate ID, name, or programme">
+    
+        <select name="status">
+            <option value="">All statuses</option>
+            {% for value, label in status_choices %}
+            <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    
+        <select name="program">
+            <option value="">All programmes</option>
+            {% for p in programs %}
+            <option value="{{ p.pk }}" {% if program_id == p.pk|stringformat:"s" %}selected{% endif %}>{{ p.name }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn-primary" type="submit"><i class="ti ti-filter"></i> Filter</button>
+    </form>
+
+    <div style="overflow-x:auto;">
+        <table class="cert-table">
+            <thead>
+                <tr>
+                    <th>Certificate ID</th>
+                    <th>Name</th>
+                    <th>Programme</th>
+                    <th>Level</th>
+                    <th>Status</th>
+                    <th>Issue date</th>
+                    <th>Last verified</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cert in certificates %}
+                <tr>
+                    <td class="mono">{{ cert.certificate_id }}</td>
+                    <td>{{ cert.name }}</td>
+                    <td>{{ cert.program.name }}</td>
+                    <td>{{ cert.effective_level.name|default:"—" }}</td>
+                    <td>
+                        {% if cert.status == "valid" %}
+                        <span class="badge badge-active">Valid</span>
+                        {% else %}
+                        <span class="badge badge-revoked">Revoked</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ cert.issue_date }}</td>
+                    <td>{{ cert.last_verified_at|date:"d M Y, H:i"|default:"Never" }}</td>
+                    <td style="white-space:nowrap;">
+                        <button class="action-link" type="button"
+                            onclick="toggleDetail('{{ cert.certificate_id }}')">View</button>
+                        {% if cert.status == "valid" %}
+                        <button class="action-link danger" type="button"
+                            onclick="openRevoke('{{ cert.certificate_id }}', '{{ cert.name|escapejs }}')">Revoke</button>
+                        {% else %}
+                        <button class="action-link" type="button"
+                            onclick="restoreCert('{{ cert.certificate_id }}')">Restore</button>
+                        {% endif %}
+                        <button class="action-link" type="button"
+                            onclick="regenerateCert('{{ cert.certificate_id }}')">Regenerate</button>
+                    </td>
+                </tr>
+                <tr class="detail-row" id="detail-{{ cert.certificate_id }}" style="display:none;">
+                    <td colspan="8">
+                        <div class="detail-grid">
+                            <div>
+                                {% if cert.qr_code %}<img class="qr" src="{{ cert.qr_code.url }}" alt="QR code">
+                                {% endif %}
+                                {% if cert.certificate_pdf %}
+                                <div style="margin-top:10px;"><a class="action-link"
+                                        href="{{ cert.certificate_pdf.url }}" target="_blank">Download PDF</a></div>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <dl class="detail-facts">
+                                    <div>
+                                        <dt>Certificate type</dt>
+                                        <dd>{{ cert.get_certificate_type_display }}</dd>
+                                    </div>
+                                    <div>
+                                        <dt>Assessment status</dt>
+                                        <dd>{{ cert.get_assessment_status_display }}</dd>
+                                    </div>
+                                    <div>
+                                        <dt>Date of completion</dt>
+                                        <dd>{{ cert.completion_date }}</dd>
+                                    </div>
+                                    <div>
+                                        <dt>Verification URL</dt>
+                                        <dd style="word-break:break-all;">{{ cert.verification_url }}</dd>
+                                    </div>
+                                    {% if cert.status == "revoked" %}
+                                    <div>
+                                        <dt>Revoked at</dt>
+                                        <dd>{{ cert.revoked_at|date:"d M Y, H:i" }}</dd>
+                                    </div>
+                                    <div>
+                                        <dt>Revoked reason</dt>
+                                        <dd>{{ cert.revoked_reason|default:"—" }}</dd>
+                                    </div>
+                                    {% endif %}
+                                </dl>
+                                <ul class="audit-mini">
+                                    {% for entry in cert.audit_log.all|slice:":6" %}
+                                    <li><strong>{{ entry.get_action_display }}</strong> — {{ entry.timestamp|date:"d M
+                                        Y, H:i" }}{% if entry.actor %} · {{ entry.actor }}{% endif %}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" style="text-align:center; color:var(--text-gray); padding:32px;">No certificates
+                        match these filters.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ════ Create certificate modal ════ -->
+<div class="modal-backdrop" id="modal-create">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h3>New certificate</h3>
+            <button class="modal-close-btn" type="button" onclick="closeModal('modal-create')">&times;</button>
+        </div>
+        <form id="create-cert-form">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="f-name">Student / participant name</label>
+                    <input class="form-control" type="text" id="f-name" name="name" required>
+                </div>
+
+                {% if enrollments %}
+                <div class="form-group">
+                    <label for="f-enrollment">Linked enrollment (optional)</label>
+                    <select class="form-control" id="f-enrollment" name="enrollment">
+                        <option value="">— None —</option>
+                        {% for e in enrollments %}
+                        <option value="{{ e.pk }}">{{ e.full_name }} · {{ e.email }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="f-program">Programme</label>
+                        <select class="form-control" id="f-program" name="program" required>
+                            <option value="">Select a programme…</option>
+                            {% for p in programs %}<option value="{{ p.pk }}">{{ p.name }}</option>{% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="f-level">Level override</label>
+                        <select class="form-control" id="f-level" name="level">
+                            <option value="">Auto (use programme level)</option>
+                            {% for lvl in levels %}<option value="{{ lvl.pk }}">{{ lvl.name }}</option>{% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="f-type">Certificate type</label>
+                        <select class="form-control" id="f-type" name="certificate_type">
+                            {% for value, label in type_choices %}<option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="f-assessment">Assessment / project status</label>
+                        <select class="form-control" id="f-assessment" name="assessment_status">
+                            {% for value, label in assessment_choices %}<option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="f-completion">Date of completion</label>
+                        <input class="form-control" type="date" id="f-completion" name="completion_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="f-issue">Certificate issue date</label>
+                        <input class="form-control" type="date" id="f-issue" name="issue_date" required>
+                    </div>
+                </div>
+                <p class="field-hint">Certificate ID, QR code, and PDF are generated automatically once you save.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-ghost" type="button" onclick="closeModal('modal-create')">Cancel</button>
+                <button class="btn-primary" type="submit">Create certificate</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ════ Revoke certificate modal ════ -->
+<div class="modal-backdrop" id="modal-revoke">
+    <div class="modal-box" style="max-width:460px;">
+        <div class="modal-head">
+            <h3>Revoke certificate</h3>
+            <button class="modal-close-btn" type="button" onclick="closeModal('modal-revoke')">&times;</button>
+        </div>
+        <form id="revoke-cert-form">
+            <div class="modal-body">
+                <p style="font-size:13.5px; margin:0 0 14px;">Revoking <strong id="revoke-cert-name"></strong> (<span
+                        id="revoke-cert-id-label" class="mono"></span>) will make it fail public verification
+                    immediately.</p>
+                <input type="hidden" id="revoke-cert-id" value="">
+                <div class="form-group">
+                    <label for="revoke-reason">Reason (internal only — never shown publicly)</label>
+                    <textarea class="form-control" id="revoke-reason" rows="3"
+                        placeholder="e.g. issued in error, academic integrity violation…"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-ghost" type="button" onclick="closeModal('modal-revoke')">Cancel</button>
+                <button class="btn-primary" type="submit" style="background:#c0392b;">Confirm revoke</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    
+    const API = {
+        revoke: "{% url 'certificate_api_revoke' certificate_id='__ID__' %}",
+        restore: "{% url 'certificate_api_restore' certificate_id='__ID__' %}",
+        regenerate: "{% url 'certificate_api_regenerate' certificate_id='__ID__' %}",
+    };
+    function apiUrl(kind, certId) { return API[kind].replace('__ID__', certId); }
+
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    function toggleDetail(certId) {
+        const row = document.getElementById('detail-' + certId);
+        row.style.display = row.style.display === 'table-row' ? 'none' : 'table-row';
+    }
+
+    function openRevoke(certId, certName) {
+        document.getElementById('revoke-cert-id').value = certId;
+        document.getElementById('revoke-cert-name').textContent = certName;
+        document.getElementById('revoke-cert-id-label').textContent = certId;
+        document.getElementById('revoke-reason').value = '';
+        openModal('modal-revoke');
+    }
+
+    function restoreCert(certId) {
+        if (!confirm(`Restore ${certId} to valid?`)) return;
+        ajaxPost(apiUrl('restore', certId), {}, () => setTimeout(() => location.reload(), 700));
+    }
+
+    function regenerateCert(certId) {
+        if (!confirm(`Regenerate the QR code and PDF for ${certId}?`)) return;
+        ajaxPost(apiUrl('regenerate', certId), {}, () => setTimeout(() => location.reload(), 700));
+    }
+
+    document.getElementById('create-cert-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(this).entries());
+        ajaxPost("{% url 'certificate_api_create' %}", data, () => {
+            closeModal('modal-create');
+            setTimeout(() => location.reload(), 700);
+        });
+    });
+
+    document.getElementById('revoke-cert-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const certId = document.getElementById('revoke-cert-id').value;
+        const reason = document.getElementById('revoke-reason').value;
+        ajaxPost(apiUrl('revoke', certId), { reason }, () => {
+            closeModal('modal-revoke');
+            setTimeout(() => location.reload(), 700);
+        });
+    });
+
+    // click outside modal box closes it
+    document.querySelectorAll('.modal-backdrop').forEach((backdrop) => {
+        backdrop.addEventListener('click', (e) => {
+            if (e.target === backdrop) backdrop.classList.remove('open');
+        });
+    });
+</script>
+{% endblock %}

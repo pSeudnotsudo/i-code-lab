@@ -40,10 +40,11 @@ def build_certificate_pdf(certificate) -> bytes:
     c.setFont("Helvetica", 9)
     c.drawCentredString(width / 2, height - 21.5 * mm, "icodeailab.com")
 
-    # Title
+    # Title — uses the programme's configured certificate name if set
+    # (Program.certificate_name), else the generic certificate type label.
     c.setFillColor(NAVY)
-    c.setFont("Helvetica-Bold", 30)
-    c.drawCentredString(width / 2, height - 55 * mm, certificate.get_certificate_type_display().upper())
+    c.setFont("Helvetica-Bold", 28)
+    c.drawCentredString(width / 2, height - 55 * mm, certificate.display_title.upper())
 
     c.setFillColor(INK_SOFT)
     c.setFont("Helvetica", 13)
@@ -53,16 +54,15 @@ def build_certificate_pdf(certificate) -> bytes:
     c.setFont("Helvetica-Bold", 26)
     c.drawCentredString(width / 2, height - 82 * mm, certificate.name)
 
+    level = certificate.effective_level
     c.setFillColor(INK_SOFT)
     c.setFont("Helvetica", 13)
-    c.drawCentredString(
-        width / 2, height - 94 * mm,
-        f"has successfully completed the {certificate.get_level_display()} level of",
-    )
+    level_phrase = f"has successfully completed the {level.name} level of" if level else "has successfully completed"
+    c.drawCentredString(width / 2, height - 94 * mm, level_phrase)
 
     c.setFillColor(TEAL)
     c.setFont("Helvetica-Bold", 18)
-    c.drawCentredString(width / 2, height - 104 * mm, str(certificate.programme))
+    c.drawCentredString(width / 2, height - 104 * mm, str(certificate.program))
 
     c.setFillColor(INK_SOFT)
     c.setFont("Helvetica", 11)

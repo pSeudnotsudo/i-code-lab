@@ -145,6 +145,13 @@ urlpatterns = [
     # CERTS
     path("verify/", views.verify_certificate, name="certificate_verify"),
     path("verify/<str:certificate_id>/", views.verify_certificate_direct, name="certificate_verify_direct"),
+    # --- Certificate admin ---
+    path("staff/certificates/", views.certificates_admin, name="certificates_admin"),
+    path("staff/certificates/export/", views.certificate_export_csv, name="certificate_export"),
+    path("staff/certificates/api/create/", views.certificate_api_create, name="certificate_api_create"),
+    path("staff/certificates/api/<str:certificate_id>/revoke/", views.certificate_api_revoke, name="certificate_api_revoke"),
+    path("staff/certificates/api/<str:certificate_id>/restore/", views.certificate_api_restore, name="certificate_api_restore"),
+    path("staff/certificates/api/<str:certificate_id>/regenerate/", views.certificate_api_regenerate, name="certificate_api_regenerate"),
 
 
 ]

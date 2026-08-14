@@ -1,5 +1,5 @@
 from django.contrib.auth.models import AbstractUser
-from django.db import models, transaction
+from django.db import models
 from django.utils import timezone
 import uuid
 from django.utils.text import slugify
@@ -8,8 +8,9 @@ from io import BytesIO
 import qrcode
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.db import models, transaction
 from django.urls import reverse
-
+from django.utils import timezone
 
 # age Brackets
 class AgeBracket(models.Model):
@@ -22,7 +23,7 @@ class AgeBracket(models.Model):
 
     def __str__(self):
         return self.title
-
+    
 
 # ENROLLMENT STATUS
 class EnrollmentStatus(models.Model):
@@ -33,34 +34,11 @@ class EnrollmentStatus(models.Model):
 
     def __str__(self):
         return self.name
+        
+
+ # Programs
 
 
-# Levels
-class Level(models.Model):
-    name  = models.CharField(max_length=50, unique=True)  # "Beginner"
-    slug  = models.SlugField(max_length=50, unique=True)  # "beginner"
-    order = models.IntegerField(default=0)
-
-    class Meta:
-        ordering = ['order']
-
-    def __str__(self):
-        return self.name
-
-
-class ToolType(models.Model):
-    name  = models.CharField(max_length=50, unique=True)  # "Hardware"
-    slug  = models.SlugField(max_length=50, unique=True)  # "hardware"
-    order = models.IntegerField(default=0)
-
-    class Meta:
-        ordering = ['order']
-
-    def __str__(self):
-        return self.name
-
-
-# Programs
 class Program(models.Model):
     # ── Core identity ─────────────────────────────────────────────────────
     name  = models.CharField(max_length=100)
@@ -69,7 +47,7 @@ class Program(models.Model):
 
     # ── Specs (FK lookups) ────────────────────────────────────────────────
     level = models.ForeignKey(
-        Level,
+        'Level',
         on_delete=models.SET_NULL,
         null=True, blank=True,
         related_name='programs',
@@ -78,12 +56,13 @@ class Program(models.Model):
     total_hours    = models.PositiveIntegerField(null=True, blank=True)
     term_fee       = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     fee_currency   = models.CharField(max_length=10, default='KES')
+    # age_range      = models.CharField(max_length=40, blank=True)
     age_range = models.ForeignKey(
-        AgeBracket,
-        on_delete=models.SET_NULL,
-        null=True, blank=True,
-        related_name='programs',
-    )
+    'AgeBracket',
+    on_delete=models.SET_NULL,
+    null=True, blank=True,
+    related_name='programs',
+)
 
     # ── Hero section ──────────────────────────────────────────────────────
     description = models.TextField(blank=True)
@@ -107,10 +86,9 @@ class Program(models.Model):
     is_active = models.BooleanField(default=True)
     order     = models.IntegerField(default=0)
 
-    # ── Reverse relations (defined on child / related models) ─────────────
-    # self.weeks.all()        → ProgramWeek queryset  (related_name='weeks')
-    # self.tools.all()        → ProgramTool queryset  (related_name='tools')
-    # self.certificates.all() → Certificate queryset  (related_name='certificates')
+    # ── Reverse relations (defined on the child models) ───────────────────
+    # self.weeks.all()   → ProgramWeek queryset  (related_name='weeks')
+    # self.tools.all()   → ProgramTool queryset  (related_name='tools')
 
     class Meta:
         ordering = ['order']
@@ -121,6 +99,7 @@ class Program(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
+        from django.urls import reverse
         return reverse('programme-detail', kwargs={'slug': self.slug})
 
     # ── Convenience properties ────────────────────────────────────────────
@@ -154,6 +133,33 @@ class Program(models.Model):
 
     def __str__(self):
         return self.name
+# Levels
+
+class Level(models.Model):
+    name  = models.CharField(max_length=50, unique=True)  # "Beginner"
+    slug  = models.SlugField(max_length=50, unique=True)  # "beginner"
+    order = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.name
+
+
+class ToolType(models.Model):
+    name  = models.CharField(max_length=50, unique=True)  # "Hardware"
+    slug  = models.SlugField(max_length=50, unique=True)  # "hardware"
+    order = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.name
+
+
+
 
 
 class ProgramTool(models.Model):
@@ -175,6 +181,8 @@ class ProgramTool(models.Model):
         return self.name
 
 
+
+    
 class RegistrationTimeline(models.Model):
     title = models.CharField(max_length=100)  # Immediately, Within 1 week, etc
     code = models.CharField(max_length=50, unique=True)
@@ -184,6 +192,8 @@ class RegistrationTimeline(models.Model):
 
     def __str__(self):
         return self.title
+
+
 
 
 class Enrollment(models.Model):
@@ -229,7 +239,7 @@ class Enrollment(models.Model):
 
     def __str__(self):
         return self.full_name
-
+        
 
 class GalleryItem(models.Model):
     TYPE_CHOICES = [('image', 'Image'), ('video', 'Video')]
@@ -238,7 +248,7 @@ class GalleryItem(models.Model):
         ('workshop',  'Workshop'),
         ('community', 'Community'),
     ]
-
+ 
     title     = models.CharField(max_length=200)
     media     = models.FileField(upload_to='gallery/')
     thumbnail = models.ImageField(upload_to='gallery/thumbs/', blank=True, null=True)
@@ -247,17 +257,19 @@ class GalleryItem(models.Model):
     date      = models.DateField()
     caption   = models.CharField(max_length=300, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
-
+ 
     class Meta:
         ordering = ['-date', '-uploaded_at']
-
+ 
     def __str__(self):
         return f"{self.title} ({self.type})"
-
+ 
     def is_video(self):
         return self.type == 'video'
+    
 
-
+ 
+    
 # USER MODEL
 class CustomUser(AbstractUser):
     STUDENT = 'student'
@@ -276,7 +288,7 @@ class CustomUser(AbstractUser):
     role       = models.CharField(max_length=10, choices=ROLE_CHOICES, default=STUDENT)
     phone      = models.CharField(max_length=20, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
+    
     first_name = models.CharField(max_length=150, blank=False)
     last_name  = models.CharField(max_length=150, blank=False)
 
@@ -294,8 +306,7 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f"{self.get_full_name()} ({self.username})"
-
-
+    
 class NewsletterSubscriber(models.Model):
     email = models.EmailField(unique=True)
     subscribed_at = models.DateTimeField(auto_now_add=True)
@@ -303,7 +314,6 @@ class NewsletterSubscriber(models.Model):
 
     def __str__(self):
         return self.email
-
 
 class ProgramType(models.Model):
     """Fee program types — manageable from admin."""
@@ -380,8 +390,9 @@ class FeeConfig(models.Model):
     @property
     def display_range(self):
         return f"KES {self.fees_per_term_min:,} - {self.fees_per_term_max:,}"
-
-
+        
+        
+        
 # TESTIMONIALS
 class Testimonial(models.Model):
     author_name = models.CharField(max_length=100)
@@ -413,8 +424,7 @@ class Testimonial(models.Model):
 
     def __str__(self):
         return f"{self.author_name}"
-
-
+        
 class TeamMember(models.Model):
     ROLE_CHOICES = [
         ('founder',    'Founder & CEO'),
@@ -430,10 +440,10 @@ class TeamMember(models.Model):
         ('purple', 'Purple'),
     ]
     DEPT_CHOICES = [
-        ('tech',       'Tech'),
-        ('education',  'Education'),
-        ('ops',        'Operations'),
-        ('leadership', 'Leadership'),
+    ('tech',      'Tech'),
+    ('education', 'Education'),
+    ('ops',       'Operations'),
+    ('leadership','Leadership'),
     ]
     dept = models.CharField(max_length=20, choices=DEPT_CHOICES, default='tech')
 
@@ -473,218 +483,260 @@ class TeamMember(models.Model):
         return [s.strip() for s in self.specialisms.splitlines() if s.strip()]
 
 
-# ═══════════════════════════════════════════════════════════════════════
-# CERTIFICATE VERIFICATION
-# ═══════════════════════════════════════════════════════════════════════
 
-class Certificate(models.Model):
-    class CertificateType(models.TextChoices):
-        COMPLETION = "completion", "Certificate of Completion"
-        ACHIEVEMENT = "achievement", "Certificate of Achievement"
-        PARTICIPATION = "participation", "Certificate of Participation"
-        EXCELLENCE = "excellence", "Certificate of Excellence"
+    # CERT
+# class Programme(models.Model):
+#     """A course / programme certificates can be issued for.
+ 
+#     Kept as its own table instead of a hardcoded choices list so new
+#     programme types (bootcamps, competitions, corporate training, ...) can
+#     be added from the admin with no code change — this is what lets the
+#     system grow into the "scalable digital credential platform" described
+#     in the brief rather than staying a one-off page.
+#     """
+ 
+#     class Category(models.TextChoices):
+#         ROBOTICS = "robotics", "Robotics"
+#         AI = "ai", "Artificial Intelligence"
+#         CODING = "coding", "Coding / Programming"
+#         BOOTCAMP = "bootcamp", "Bootcamp"
+#         COMPETITION = "competition", "Competition"
+#         CORPORATE = "corporate", "Corporate Training"
+#         OTHER = "other", "Other"
+ 
+#     name = models.CharField(max_length=150, unique=True)
+#     category = models.CharField(max_length=20, choices=Category.choices, default=Category.OTHER)
+#     is_active = models.BooleanField(
+#         default=True,
+#         help_text="Inactive programmes are hidden from the certificate creation form but existing certificates keep working.",
+#     )
+ 
+#     class Meta:
+#         ordering = ["name"]
+#         verbose_name = "Programme / Course"
+ 
+#     def __str__(self):
+#         return self.name
+ 
+ 
+# class Certificate(models.Model):
+#     class Level(models.TextChoices):
+#         BEGINNER = "beginner", "Beginner"
+#         INTERMEDIATE = "intermediate", "Intermediate"
+#         ADVANCED = "advanced", "Advanced"
+ 
+#     class CertificateType(models.TextChoices):
+#         COMPLETION = "completion", "Certificate of Completion"
+#         ACHIEVEMENT = "achievement", "Certificate of Achievement"
+#         PARTICIPATION = "participation", "Certificate of Participation"
+#         EXCELLENCE = "excellence", "Certificate of Excellence"
+ 
+#     class AssessmentStatus(models.TextChoices):
+#         PASSED = "passed", "Passed"
+#         PENDING = "pending", "Pending"
+#         NOT_REQUIRED = "not_required", "Not required"
+ 
+#     class Status(models.TextChoices):
+#         VALID = "valid", "Valid"
+#         REVOKED = "revoked", "Revoked"
+ 
+#     # 1. Certificate ID — always server-generated, never user-editable.
+#     certificate_id = models.CharField(max_length=24, unique=True, editable=False, db_index=True)
+ 
+#     # 2. Student / participant name
+#     name = models.CharField("Student / participant name", max_length=150)
+ 
+#     # 3. Course / programme
+#     programme = models.ForeignKey(Programme, on_delete=models.PROTECT, related_name="certificates")
 
-    class AssessmentStatus(models.TextChoices):
-        PASSED = "passed", "Passed"
-        PENDING = "pending", "Pending"
-        NOT_REQUIRED = "not_required", "Not required"
-
-    class Status(models.TextChoices):
-        VALID = "valid", "Valid"
-        REVOKED = "revoked", "Revoked"
-
-    # 1. Certificate ID — always server-generated, never user-editable.
-    certificate_id = models.CharField(max_length=24, unique=True, editable=False, db_index=True)
-
-    # 2. Student / participant name
-    name = models.CharField("Student / participant name", max_length=150)
-
-    # Optional link back to the enrollment record this certificate came from.
-    # Enrollment defined above — SET_NULL so deleting an enrollment doesn't
-    # destroy the certificate record.
-    enrollment = models.ForeignKey(
-        Enrollment, on_delete=models.SET_NULL, null=True, blank=True, related_name="certificates",
-    )
-
-    # 3. Course / programme — Program defined above.
-    program = models.ForeignKey(Program, on_delete=models.PROTECT, related_name="certificates")
-
-    # 4. Level — left blank on the form, copied from program.level on first save.
-    level = models.ForeignKey(
-        Level, on_delete=models.SET_NULL, null=True, blank=True, related_name="certificates",
-    )
-
-    # 5. Certificate type
-    certificate_type = models.CharField(max_length=20, choices=CertificateType.choices, default=CertificateType.COMPLETION)
-
-    # 6. Date of completion
-    completion_date = models.DateField("Date of completion")
-
-    # 7. Certificate issue date
-    issue_date = models.DateField("Certificate issue date", default=timezone.localdate)
-
-    # 8. Assessment / project status
-    assessment_status = models.CharField(
-        "Assessment / project status", max_length=20,
-        choices=AssessmentStatus.choices, default=AssessmentStatus.PASSED,
-    )
-
-    # 9. Certificate status
-    status = models.CharField(max_length=10, choices=Status.choices, default=Status.VALID)
-    revoked_reason = models.CharField(max_length=255, blank=True, help_text="Internal note — never shown on the public verification page.")
-    revoked_at = models.DateTimeField(null=True, blank=True)
-
-    # 10. Verification date — last time this certificate was successfully looked up
-    last_verified_at = models.DateTimeField(null=True, blank=True)
-
-    # 11. Optional certificate URL / PDF
-    certificate_pdf = models.FileField(upload_to="certificates/pdfs/", blank=True, null=True)
-
-    # 12. Optional QR verification URL
-    qr_code = models.ImageField(upload_to="certificates/qrcodes/", blank=True, null=True)
-    verification_url = models.URLField(blank=True, editable=False)
-
-    # Audit fields — settings.AUTH_USER_MODEL must point at CustomUser above
-    # for this to actually resolve to your custom user model.
-    created_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
-        related_name="certificates_created",
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ["-issue_date", "-created_at"]
-        indexes = [models.Index(fields=["certificate_id"])]
-
-    def __str__(self):
-        return f"{self.certificate_id} — {self.name}"
-
-    @property
-    def effective_level(self):
-        return self.level or (self.program.level if self.program_id else None)
-
-    @property
-    def display_title(self):
-        if self.program_id and self.program.certificate_name:
-            return self.program.certificate_name
-        return self.get_certificate_type_display()
-
-    @staticmethod
-    def generate_certificate_id():
-        year = timezone.now().year
-        prefix = f"ICODE-{year}-"
-        with transaction.atomic():
-            last = (
-                Certificate.objects
-                .select_for_update()
-                .filter(certificate_id__startswith=prefix)
-                .order_by("-certificate_id")
-                .first()
-            )
-            next_seq = int(last.certificate_id.rsplit("-", 1)[-1]) + 1 if last else 1
-            candidate = f"{prefix}{next_seq:06d}"
-            while Certificate.objects.filter(certificate_id=candidate).exists():
-                next_seq += 1
-                candidate = f"{prefix}{next_seq:06d}"
-            return candidate
-
-    def build_verification_url(self):
-        base = getattr(settings, "SITE_URL", "https://icodeailab.com").rstrip("/")
-        path = reverse("certificate_verify_direct", kwargs={"certificate_id": self.certificate_id})
-        return f"{base}{path}"
-
-    def generate_qr_code(self):
-        qr = qrcode.QRCode(version=None, error_correction=qrcode.constants.ERROR_CORRECT_M, box_size=10, border=2)
-        qr.add_data(self.verification_url)
-        qr.make(fit=True)
-        img = qr.make_image(fill_color="#1F3A6E", back_color="white")
-        buffer = BytesIO()
-        img.save(buffer, format="PNG")
-        self.qr_code.save(f"{self.certificate_id}.png", ContentFile(buffer.getvalue()), save=False)
-
-    def generate_pdf(self):
-        from .certificate_pdf import build_certificate_pdf
-        pdf_bytes = build_certificate_pdf(self)
-        self.certificate_pdf.save(f"{self.certificate_id}.pdf", ContentFile(pdf_bytes), save=False)
-
-    def save(self, *args, **kwargs):
-        is_new = self._state.adding
-        if not self.level_id and self.program_id and self.program.level_id:
-            self.level = self.program.level
-        if not self.certificate_id:
-            self.certificate_id = self.generate_certificate_id()
-        if not self.verification_url:
-            self.verification_url = self.build_verification_url()
-        if not self.qr_code:
-            self.generate_qr_code()
-        if not self.certificate_pdf:
-            self.generate_pdf()
-        super().save(*args, **kwargs)
-        if is_new:
-            CertificateAuditLog.objects.create(
-                certificate=self, action=CertificateAuditLog.Action.CREATED, actor=self.created_by,
-            )
-
-    def mark_revoked(self, actor=None, reason=""):
-        self.status = self.Status.REVOKED
-        self.revoked_reason = reason
-        self.revoked_at = timezone.now()
-        self.save(update_fields=["status", "revoked_reason", "revoked_at", "updated_at"])
-        CertificateAuditLog.objects.create(
-            certificate=self, action=CertificateAuditLog.Action.REVOKED, actor=actor, note=reason,
-        )
-
-    def mark_valid(self, actor=None):
-        self.status = self.Status.VALID
-        self.revoked_reason = ""
-        self.revoked_at = None
-        self.save(update_fields=["status", "revoked_reason", "revoked_at", "updated_at"])
-        CertificateAuditLog.objects.create(
-            certificate=self, action=CertificateAuditLog.Action.RESTORED, actor=actor,
-        )
-
-    def regenerate_files(self):
-        self.generate_qr_code()
-        self.generate_pdf()
-        self.save(update_fields=["qr_code", "certificate_pdf"])
-
-    def register_verification_hit(self):
-        self.last_verified_at = timezone.now()
-        Certificate.objects.filter(pk=self.pk).update(last_verified_at=self.last_verified_at)
-
-
-class CertificateAuditLog(models.Model):
-    class Action(models.TextChoices):
-        CREATED = "created", "Created"
-        REVOKED = "revoked", "Revoked"
-        RESTORED = "restored", "Restored to valid"
-        EDITED = "edited", "Edited"
-
-    certificate = models.ForeignKey(Certificate, on_delete=models.CASCADE, related_name="audit_log")
-    action = models.CharField(max_length=10, choices=Action.choices)
-    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
-    note = models.CharField(max_length=255, blank=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ["-timestamp"]
-        verbose_name = "Audit log entry"
-        verbose_name_plural = "Audit log"
-
-    def __str__(self):
-        return f"{self.certificate.certificate_id} · {self.action} · {self.timestamp:%Y-%m-%d %H:%M}"
-
-
-class VerificationAttempt(models.Model):
-    certificate_id_entered = models.CharField(max_length=24)
-    matched_certificate = models.ForeignKey(
-        Certificate, on_delete=models.SET_NULL, null=True, blank=True, related_name="verification_attempts",
-    )
-    result = models.CharField(max_length=12)  # valid / revoked / not_found
-    ip_address = models.GenericIPAddressField(null=True, blank=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ["-timestamp"]
-        verbose_name = "Verification attempt"
+#     enrollment = models.ForeignKey(
+#         Enrollment, on_delete=models.SET_NULL, null=True, blank=True, related_name="certificates",
+#     )
+ 
+ 
+#     # 4. Level
+#     # level = models.CharField(max_length=20, choices=Level.choices, default=Level.BEGINNER)
+#     level = models.ForeignKey(
+#         Level, on_delete=models.SET_NULL, null=True, blank=True, related_name="certificates",
+#     )
+ 
+ 
+#     # 5. Certificate type
+#     certificate_type = models.CharField(max_length=20, choices=CertificateType.choices, default=CertificateType.COMPLETION)
+ 
+#     # 6. Date of completion
+#     completion_date = models.DateField("Date of completion")
+ 
+#     # 7. Certificate issue date
+#     issue_date = models.DateField("Certificate issue date", default=timezone.localdate)
+ 
+#     # 8. Assessment / project status
+#     assessment_status = models.CharField(
+#         "Assessment / project status", max_length=20,
+#         choices=AssessmentStatus.choices, default=AssessmentStatus.PASSED,
+#     )
+ 
+#     # 9. Certificate status
+#     status = models.CharField(max_length=10, choices=Status.choices, default=Status.VALID)
+#     revoked_reason = models.CharField(max_length=255, blank=True, help_text="Internal note — never shown on the public verification page.")
+#     revoked_at = models.DateTimeField(null=True, blank=True)
+ 
+#     # 10. Verification date — last time this certificate was successfully looked up
+#     last_verified_at = models.DateTimeField(null=True, blank=True)
+ 
+#     # 11. Optional certificate URL / PDF
+#     certificate_pdf = models.FileField(upload_to="certificates/pdfs/", blank=True, null=True)
+ 
+#     # 12. Optional QR verification URL
+#     qr_code = models.ImageField(upload_to="certificates/qrcodes/", blank=True, null=True)
+#     verification_url = models.URLField(blank=True, editable=False)
+ 
+#     # Audit fields — support section 9's "log certificate creation and status changes"
+#     created_by = models.ForeignKey(
+#         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+#         related_name="certificates_created",
+#     )
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+ 
+#     class Meta:
+#         ordering = ["-issue_date", "-created_at"]
+#         indexes = [models.Index(fields=["certificate_id"])]
+ 
+#     def __str__(self):
+#         return f"{self.certificate_id} — {self.name}"
+ 
+#     # ------------------------------------------------------------------
+#     # Certificate ID generation — sequential per year, collision-proof
+#     # under concurrent admin use.
+#     # ------------------------------------------------------------------
+#     @staticmethod
+#     def generate_certificate_id():
+#         year = timezone.now().year
+#         prefix = f"ICODE-{year}-"
+#         with transaction.atomic():
+#             last = (
+#                 Certificate.objects
+#                 .select_for_update()
+#                 .filter(certificate_id__startswith=prefix)
+#                 .order_by("-certificate_id")
+#                 .first()
+#             )
+#             next_seq = int(last.certificate_id.rsplit("-", 1)[-1]) + 1 if last else 1
+#             candidate = f"{prefix}{next_seq:06d}"
+#             while Certificate.objects.filter(certificate_id=candidate).exists():
+#                 next_seq += 1
+#                 candidate = f"{prefix}{next_seq:06d}"
+#             return candidate
+ 
+#     # ------------------------------------------------------------------
+#     # QR code
+#     # ------------------------------------------------------------------
+#     def build_verification_url(self):
+#         base = getattr(settings, "SITE_URL", "https://icodeailab.com").rstrip("/")
+#         path = reverse("certificate_verify_direct", kwargs={"certificate_id": self.certificate_id})
+#         return f"{base}{path}"
+ 
+#     def generate_qr_code(self):
+#         qr = qrcode.QRCode(
+#             version=None,
+#             error_correction=qrcode.constants.ERROR_CORRECT_M,
+#             box_size=10,
+#             border=2,
+#         )
+#         qr.add_data(self.verification_url)
+#         qr.make(fit=True)
+#         img = qr.make_image(fill_color="#1F3A6E", back_color="white")
+#         buffer = BytesIO()
+#         img.save(buffer, format="PNG")
+#         self.qr_code.save(f"{self.certificate_id}.png", ContentFile(buffer.getvalue()), save=False)
+ 
+#     # ------------------------------------------------------------------
+#     # PDF certificate
+#     # ------------------------------------------------------------------
+#     def generate_pdf(self):
+#         from .pdf import build_certificate_pdf  # local import avoids a circular import at app load
+#         pdf_bytes = build_certificate_pdf(self)
+#         self.certificate_pdf.save(f"{self.certificate_id}.pdf", ContentFile(pdf_bytes), save=False)
+ 
+#     # ------------------------------------------------------------------
+#     def save(self, *args, **kwargs):
+#         is_new = self._state.adding
+#         if not self.certificate_id:
+#             self.certificate_id = self.generate_certificate_id()
+#         if not self.verification_url:
+#             self.verification_url = self.build_verification_url()
+#         if not self.qr_code:
+#             self.generate_qr_code()
+#         if not self.certificate_pdf:
+#             self.generate_pdf()
+#         super().save(*args, **kwargs)
+#         if is_new:
+#             CertificateAuditLog.objects.create(
+#                 certificate=self, action=CertificateAuditLog.Action.CREATED, actor=self.created_by,
+#             )
+ 
+#     def mark_revoked(self, actor=None, reason=""):
+#         self.status = self.Status.REVOKED
+#         self.revoked_reason = reason
+#         self.revoked_at = timezone.now()
+#         self.save(update_fields=["status", "revoked_reason", "revoked_at", "updated_at"])
+#         CertificateAuditLog.objects.create(
+#             certificate=self, action=CertificateAuditLog.Action.REVOKED, actor=actor, note=reason,
+#         )
+ 
+#     def mark_valid(self, actor=None):
+#         self.status = self.Status.VALID
+#         self.revoked_reason = ""
+#         self.revoked_at = None
+#         self.save(update_fields=["status", "revoked_reason", "revoked_at", "updated_at"])
+#         CertificateAuditLog.objects.create(
+#             certificate=self, action=CertificateAuditLog.Action.RESTORED, actor=actor,
+#         )
+ 
+#     def register_verification_hit(self):
+#         """Updates verification date without re-running QR/PDF generation."""
+#         self.last_verified_at = timezone.now()
+#         Certificate.objects.filter(pk=self.pk).update(last_verified_at=self.last_verified_at)
+ 
+ 
+# class CertificateAuditLog(models.Model):
+#     """Append-only trail — satisfies 'log certificate creation and status
+#     changes' from section 9. Not editable or deletable from the admin."""
+ 
+#     class Action(models.TextChoices):
+#         CREATED = "created", "Created"
+#         REVOKED = "revoked", "Revoked"
+#         RESTORED = "restored", "Restored to valid"
+#         EDITED = "edited", "Edited"
+ 
+#     certificate = models.ForeignKey(Certificate, on_delete=models.CASCADE, related_name="audit_log")
+#     action = models.CharField(max_length=10, choices=Action.choices)
+#     actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+#     note = models.CharField(max_length=255, blank=True)
+#     timestamp = models.DateTimeField(auto_now_add=True)
+ 
+#     class Meta:
+#         ordering = ["-timestamp"]
+#         verbose_name = "Audit log entry"
+#         verbose_name_plural = "Audit log"
+ 
+#     def __str__(self):
+#         return f"{self.certificate.certificate_id} · {self.action} · {self.timestamp:%Y-%m-%d %H:%M}"
+ 
+ 
+# class VerificationAttempt(models.Model):
+#     """Every lookup made against the public /verify endpoint — supports
+#     abuse monitoring alongside rate limiting (section 9)."""
+ 
+#     certificate_id_entered = models.CharField(max_length=24)
+#     matched_certificate = models.ForeignKey(
+#         Certificate, on_delete=models.SET_NULL, null=True, blank=True, related_name="verification_attempts",
+#     )
+#     result = models.CharField(max_length=12)  
+#     ip_address = models.GenericIPAddressField(null=True, blank=True)
+#     timestamp = models.DateTimeField(auto_now_add=True)
+ 
+#     class Meta:
+#         ordering = ["-timestamp"]
+#         verbose_name = "Verification attempt"

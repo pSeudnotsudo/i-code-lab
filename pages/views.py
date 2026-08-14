@@ -39,7 +39,15 @@ from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
 import requests
 from django.views.decorators.http import require_http_methods
-
+import csv
+import json
+from django.db.models import Q
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, render
+from django.utils import timezone
+from django.views.decorators.http import require_POST
+from .decorators import certificate_staff_required
+from .forms import CertificateForm
 
 
 User = get_user_model()
@@ -2219,7 +2227,7 @@ def _lookup(full_id, request):
     result = "not_found"
     certificate = None
     try:
-        certificate = Certificate.objects.select_related("programme").get(certificate_id=full_id)
+        certificate = Certificate.objects.select_related("program").get(certificate_id=full_id)
         result = "revoked" if certificate.status == Certificate.Status.REVOKED else "valid"
         if result == "valid":
             certificate.register_verification_hit()
@@ -2234,19 +2242,32 @@ def _lookup(full_id, request):
     )
     return result, certificate
 
-
 def _to_context_dict(certificate):
     """Only the fields the public page is allowed to show — section 5:
     'Do not expose unnecessary personal information.'"""
+    level = certificate.effective_level
     return {
         "certificate_id": certificate.certificate_id,
         "name": certificate.name,
-        "programme": certificate.programme.name,
-        "level": certificate.get_level_display(),
+        "programme": certificate.program.name,
+        "level": level.name if level else "",
         "certificate_type": certificate.get_certificate_type_display(),
         "completion_date": certificate.completion_date,
         "issue_date": certificate.issue_date,
+        "status": certificate.get_status_display(),
     }
+# def _to_context_dict(certificate):
+#     """Only the fields the public page is allowed to show — section 5:
+#     'Do not expose unnecessary personal information.'"""
+#     return {
+#         "certificate_id": certificate.certificate_id,
+#         "name": certificate.name,
+#         "programme": certificate.program.name,
+#         "level": certificate.get_level_display(),
+#         "certificate_type": certificate.get_certificate_type_display(),
+#         "completion_date": certificate.completion_date,
+#         "issue_date": certificate.issue_date,
+#     }
 
 
 @ratelimit(key="ip", rate="20/m", block=True)
@@ -2281,4 +2302,141 @@ def verify_certificate_direct(request, certificate_id):
         context["certificate"] = _to_context_dict(certificate)
     return render(request, "cert_verify.html", context)
 
-    
+
+
+
+
+
+
+def _json_body(request):
+    try:
+        return json.loads(request.body or "{}")
+    except json.JSONDecodeError:
+        return None
+
+
+# ---------------------------------------------------------------------------
+# Page
+# ---------------------------------------------------------------------------
+@certificate_staff_required
+def certificates_admin(request):
+    qs = Certificate.objects.select_related("program", "level")
+
+    q = request.GET.get("q", "").strip()
+    if q:
+        qs = qs.filter(Q(certificate_id__icontains=q) | Q(name__icontains=q) | Q(program__name__icontains=q))
+
+    status = request.GET.get("status", "")
+    if status in Certificate.Status.values:
+        qs = qs.filter(status=status)
+
+    program_id = request.GET.get("program", "")
+    if program_id:
+        qs = qs.filter(program_id=program_id)
+
+    total_count = qs.count()
+
+    return render(request, "icode-admin/list.html", {
+        "certificates": qs[:200],
+        "total_count": total_count,
+        "q": q,
+        "status": status,
+        "program_id": program_id,
+        "programs": Program.objects.all().order_by("name"),
+        "levels": Level.objects.all().order_by("order", "name"),
+        "enrollments": Enrollment.objects.order_by("-created_at")[:200],
+        "status_choices": Certificate.Status.choices,
+        "type_choices": Certificate.CertificateType.choices,
+        "assessment_choices": Certificate.AssessmentStatus.choices,
+    })
+
+
+# ---------------------------------------------------------------------------
+# JSON API — called by the modal forms via ajaxPost()
+# ---------------------------------------------------------------------------
+@certificate_staff_required
+@require_POST
+def certificate_api_create(request):
+    data = _json_body(request)
+    if data is None:
+        return JsonResponse({"success": False, "error": "Invalid request body."}, status=400)
+
+    form = CertificateForm(data)
+    if not form.is_valid():
+        first_errors = next(iter(form.errors.values()))
+        return JsonResponse({"success": False, "error": first_errors[0]}, status=400)
+
+    cert = form.save(commit=False)
+    cert.created_by = request.user
+    cert.save()
+    return JsonResponse({
+        "success": True,
+        "message": f"Certificate {cert.certificate_id} created for {cert.name}.",
+        "certificate_id": cert.certificate_id,
+    })
+
+
+@certificate_staff_required
+@require_POST
+def certificate_api_revoke(request, certificate_id):
+    cert = get_object_or_404(Certificate, certificate_id=certificate_id)
+    if cert.status == Certificate.Status.REVOKED:
+        return JsonResponse({"success": False, "error": "This certificate is already revoked."}, status=400)
+    data = _json_body(request) or {}
+    reason = (data.get("reason") or "").strip()
+    cert.mark_revoked(actor=request.user, reason=reason)
+    return JsonResponse({"success": True, "message": f"{cert.certificate_id} has been revoked."})
+
+
+@certificate_staff_required
+@require_POST
+def certificate_api_restore(request, certificate_id):
+    cert = get_object_or_404(Certificate, certificate_id=certificate_id)
+    if cert.status == Certificate.Status.VALID:
+        return JsonResponse({"success": False, "error": "This certificate is already valid."}, status=400)
+    cert.mark_valid(actor=request.user)
+    return JsonResponse({"success": True, "message": f"{cert.certificate_id} has been restored to valid."})
+
+
+@certificate_staff_required
+@require_POST
+def certificate_api_regenerate(request, certificate_id):
+    cert = get_object_or_404(Certificate, certificate_id=certificate_id)
+    cert.regenerate_files()
+    return JsonResponse({"success": True, "message": "QR code and PDF regenerated."})
+
+
+# ---------------------------------------------------------------------------
+# CSV export — plain link, not AJAX
+# ---------------------------------------------------------------------------
+@certificate_staff_required
+def certificate_export_csv(request):
+    qs = Certificate.objects.select_related("program", "level")
+
+    q = request.GET.get("q", "").strip()
+    if q:
+        qs = qs.filter(Q(certificate_id__icontains=q) | Q(name__icontains=q) | Q(program__name__icontains=q))
+    status = request.GET.get("status", "")
+    if status in Certificate.Status.values:
+        qs = qs.filter(status=status)
+    program_id = request.GET.get("program", "")
+    if program_id:
+        qs = qs.filter(program_id=program_id)
+
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = f'attachment; filename="certificates_{timezone.now():%Y%m%d_%H%M}.csv"'
+    writer = csv.writer(response)
+    writer.writerow([
+        "Certificate ID", "Name", "Programme", "Level", "Certificate Type",
+        "Completion Date", "Issue Date", "Assessment Status", "Status",
+        "Last Verified", "Verification URL",
+    ])
+    for cert in qs:
+        level = cert.effective_level
+        writer.writerow([
+            cert.certificate_id, cert.name, cert.program.name, level.name if level else "",
+            cert.get_certificate_type_display(), cert.completion_date, cert.issue_date,
+            cert.get_assessment_status_display(), cert.get_status_display(),
+            cert.last_verified_at, cert.verification_url,
+        ])
+    return response
