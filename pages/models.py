@@ -484,10 +484,10 @@ class Certificate(models.Model):
         PARTICIPATION = "participation", "Certificate of Participation"
         EXCELLENCE = "excellence", "Certificate of Excellence"
 
-    class AssessmentStatus(models.TextChoices):
-        PASSED = "passed", "Passed"
-        PENDING = "pending", "Pending"
-        NOT_REQUIRED = "not_required", "Not required"
+    # class AssessmentStatus(models.TextChoices):
+    #     PASSED = "passed", "Passed"
+    #     PENDING = "pending", "Pending"
+    #     NOT_REQUIRED = "not_required", "Not required"
 
     class Status(models.TextChoices):
         VALID = "valid", "Valid"
@@ -499,9 +499,7 @@ class Certificate(models.Model):
     # 2. Student / participant name
     name = models.CharField("Student / participant name", max_length=150)
 
-    # Optional link back to the enrollment record this certificate came from.
-    # Enrollment defined above — SET_NULL so deleting an enrollment doesn't
-    # destroy the certificate record.
+    
     enrollment = models.ForeignKey(
         Enrollment, on_delete=models.SET_NULL, null=True, blank=True, related_name="certificates",
     )
@@ -517,6 +515,9 @@ class Certificate(models.Model):
     # 5. Certificate type
     certificate_type = models.CharField(max_length=20, choices=CertificateType.choices, default=CertificateType.COMPLETION)
 
+    # START DATE
+    start_date = models.DateField("Program Start Date")
+
     # 6. Date of completion
     completion_date = models.DateField("Date of completion")
 
@@ -524,10 +525,10 @@ class Certificate(models.Model):
     issue_date = models.DateField("Certificate issue date", default=timezone.localdate)
 
     # 8. Assessment / project status
-    assessment_status = models.CharField(
-        "Assessment / project status", max_length=20,
-        choices=AssessmentStatus.choices, default=AssessmentStatus.PASSED,
-    )
+    # assessment_status = models.CharField(
+    #     "Assessment / project status", max_length=20,
+    #     choices=AssessmentStatus.choices, default=AssessmentStatus.PASSED,
+    # )
 
     # 9. Certificate status
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.VALID)
@@ -544,8 +545,7 @@ class Certificate(models.Model):
     qr_code = models.ImageField(upload_to="certificates/qrcodes/", blank=True, null=True)
     verification_url = models.URLField(blank=True, editable=False)
 
-    # Audit fields — settings.AUTH_USER_MODEL must point at CustomUser above
-    # for this to actually resolve to your custom user model.
+    
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
         related_name="certificates_created",

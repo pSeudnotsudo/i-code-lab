@@ -2202,10 +2202,7 @@ def submit_bootcamp_form(request):
 
 
 try:
-    # Optional dependency — see README for install instructions. Falls back
-    # to a no-op decorator so the app still runs without it, but production
-    # deployments should install django-ratelimit per section 9's
-    # "protect the verification API against abuse" requirement.
+    
     from ratelimit.decorators import ratelimit
 except ImportError:  # pragma: no cover
     def ratelimit(*args, **kwargs):
@@ -2256,18 +2253,7 @@ def _to_context_dict(certificate):
         "issue_date": certificate.issue_date,
         "status": certificate.get_status_display(),
     }
-# def _to_context_dict(certificate):
-#     """Only the fields the public page is allowed to show — section 5:
-#     'Do not expose unnecessary personal information.'"""
-#     return {
-#         "certificate_id": certificate.certificate_id,
-#         "name": certificate.name,
-#         "programme": certificate.program.name,
-#         "level": certificate.get_level_display(),
-#         "certificate_type": certificate.get_certificate_type_display(),
-#         "completion_date": certificate.completion_date,
-#         "issue_date": certificate.issue_date,
-#     }
+
 
 
 @ratelimit(key="ip", rate="20/m", block=True)
@@ -2347,7 +2333,7 @@ def certificates_admin(request):
         "enrollments": Enrollment.objects.order_by("-created_at")[:200],
         "status_choices": Certificate.Status.choices,
         "type_choices": Certificate.CertificateType.choices,
-        "assessment_choices": Certificate.AssessmentStatus.choices,
+        # "assessment_choices": Certificate.AssessmentStatus.choices,
     })
 
 

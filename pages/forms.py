@@ -7,8 +7,9 @@ class CertificateForm(forms.ModelForm):
     class Meta:
         model = Certificate
         fields = [
-            "name", "enrollment", "program", "level", "certificate_type",
-            "completion_date", "issue_date", "assessment_status",
+            "name", "enrollment", "program", "level", "certificate_type","start_date",
+            "completion_date", "issue_date",
+            # "completion_date", "issue_date", "assessment_status",
         ]
         widgets = {
             "completion_date": forms.DateInput(attrs={"type": "date"}),

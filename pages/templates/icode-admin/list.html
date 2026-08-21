@@ -381,10 +381,10 @@
                                         <dt>Certificate type</dt>
                                         <dd>{{ cert.get_certificate_type_display }}</dd>
                                     </div>
-                                    <div>
+                                    <!-- <div>
                                         <dt>Assessment status</dt>
                                         <dd>{{ cert.get_assessment_status_display }}</dd>
-                                    </div>
+                                    </div> -->
                                     <div>
                                         <dt>Date of completion</dt>
                                         <dd>{{ cert.completion_date }}</dd>
@@ -406,8 +406,12 @@
                                 </dl>
                                 <ul class="audit-mini">
                                     {% for entry in cert.audit_log.all|slice:":6" %}
-                                    <li><strong>{{ entry.get_action_display }}</strong> — {{ entry.timestamp|date:"d M
-                                        Y, H:i" }}{% if entry.actor %} · {{ entry.actor }}{% endif %}</li>
+                                    <li>
+                                        <strong>
+                                            {{ entry.get_action_display }}
+                                        </strong> — 
+                                            {{ entry.timestamp|date:"d M Y, H:i" }}{% if entry.actor %} · <strong>{{ entry.actor|upper }}</strong>{% endif %}
+                                    </li>
                                     {% endfor %}
                                 </ul>
                             </div>
@@ -476,16 +480,21 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="f-assessment">Assessment / project status</label>
                         <select class="form-control" id="f-assessment" name="assessment_status">
                             {% for value, label in assessment_choices %}<option value="{{ value }}">{{ label }}</option>
                             {% endfor %}
                         </select>
+                    </div> -->
+                    <div class="form-group">
+                        <label for="f-start">Start Date</label>
+                        <input class="form-control" type="date" id="f-start" name="start_date" required>
                     </div>
                 </div>
 
                 <div class="form-row">
+                    
                     <div class="form-group">
                         <label for="f-completion">Date of completion</label>
                         <input class="form-control" type="date" id="f-completion" name="completion_date" required>

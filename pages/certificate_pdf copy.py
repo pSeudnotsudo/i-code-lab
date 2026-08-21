@@ -16,6 +16,19 @@ TEAL = HexColor("#17C1C8")
 GOLD = HexColor("#D4A017")
 INK_SOFT = HexColor("#2B2B2B")
 
+# ---------------------------------------------------------------------
+# Font registration
+# - Montserrat ExtraBold  -> recipient name + certificate title
+# - Poppins Regular/Medium -> supporting text (course, dates, cred. ID label)
+# - Courier New (reportlab's built-in "Courier" IS Courier New's metric
+#   equivalent on every platform, so no ttf needed for that one)
+#
+# Drop the .ttf files into fonts/ with these exact names, or adjust the
+# paths below to match whatever you actually downloaded:
+#   fonts/Montserrat-ExtraBold.ttf
+#   fonts/Poppins-Regular.ttf
+#   fonts/Poppins-Medium.ttf
+# ---------------------------------------------------------------------
 
 def _register(font_name, filename, fallback):
     try:
@@ -25,18 +38,10 @@ def _register(font_name, filename, fallback):
         return fallback
 
 
-# ---------------------------------------------------------------------
-# Fonts:
-# - Recipient name -> Edwardian Script ITC (the only .ttf you have)
-# - Everything else -> reportlab's built-in standard fonts, used as
-#   stand-ins for Montserrat ExtraBold (title) and Poppins (body text)
-#   until/unless those .ttf files get added later.
-# ---------------------------------------------------------------------
-NAME_FONT = _register("EdwardianScriptITC", "edwardianscriptitc.ttf", "Times-BoldItalic")
-
-TITLE_FONT = "Helvetica-Bold"       # stand-in for Montserrat ExtraBold
-BODY_FONT_REGULAR = "Helvetica"     # stand-in for Poppins Regular
-BODY_FONT_MEDIUM = "Helvetica-Bold"  # stand-in for Poppins Medium
+TITLE_FONT = _register("MontserratExtraBold", "Montserrat-ExtraBold.ttf", "Helvetica-Bold")
+NAME_FONT = _register("MontserratExtraBold", "Montserrat-ExtraBold.ttf", "Helvetica-Bold")
+BODY_FONT_REGULAR = _register("PoppinsRegular", "Poppins-Regular.ttf", "Helvetica")
+BODY_FONT_MEDIUM = _register("PoppinsMedium", "Poppins-Medium.ttf", "Helvetica-Bold")
 
 
 def ordinal(n: int) -> str:
@@ -44,12 +49,6 @@ def ordinal(n: int) -> str:
         return f"{n}th"
     suffix = {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
     return f"{n}{suffix}"
-
-
-def to_sentence_case(name: str) -> str:
-    """Capitalizes the first letter of each word, lowercases the rest
-    (e.g. 'JANE WANJIRU' or 'jane wanjiru' -> 'Jane Wanjiru')."""
-    return " ".join(word.capitalize() for word in name.strip().split())
 
 
 def build_certificate_pdf(certificate) -> bytes:
@@ -91,22 +90,22 @@ def build_certificate_pdf(certificate) -> bytes:
     c.line(width / 2 - 180, line_y, width / 2 + 180, line_y)
 
     c.setFillColor(NAVY)
-    c.setFont(NAME_FONT, 32)
-    c.drawCentredString(width / 2, line_y + 8, to_sentence_case(certificate.name))
+    c.setFont(NAME_FONT, 26)
+    c.drawCentredString(width / 2, line_y + 8, certificate.name.upper())
 
-    # ---------- Paragraph ----------
+    # ---------- Paragraph (course name, dates -> Poppins Regular) ----------
     para_lines = [
         "for successfully completing a 3 week bootcamp program at I-CODE Robotics & AI Lab, demonstrating",
         f"dedication, curiosity, and hands-on innovation in the field of {certificate.program},",
-        f"held from {ordinal(certificate.start_date.day)} {certificate.start_date:%B} to "
-        f"{ordinal(certificate.completion_date.day)} {certificate.completion_date:%B, %Y}.",
+        f"held from {ordinal(certificate.completion_date.day)} {certificate.completion_date:%B} to "
+        f"{ordinal(certificate.issue_date.day)} {certificate.issue_date:%B, %Y}.",
     ]
     c.setFont(BODY_FONT_REGULAR, 11)
     c.setFillColor(INK_SOFT)
     for i, line in enumerate(para_lines):
         c.drawCentredString(width / 2, from_top(320 + i * 18), line)
 
-    # ---------- QR code ----------
+    # ---------- QR code (on top) ----------
     if certificate.qr_code:
         try:
             certificate.qr_code.open("rb")
@@ -122,7 +121,7 @@ def build_certificate_pdf(certificate) -> bytes:
         finally:
             certificate.qr_code.close()
 
-    # ---------- Certificate ID ----------
+    # ---------- Certificate ID (Courier New, just below the QR code) ----------
     c.setFont("Courier-Bold", 9)
     c.setFillColor(NAVY)
     c.drawCentredString(width / 2, from_top(545), f"{certificate.certificate_id}")

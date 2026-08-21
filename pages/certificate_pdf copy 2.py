@@ -25,18 +25,9 @@ def _register(font_name, filename, fallback):
         return fallback
 
 
-# ---------------------------------------------------------------------
-# Fonts:
-# - Recipient name -> Edwardian Script ITC (the only .ttf you have)
-# - Everything else -> reportlab's built-in standard fonts, used as
-#   stand-ins for Montserrat ExtraBold (title) and Poppins (body text)
-#   until/unless those .ttf files get added later.
-# ---------------------------------------------------------------------
+# Only custom font in use: the recipient's name.
+# NAME_FONT = _register("EdwardianScriptITC", "Edwardian Script ITC Regular.ttf", "Times-BoldItalic")
 NAME_FONT = _register("EdwardianScriptITC", "edwardianscriptitc.ttf", "Times-BoldItalic")
-
-TITLE_FONT = "Helvetica-Bold"       # stand-in for Montserrat ExtraBold
-BODY_FONT_REGULAR = "Helvetica"     # stand-in for Poppins Regular
-BODY_FONT_MEDIUM = "Helvetica-Bold"  # stand-in for Poppins Medium
 
 
 def ordinal(n: int) -> str:
@@ -44,12 +35,6 @@ def ordinal(n: int) -> str:
         return f"{n}th"
     suffix = {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
     return f"{n}{suffix}"
-
-
-def to_sentence_case(name: str) -> str:
-    """Capitalizes the first letter of each word, lowercases the rest
-    (e.g. 'JANE WANJIRU' or 'jane wanjiru' -> 'Jane Wanjiru')."""
-    return " ".join(word.capitalize() for word in name.strip().split())
 
 
 def build_certificate_pdf(certificate) -> bytes:
@@ -66,12 +51,12 @@ def build_certificate_pdf(certificate) -> bytes:
 
     # ---------- Title ----------
     c.setFillColor(NAVY)
-    c.setFont(TITLE_FONT, 26)
+    c.setFont("Helvetica-Bold", 26)
     c.drawCentredString(width / 2, from_top(190), "CERTIFICATE OF COMPLETION")
 
     # ---------- Subtitle ----------
     c.setFillColor(HexColor("#E0A030"))
-    c.setFont(BODY_FONT_MEDIUM, 11)
+    c.setFont("Helvetica-Bold", 11)
     c.drawCentredString(width / 2, from_top(210), "3 - WEEK INNOVATION BOOTCAMP")
 
     # ---------- Divider ----------
@@ -81,7 +66,7 @@ def build_certificate_pdf(certificate) -> bytes:
 
     # ---------- "This certificate is proudly presented to" ----------
     c.setFillColor(INK_SOFT)
-    c.setFont(BODY_FONT_REGULAR, 12)
+    c.setFont("Helvetica", 12)
     c.drawCentredString(width / 2, from_top(245), "This certificate is proudly presented to")
 
     # ---------- Gold line + name on top of it ----------
@@ -92,16 +77,16 @@ def build_certificate_pdf(certificate) -> bytes:
 
     c.setFillColor(NAVY)
     c.setFont(NAME_FONT, 32)
-    c.drawCentredString(width / 2, line_y + 8, to_sentence_case(certificate.name))
+    c.drawCentredString(width / 2, line_y + 8, certificate.name)
 
     # ---------- Paragraph ----------
     para_lines = [
         "for successfully completing a 3 week bootcamp program at I-CODE Robotics & AI Lab, demonstrating",
         f"dedication, curiosity, and hands-on innovation in the field of {certificate.program},",
-        f"held from {ordinal(certificate.start_date.day)} {certificate.start_date:%B} to "
-        f"{ordinal(certificate.completion_date.day)} {certificate.completion_date:%B, %Y}.",
+        f"held from {ordinal(certificate.completion_date.day)} {certificate.completion_date:%B} to "
+        f"{ordinal(certificate.issue_date.day)} {certificate.issue_date:%B, %Y}.",
     ]
-    c.setFont(BODY_FONT_REGULAR, 11)
+    c.setFont("Helvetica", 11)
     c.setFillColor(INK_SOFT)
     for i, line in enumerate(para_lines):
         c.drawCentredString(width / 2, from_top(320 + i * 18), line)
